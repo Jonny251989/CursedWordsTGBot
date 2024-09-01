@@ -13,20 +13,16 @@ template <typename T>
 class Queue {
 
 private:
-
 std::deque<T> deque;
 std::mutex m1;
 
-
 public:
-
     Queue();
+    
     void push(T);
     size_t size();
     std::optional<std::reference_wrapper<T>> front();
     bool pop();
-
-
 
     ~Queue();
 };
@@ -44,11 +40,9 @@ public:
 
     template <typename T>
     std::optional<std::reference_wrapper<T>> Queue<T>::front(){
-        if(!deque.empty()){
-            return std::ref(deque.front());
-        }
-        else
-            return std::nullopt;
+        if(!deque.empty())
+            return std::ref(deque.front());   
+    	return std::nullopt;
     }
 
     template <typename T>
