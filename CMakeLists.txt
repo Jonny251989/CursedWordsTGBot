@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project (tgbot CXX)
+project (CursedWordsTGBot CXX)
 
 include_directories( ${PROJECT_SOURCE_DIR} )
 
@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(Boost_USE_MULTITHREADED ON)
-set(target tgbot)
+set(target CursedWordsTGBot)
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
@@ -22,13 +22,11 @@ if (CURL_FOUND)
 endif()
 
 set(HEADERS
-    CursedWordsTGBot/server.h
     Modules/queue.hpp
     Modules/task.h
     Tests/UnitTests/test.h
 )
 set(SOURCES
-    CursedWordsTGBot/server.cpp
     Modules/task.cpp
     Tests/UnitTests/test.cpp
 
