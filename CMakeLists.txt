@@ -13,9 +13,9 @@ find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(CURL)
-find_package(GTest REQUIRED)
 
-include_directories(/usr/local/include ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR}${GTEST_INCLUDE_DIRS})
+
+include_directories(/usr/local/include ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 if (CURL_FOUND)
     include_directories(${CURL_INCLUDE_DIRS})
     add_definitions(-DHAVE_CURL)
@@ -30,6 +30,6 @@ set(SOURCES
 )
 add_executable(target ${SOURCES} main.cpp)
 target_link_libraries(
-    target /usr/local/lib/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} gtest gmock pthread)
+    target /usr/local/lib/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES})
     
-target_include_directories(target PRIVATE ./Modules ./Tests/UnitTests)
+target_include_directories(target PRIVATE ./Modules)
