@@ -1,5 +1,4 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+#pragma once
 
 #include <deque>
 #include <string>
@@ -64,4 +63,4 @@ public:
 
     }
 
-#endif // MODEL_H
+
