@@ -1,16 +1,6 @@
-
-#include <vector>
-#include <string>
 #include <stdio.h>
 #include <tgbot/tgbot.h>
 #include <iostream>
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-
-
-
-using namespace std;
-
 
 int main(int argc, char *argv[]) {
 
