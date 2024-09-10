@@ -4,9 +4,15 @@
 #include <stdio.h>
 #include <tgbot/tgbot.h>
 #include <iostream>
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 
-int main() {
+
+using namespace std;
+
+
+int main(int argc, char *argv[]) {
 
     TgBot::Bot bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
     bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) {
@@ -31,7 +37,6 @@ int main() {
     } catch (TgBot::TgException& e) {
         printf("error: %s\n", e.what());
     }
-
-
-    return 0;
 }
+
+
