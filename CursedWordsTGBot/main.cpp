@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
 
-    TgBot::Bot bot("ХХХХ");
+    TgBot::Bot bot("ХХХХX");
     bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) {
         bot.getApi().sendMessage(message->chat->id, "Hi!");
     });
