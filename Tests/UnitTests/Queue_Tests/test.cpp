@@ -34,10 +34,10 @@ TEST_F(QueueTest, Front) {
   EXPECT_EQ(queue.size(), 1);
 }
 
-TEST_F(QueueTest, NewQueueIsEmptyAfterAddAndPop) {
+TEST_F(QueueTest, QueueIsEmptyAfterAddAndPop) {
   const size_t size = 100;
   for(size_t i = 0; i < size; i++){
-    queue.push(i + 3*i);
+    queue.push(i);
   }
   for(size_t i = 0; i < size; i++){
     queue.pop();
@@ -48,7 +48,7 @@ TEST_F(QueueTest, NewQueueIsEmptyAfterAddAndPop) {
 TEST_F(QueueTest, QueueSizeAferAddAndSomePop) {
   const size_t size = 1000;
   for(size_t i = 0; i < size; i++){
-    queue.push(i + 2*i);
+    queue.push(i);
   }
   const size_t limit = size/10;
   for(size_t i = 0; i < limit/2; i++){
@@ -61,8 +61,8 @@ TEST_F(QueueTest, QueueEqualElementAferAdd) {
   const size_t size = 100;
   std::deque<int> queue_temp;
   for(size_t i = 0; i < size; i++){
-    queue.push(i + 2*i);
-    queue_temp.push_back(i + 2*i);
+    queue.push(i);
+    queue_temp.push_back(i);
     std::optional<int> value = queue.front();
     EXPECT_EQ(value.value(), queue_temp[i]);
     queue.pop();
@@ -73,8 +73,8 @@ TEST_F(QueueTest, QueueEqualFrontElementAferAdd) {
   const size_t size = 100;
   std::deque<int> queue_temp;
   for(size_t i = 0; i < size; i++){
-    queue.push(i + 2*i);
-    queue_temp.push_back(i + 2*i);
+    queue.push(i);
+    queue_temp.push_back(i);
     EXPECT_EQ(queue.front().value(), queue_temp[0]);
   }
 }
@@ -84,8 +84,8 @@ TEST_F(QueueTest, FinishTestQueue) {
   const size_t size = 100;
   std::deque<int> queue_temp;
   for(size_t i = 0; i < size; i++){
-    queue.push(i + 2*i);
-    queue_temp.push_back(i + 2*i);
+    queue.push(i);
+    queue_temp.push_back(i);
   }
   EXPECT_EQ(queue.size(), size);
   
@@ -97,25 +97,10 @@ TEST_F(QueueTest, FinishTestQueue) {
     queue.pop();
     EXPECT_EQ(queue.size(), size - i - 1);
   }
-
   queue_temp.clear();
   queue.push(1);
   queue.push(7);
   queue.push(11);
   EXPECT_EQ(queue.size(), 3);
-
 }
 
-/*
-
-1) Добавить Н элеметов и удалить Н элементов: посмотреть размер после этих операций
-
-2) Добавить, к примеру, M элементов и удалить N элементов и посмотреть размер- равен ли он M-N 
-
-3) Проверить, работает ли очередь по принципу FIFO с помощью дополнительного контейнера, к примеру, вектора
-
-4) Протестировать работу метода front(): добавить N элементов и при этом метод front() должен соответствовать всегда
-одному и тому же первому элементу
-
-
-*/
