@@ -1,7 +1,7 @@
 #include "test.h"
 
     void QueueTest::SetUp() {
- // Создаем очередь перед каждым тестом
+
     }
 
     void QueueTest::TearDown() {
@@ -82,7 +82,6 @@ TEST_F(QueueTest, QueueEqualFrontElementAferAdd) {
 }
 
 TEST_F(QueueTest, FinishTestQueue) {
-
   EXPECT_EQ(queue.size(), 0);
   const size_t size = 100;
   std::deque<int> queue_temp;
