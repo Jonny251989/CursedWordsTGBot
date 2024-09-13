@@ -1,12 +1,12 @@
 #include "test.h"
 
-    void QueueTest::SetUp() {
+void QueueTest::SetUp() {
 
-    }
+}
 
-    void QueueTest::TearDown() {
+void QueueTest::TearDown() {
 
-    }
+}
 
 TEST_F(QueueTest, NewQueueIsEmpty) {
   EXPECT_EQ(queue.size(), 0);
@@ -28,11 +28,10 @@ TEST_F(QueueTest, Push) {
 }
 
 TEST_F(QueueTest, Front) {
-	queue.push(5);
+  queue.push(5);
   std::optional<int> task = queue.front();
   EXPECT_EQ(task.value(), 5);
   EXPECT_EQ(queue.size(), 1);
-
 }
 
 TEST_F(QueueTest, NewQueueIsEmptyAfterAddAndPop) {
@@ -43,7 +42,6 @@ TEST_F(QueueTest, NewQueueIsEmptyAfterAddAndPop) {
   for(size_t i = 0; i < size; i++){
     queue.pop();
   }
-
   EXPECT_EQ(queue.size(), 0);
 }
 
