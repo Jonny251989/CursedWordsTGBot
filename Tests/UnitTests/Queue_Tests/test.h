@@ -1,9 +1,7 @@
-#ifndef TEST_H
-#define TEST_H
+#pragma once
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <optional>
 
 #include "queue.hpp"
 
@@ -13,9 +11,7 @@ protected:
     void SetUp() override;
 
     void TearDown() override;
-	
-	Queue<int> queue;
+    
+    Queue<int> queue;
 };
 
-
-#endif
