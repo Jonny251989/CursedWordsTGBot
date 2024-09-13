@@ -65,7 +65,6 @@ TEST_F(QueueTest, QueueEqualElementAferAdd) {
     queue.push(i + 2*i);
     queue_temp.push_back(i + 2*i);
   }
-
   for(size_t i = 0; i < size; i++){
     std::optional<int> value = queue.front();
     queue.pop();
