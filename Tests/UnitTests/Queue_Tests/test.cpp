@@ -63,6 +63,8 @@ TEST_F(QueueTest, QueueEqualElementAferAdd) {
   for(size_t i = 0; i < size; i++){
     queue.push(i);
     queue_temp.push_back(i);
+  }
+  for(size_t i = 0; i < size; i++){
     std::optional<int> value = queue.front();
     EXPECT_EQ(value.value(), queue_temp[i]);
     queue.pop();
@@ -81,8 +83,10 @@ TEST_F(QueueTest, QueueEqualFrontElementAferAdd) {
 
 TEST_F(QueueTest, FinishTestQueue) {
   EXPECT_EQ(queue.size(), 0);
+
   const size_t size = 100;
   std::deque<int> queue_temp;
+
   for(size_t i = 0; i < size; i++){
     queue.push(i);
     queue_temp.push_back(i);
@@ -93,10 +97,12 @@ TEST_F(QueueTest, FinishTestQueue) {
     std::optional<int> value = queue.front();
     EXPECT_EQ(value.value(), queue_temp[0]);
   }
+
   for(size_t i = 0; i < size; i++){
     queue.pop();
     EXPECT_EQ(queue.size(), size - i - 1);
   }
+  
   queue_temp.clear();
   queue.push(1);
   queue.push(7);
