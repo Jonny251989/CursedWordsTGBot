@@ -93,10 +93,10 @@ TEST_F(QueueTest, FinalTestQueue) {
   }
   EXPECT_EQ(queue.size(), size);
   
-  for(size_t i = 0; i < size; i++){
-    EXPECT_EQ(queue.size(), size - i);
+  for(size_t i = 0; i < size; i++){    
     std::optional<std::reference_wrapper<int>> value = queue.front();
     EXPECT_EQ(value.value(), queue_temp[i]);
+    EXPECT_EQ(queue.size(), size - i);
     queue.pop();
   }
   queue_temp.clear();
