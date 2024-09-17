@@ -29,7 +29,7 @@ TEST_F(QueueTest, Push) {
 
 TEST_F(QueueTest, Front) {
   queue.push(5);
-  std::optional<int> task = queue.front();
+  std::optional<std::reference_wrapper<int>> task = queue.front();
   EXPECT_EQ(task.value(), 5);
   EXPECT_EQ(queue.size(), 1);
 }
@@ -73,8 +73,6 @@ TEST_F(QueueTest, EqualElements) {
   for(size_t i = 0; i < size; i++){
     queue.push(i);
     queue_temp.push_back(i);
-  }
-  for(size_t i = 0; i < size; i++){
     std::optional<std::reference_wrapper<int>> value = queue.front();
     EXPECT_EQ(value.value(), queue_temp[i]);
     queue.pop();
@@ -97,6 +95,8 @@ TEST_F(QueueTest, FinalTestQueue) {
   
   for(size_t i = 0; i < size; i++){
     EXPECT_EQ(queue.size(), size - i);
+    std::optional<std::reference_wrapper<int>> value = queue.front();
+    EXPECT_EQ(value.value(), queue_temp[i]);
     queue.pop();
   }
   queue_temp.clear();
