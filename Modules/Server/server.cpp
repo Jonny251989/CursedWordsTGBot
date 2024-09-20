@@ -1,17 +1,12 @@
 #include "server.h"
 
-
     Server::Server(std::string token): bot(token){
         queue = std::make_shared<Queue<Task>>();
-        std::cout<<"CONSTRUCT\n";
     }
-
 
     void Server::start(){
 
-
         std::lock_guard l_q(m2);
-        std::cout<<"BEGIN\n";
         
         bot.getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
             bot.getApi().sendMessage(message->chat->id, "Hi!");
