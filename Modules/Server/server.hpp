@@ -21,7 +21,7 @@ private:
     TgBot::Bot bot_;
     std::shared_ptr<Queue<T>> queue_;
     std::mutex m_;
-    static bool shutdown_requested;
+    inline static bool shutdown_requested_ = true;
 public:
 
     Server(const std::string& token, std::shared_ptr<Queue<T>> queue): bot_(token), queue_(queue){
@@ -38,9 +38,11 @@ public:
             if (StringTools::startsWith(message->text, "/start")) {
                 return;
             }
-
-            std::lock_guard lg(m_);
-            (queue.get())->push(T(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
+            
+            {
+                std::lock_guard lg(m_);
+                (queue.get())->push(T(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
+            }
             
             bot_.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
             Logger::getInstance().logInfo(Logger::Levels::Info, message->text);
@@ -56,7 +58,7 @@ public:
 
                 TgBot::TgLongPoll longPoll(bot_);
 
-                while (shutdown_requested) {
+                while (shutdown_requested_) {
                     Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
                     longPoll.start();
                 }
@@ -71,7 +73,7 @@ public:
             Logger::getInstance().logInfo(Logger::Levels::Fatal, "CRUSH PROGRAMM!");
             std::exit(EXIT_FAILURE);
         }
-        shutdown_requested = false;
+        shutdown_requested_ = false;
         count_shutdown++;
         Logger::getInstance().logInfo(Logger::Levels::Critical, "EXIT FROM SERVER!");  
     }
@@ -81,5 +83,3 @@ public:
     }
 };
 
-template<typename T>
-bool Server<T>::shutdown_requested = true;
