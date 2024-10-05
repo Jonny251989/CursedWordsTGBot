@@ -55,7 +55,9 @@ public:
                 while (shutdown_requested_) {
                     longPoll.start();
                 }
-            } catch (TgBot::TgException& e) {
+            } 
+            catch (TgBot::TgException& e) {
+                
             }
     }
 
