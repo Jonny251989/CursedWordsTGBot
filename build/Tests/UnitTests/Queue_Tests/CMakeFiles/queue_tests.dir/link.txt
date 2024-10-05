@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall CMakeFiles/queue_tests.dir/test.cpp.o CMakeFiles/queue_tests.dir/main.cpp.o -o queue_tests  -lgtest -lgmock 
