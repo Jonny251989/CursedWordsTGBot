@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wall CMakeFiles/parser_tests.dir/test.cpp.o CMakeFiles/parser_tests.dir/main.cpp.o -o parser_tests  -lgtest -lgmock 
