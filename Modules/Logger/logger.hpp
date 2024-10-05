@@ -7,16 +7,13 @@
 #include <string>
 #include <chrono>
 #include <ctime>
-//#include "date.h"
 #include <source_location>
 
 class Logger {
+
 public:
-
-
     enum class Levels {Debug, Info, Critical, Fatal};
-
-
+    
     // Получение единственного экземпляра логгера
     static Logger& getInstance() {
         static Logger instance; // Инициализация при первом вызове
@@ -43,7 +40,7 @@ public:
     // Запись информационного сообщения
     void logInfo(const Levels& level, const std::string& message, const std::source_location location = std::source_location::current()) {
         if(level >= level_){
-            
+
             std::lock_guard<std::mutex> guard(logMutex);
 
             const auto p1 = std::chrono::system_clock::now();
@@ -66,8 +63,7 @@ private:
     Logger() = default;
 
     ~Logger() {
-
-    }
+ }
 
     // Запрет копирования и перемещения
     Logger(const Logger&) = delete;
