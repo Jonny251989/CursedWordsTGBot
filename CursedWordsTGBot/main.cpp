@@ -1,32 +1,19 @@
 #include <stdio.h>
 #include <tgbot/tgbot.h>
 #include <iostream>
+#include <ostream>
+#include "server.hpp"
+#include "queue.hpp"
+#include "task.hpp"
+#include <string>
+
 
 int main(int argc, char *argv[]) {
 
-    TgBot::Bot bot("ХХХХXX");
-    bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) {
-        bot.getApi().sendMessage(message->chat->id, "Hi!");
-    });
-    bot.getEvents().onAnyMessage([&bot](TgBot::Message::Ptr message) {
-        printf("User wrote %s\n", message->text.c_str());
+   std::shared_ptr<Queue<Task>> ptr_queue = std::make_shared<Queue<Task>>();
+   Server server(argv[1], ptr_queue);
+   //server.start();
 
-        if (StringTools::startsWith(message->text, "/start")) {
-            return;
-        }
-        bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
-    });
-    
-    try {
-        printf("Bot username: %s\n", bot.getApi().getMe()->username.c_str());
-        TgBot::TgLongPoll longPoll(bot);
-        while (true) {
-            printf("Long poll started\n");
-            longPoll.start();
-        }
-    } catch (TgBot::TgException& e) {
-        printf("error: %s\n", e.what());
-    }
+    return 0;
 }
-
 
