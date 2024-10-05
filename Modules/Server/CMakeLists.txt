@@ -18,3 +18,4 @@ if (CURL_FOUND)
 endif()
 
 target_link_libraries( ${target}  /usr/local/lib/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} queue task)
+set_target_properties(server_bot PROPERTIES LINKER_LANGUAGE CXX)

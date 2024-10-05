@@ -12,7 +12,6 @@
 #include <signal.h>
 #include "queue.hpp"
 #include "task.hpp"
-#include "logger.hpp"
 
 
 template <typename T>
@@ -21,13 +20,11 @@ private:
     TgBot::Bot bot_;
     std::shared_ptr<Queue<T>> queue_;
     std::mutex m_;
-    static bool shutdown_requested;
+    inline static bool shutdown_requested = true;
 public:
 
     Server(const std::string& token, std::shared_ptr<Queue<T>> queue): bot_(token), queue_(queue){
 
-        Logger::getInstance().setName(bot_.getApi().getMe()->username);
-        Logger::getInstance().setLevel(Logger::Levels::Debug);
 
         bot_.getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
             bot_.getApi().sendMessage(message->chat->id, "Hi!");
@@ -41,9 +38,8 @@ public:
 
             std::lock_guard lg(m_);
             (queue.get())->push(T(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
-            
+            std::cout << "message:" << message->text << "\n";
             bot_.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
-            Logger::getInstance().logInfo(Logger::Levels::Info, message->text);
 
         });
 
@@ -57,23 +53,21 @@ public:
                 TgBot::TgLongPoll longPoll(bot_);
 
                 while (shutdown_requested) {
-                    Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
                     longPoll.start();
                 }
             } catch (TgBot::TgException& e) {
-                Logger::getInstance().logInfo(Logger::Levels::Fatal, e.what());
             }
     }
 
     static void signal_handler(int signal){
         static size_t count_shutdown = 0;
         if(count_shutdown){
-            Logger::getInstance().logInfo(Logger::Levels::Fatal, "CRUSH PROGRAMM!");
+            std::cout<<"\nEXIT FROM PROGRAMM!\n";
             std::exit(EXIT_FAILURE);
         }
+        std::cout<<"\nEXIT FROM SERVER!\n";
         shutdown_requested = false;
         count_shutdown++;
-        Logger::getInstance().logInfo(Logger::Levels::Critical, "EXIT FROM SERVER!");  
     }
 
     ~Server(){
@@ -81,5 +75,3 @@ public:
     }
 };
 
-template<typename T>
-bool Server<T>::shutdown_requested = true;
