@@ -20,11 +20,10 @@ private:
     TgBot::Bot bot_;
     std::shared_ptr<Queue<T>> queue_;
     std::mutex m_;
-    inline static bool shutdown_requested = true;
+    inline static bool shutdown_requested_ = true;
 public:
 
     Server(const std::string& token, std::shared_ptr<Queue<T>> queue): bot_(token), queue_(queue){
-
 
         bot_.getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
             bot_.getApi().sendMessage(message->chat->id, "Hi!");
@@ -36,8 +35,10 @@ public:
                 return;
             }
 
-            std::lock_guard lg(m_);
-            (queue.get())->push(T(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
+            {
+                std::lock_guard lg(m_);
+                (queue.get())->push(T(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
+            }
             std::cout << "message:" << message->text << "\n";
             bot_.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
 
@@ -49,10 +50,9 @@ public:
 
     void start(){
         try {
-
                 TgBot::TgLongPoll longPoll(bot_);
 
-                while (shutdown_requested) {
+                while (shutdown_requested_) {
                     longPoll.start();
                 }
             } catch (TgBot::TgException& e) {
@@ -66,7 +66,7 @@ public:
             std::exit(EXIT_FAILURE);
         }
         std::cout<<"\nEXIT FROM SERVER!\n";
-        shutdown_requested = false;
+        shutdown_requested_ = false;
         count_shutdown++;
     }
 
