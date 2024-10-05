@@ -1,4 +1,3 @@
-
 set(target server_bot)
 
 set(Boost_USE_MULTITHREADED ON)

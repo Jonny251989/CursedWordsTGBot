@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 
    std::shared_ptr<Queue<Task>> ptr_queue = std::make_shared<Queue<Task>>();
    Server server(argv[1], ptr_queue);
-   //server.start();
+   server.start();
 
     return 0;
 }
