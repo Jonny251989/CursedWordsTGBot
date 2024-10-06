@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 #include <fstream>
 #include <mutex>
 #include <memory>
@@ -28,15 +29,6 @@ public:
         bot_name_ = name;
     }
 
-    char* get_time(time_t unix_timestamp){
-        char* time_buf = new char[80];
-        struct tm ts;
-        ts = *localtime(&unix_timestamp);
-        strftime(time_buf, sizeof(time_buf), "%a %Y-%m-%d %H:%M:%S %Z", &ts);
-        std::cout<<"time_buf "<<time_buf<<std::endl;
-        return time_buf;
-    }
-
     // Запись информационного сообщения
     void logInfo(const Levels& level, const std::string& message, const std::source_location location = std::source_location::current()) {
         if(level >= level_){
@@ -51,11 +43,12 @@ public:
             ss << std::put_time(t, "%Y-%m-%d %I:%M:%S %p");
             std::string output = ss.str();
 
-            std::clog << "Name:"<<bot_name_<< "\nLevel: " << static_cast<std::underlying_type<Levels>::type>(level_)<<"\nMessage: "<< message <<
+            std::clog << "Name:"<<bot_name_<< "\nLevel: " << levels_[level_]<<
             "\nTime is "<< output <<"\nFile: "
               << location.file_name() << '('
               << location.line() << ':' 
-              << location.column() << ")\n";
+              << location.column() << ")\n"
+              <<"\nMessage: "<< message <<"\n";
         }
     }
 
@@ -63,7 +56,8 @@ private:
     Logger() = default;
 
     ~Logger() {
- }
+
+    }
 
     // Запрет копирования и перемещения
     Logger(const Logger&) = delete;
@@ -74,4 +68,10 @@ private:
     std::mutex logMutex;   // Мьютекс для потокобезопасности
     std::string bot_name_;
     Levels level_;
+    std::map<Levels, std::string> levels_{
+        {Levels::Debug, "Debug"},
+        {Levels::Info, "Info"},
+        {Levels::Critical, "Critical"},
+        {Levels::Fatal, "Fatal"}
+    };
 };
