@@ -43,12 +43,14 @@ public:
             ss << std::put_time(t, "%Y-%m-%d %I:%M:%S %p");
             std::string output = ss.str();
 
-            std::clog << "Name:"<<bot_name_<< "\nLevel: " << levels_[level_]<<
-            "\nTime is "<< output <<"\nFile: "
+            std::clog << "\nName:"<<bot_name_
+            << "\nLevel: " << levels_[level_]
+            <<"\nTime is "<< output 
+            <<"\nFile: "
               << location.file_name() << '('
               << location.line() << ':' 
               << location.column() << ")\n"
-              <<"\nMessage: "<< message <<"\n";
+            <<"\nMessage: "<< message <<"\n";
         }
     }
 
