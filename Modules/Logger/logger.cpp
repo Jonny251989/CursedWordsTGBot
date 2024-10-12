@@ -34,8 +34,7 @@
             << location.file_name() << '('
             << location.line() << ':' 
             << location.column() << ")"
-            <<", message: "<< message <<" }\n";
-            
+            <<", message: "<< message <<" }\n";  
         }
     }
 
