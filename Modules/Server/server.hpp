@@ -18,33 +18,30 @@
 template <typename T>
 class Server{
 private:
-    TgBot::Bot bot_;
+    std::unique_ptr<TgBot::Bot> bot_;
     std::shared_ptr<Queue<T>> queue_;
     std::mutex m_;
     inline static bool shutdown_requested_ = true;
 public:
 
-    Server(const std::string& token, std::shared_ptr<Queue<T>> queue): bot_(token), queue_(queue){
+    Server( std::unique_ptr<TgBot::Bot>&& bot, std::shared_ptr<Queue<T>> queue):bot_(std::move(bot)), queue_(queue){
 
-        Logger::getInstance().setName(bot_.getApi().getMe()->username);
-        Logger::getInstance().setLevel(Logger::Levels::Debug);
-
-        bot_.getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
-            bot_.getApi().sendMessage(message->chat->id, "Hi!");
+        bot_->getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
+            bot_->getApi().sendMessage(message->chat->id, "Hi!");
         });
 
-        bot_.getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
+        bot_->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
 
             if (StringTools::startsWith(message->text, "/start")) {
                 return;
             }
-            
+        
             {
                 std::lock_guard lg(m_);
                 (queue.get())->push(T(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
             }
-            
-            bot_.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
+              
+            bot_->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
             Logger::getInstance().logInfo(Logger::Levels::Info, message->text);
 
         });
@@ -55,8 +52,7 @@ public:
 
     void start(){
         try {
-
-                TgBot::TgLongPoll longPoll(bot_);
+                TgBot::TgLongPoll longPoll(*bot_.get());
 
                 while (shutdown_requested_) {
                     Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
@@ -70,12 +66,12 @@ public:
     static void signal_handler(int signal){
         static size_t count_shutdown = 0;
         if(count_shutdown){
-            Logger::getInstance().logInfo(Logger::Levels::Fatal, "CRUSH PROGRAMM!");
+            Logger::getInstance().logInfo(Logger::Levels::Fatal, "Recieved shutdown signal. Stop polling!");
             std::exit(EXIT_FAILURE);
         }
         shutdown_requested_ = false;
         count_shutdown++;
-        Logger::getInstance().logInfo(Logger::Levels::Critical, "EXIT FROM SERVER!");  
+        Logger::getInstance().logInfo(Logger::Levels::Critical, "Recieved second shutdown signal. Exiting!");  
     }
 
     ~Server(){
