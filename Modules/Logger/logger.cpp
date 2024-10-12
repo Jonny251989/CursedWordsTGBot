@@ -1,6 +1,5 @@
 #include "logger.hpp"
 
-
     Logger& Logger::getInstance() {
         static Logger instance; // Инициализация при первом вызове
         return instance;
@@ -37,7 +36,6 @@
             <<", message: "<< message <<" }\n";  
         }
     }
-
 
     Logger::~Logger() {
 
