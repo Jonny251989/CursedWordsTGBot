@@ -1,8 +1,8 @@
 #include "parser.hpp"
 
 
-    Parser::Parser(const std::vector<std::string>list){
-        std::copy(list.begin(), list.end(), std::inserter(arguments, arguments.end()));
+    Parser::Parser(const std::vector<std::string>vec){
+        std::copy(vec.begin(), vec.end(), std::inserter(arguments, arguments.end()));
     }
 
     void Parser::remove_spaces(std::string& str){
@@ -50,10 +50,23 @@
                 }             
             }
             throw std::invalid_argument("Unknow tokens: " + unknow_tokens);
-
         }
+         else if (tokens.size() < arguments.size()){
+            std::string missing_tokens;
+
+            for(const auto& key_value : arguments){
+                if(!tokens.count(key_value)){
+                    missing_tokens = missing_tokens + key_value + ' ';
+                }             
+            }
+            throw std::invalid_argument("The missins tokens: " + missing_tokens);
+         }
 
         return tokens;
+    }
+
+    std::unordered_set<std::string> Parser::get_arguments(){
+        return arguments;
     }
 
     Parser::~Parser(){
