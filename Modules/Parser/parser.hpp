@@ -7,6 +7,7 @@
 #include <map>
 #include <set>
 #include <unordered_map>
+#include <unordered_set>
 #include <algorithm>
 #include <stdexcept>
 #include <boost/algorithm/string/split.hpp>
@@ -21,8 +22,9 @@ public:
     void remove_spaces(std::string& str);
     std::vector<std::string> split_string(const std::string str);
     std::unordered_map<std::string, std::string> parse_string(std::string str);
+    std::unordered_set<std::string> get_arguments();
     ~Parser();
 
 private:
-    std::set<std::string> arguments;
+    std::unordered_set<std::string> arguments;
 };
