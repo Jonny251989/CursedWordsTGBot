@@ -1,6 +1,5 @@
 #include "parser.hpp"
 
-
     Parser::Parser(const std::vector<std::string>vec){
         std::copy(vec.begin(), vec.end(), std::inserter(arguments, arguments.end()));
     }
@@ -20,8 +19,8 @@
 
     std::unordered_map<std::string, std::string> Parser::parse_string(std::string str){
 
-        this->remove_spaces(str);
-        auto substrings = this->split_string(str);
+        remove_spaces(str);
+        auto substrings = split_string(str);
         std::unordered_map<std::string, std::string> tokens;
 
         for(size_t i = 0; i < substrings.size();){
