@@ -30,7 +30,7 @@
                 
                 if(i + 1 < substrings.size() && !arguments.count(substrings[i + 1])){
                     tokens[substrings[i]] = substrings[i + 1];
-                    i = i + 2;
+                    i += 2;
                 }
                 else{
                     throw std::invalid_argument("Empty token:" + substrings[i]);
