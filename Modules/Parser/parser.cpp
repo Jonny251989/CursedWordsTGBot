@@ -65,10 +65,6 @@
         return tokens;
     }
 
-    std::unordered_set<std::string> Parser::get_arguments(){
-        return arguments;
-    }
-
     Parser::~Parser(){
         
     }

@@ -19,12 +19,12 @@ class Parser{
 public:
 
     Parser(const std::vector<std::string>list);
-    void remove_spaces(std::string& str);
-    std::vector<std::string> split_string(const std::string str);
     std::unordered_map<std::string, std::string> parse_string(std::string str);
-    std::unordered_set<std::string> get_arguments();
     ~Parser();
 
 private:
+    void remove_spaces(std::string& str);
+    std::vector<std::string> split_string(const std::string str);
+
     std::unordered_set<std::string> arguments;
 };
