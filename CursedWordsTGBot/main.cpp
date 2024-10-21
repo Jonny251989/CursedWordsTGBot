@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     std::unordered_map<std::string, std::string> tokens;
 
     try{
-        tokens = parser.parse_string("-list 7229787403 -token                     7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo  -number AAH0;3!=Cx-0w+UQ");
+        tokens = parser.parse_string(argv[1]);
     }
 
     catch(std::invalid_argument const& ex){
