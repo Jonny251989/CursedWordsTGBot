@@ -1,3 +1,4 @@
+
 set(target server_bot)
 
 set(Boost_USE_MULTITHREADED ON)
@@ -7,7 +8,7 @@ find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(CURL)
 
-add_library(${target} SHARED server.hpp)
+add_library(${target} STATIC server.cpp)
 
 target_include_directories( ${target} PUBLIC . /usr/local/include ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${GTEST_INCLUDE_DIRS})
 
@@ -17,4 +18,5 @@ if (CURL_FOUND)
 endif()
 
 target_link_libraries( ${target}  /usr/local/lib/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} queue task logger)
+
 set_target_properties(server_bot PROPERTIES LINKER_LANGUAGE CXX)
