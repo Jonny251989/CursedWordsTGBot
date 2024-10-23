@@ -30,15 +30,18 @@ int main(int argc, char *argv[]) {
     Logger::getInstance().setName(ptr_bot->getApi().getMe()->username);
     Logger::getInstance().setLevel(Logger::Levels::Debug);
 
-    std::shared_ptr<Queue<CursedWordDetectingTask>> ptr_queue = std::make_shared<Queue<CursedWordDetectingTask>>();
+    std::shared_ptr<Queue> ptr_queue = std::make_shared<Queue>();
+
     Server server(std::move(ptr_bot), ptr_queue);
     Worker worker(ptr_queue);
 
-    std::thread server_thread(&Server::start, &server);
-    std::thread worker_thread(&Worker::work, &worker);
+    //std::thread server_thread(&Server::start, &server);
+    std::thread worker_thread(&Worker::run, &worker);
+    server.start();
 
-    server_thread.detach();
+    //server_thread.detach();
     worker_thread.detach();
+
    
     return 0;
 }

@@ -3,60 +3,32 @@
 #include <deque>
 #include <mutex>
 #include <optional>
+#include <memory>
 #include <condition_variable>
 
-template <typename T>
+#include "task.hpp"
+
 class Queue {
-
-private:
-
-    const size_t limit;
-    std::deque<T> deque;
-    std::mutex m;
-    std::condition_variable cond;
 
 public:
 
-    Queue(const size_t limit_ = 100): limit(limit_){
+    Queue(const size_t limit = 100);
 
-    }
+    bool push( std::unique_ptr<Task> task);
+	size_t size();
+    bool empty();
+    std::unique_ptr<Task> front();
+    bool pop();
 
-    bool push(T task){
-        if(deque.size() < limit){
-            std::lock_guard lg(m);
-            deque.push_back(task);
-            return true;
-        }
-        return false;
-    }
+    ~Queue();
 
-	size_t size(){
-        std::lock_guard lg(m);
-        return deque.size();
-    }
-    
-    std::optional<std::reference_wrapper<T>> front(){
-        
-        if(!deque.empty()){
-            std::lock_guard lg(m);
-            return std::ref(deque.front());
-        }
-        return std::nullopt;
-    };
+    private:
 
-    bool pop(){
-        
-        if(!deque.empty()){         
-            std::lock_guard lg(m);
-            deque.pop_front();
-            return true;
-        }
-        return false;
-    }
+    const size_t limit_;
+    std::deque<std::unique_ptr<Task>> deque;
+    std::mutex mutex;
+    std::condition_variable cond;
 
-    ~Queue(){
-            
-    }
 };
 
 

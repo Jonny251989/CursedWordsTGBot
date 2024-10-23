@@ -24,7 +24,7 @@ class CursedWordDetectingTask: public Task{
     virtual void execute() override;
     ~CursedWordDetectingTask();
 
-    private:
+    //private:
     std::string message;
     std::string chat_title;
     std::string firstName;

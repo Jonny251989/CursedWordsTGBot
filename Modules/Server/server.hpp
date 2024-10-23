@@ -19,14 +19,14 @@ class Server{
 
 public:
 
-    Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<CursedWordDetectingTask>> queue);
+    Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue> queue);
     void start();
     static void signal_handler(int signal);
     ~Server();
 
 private:
     std::unique_ptr<TgBot::Bot> ptr_bot_;
-    std::shared_ptr<Queue<CursedWordDetectingTask>> queue_;
+    std::shared_ptr<Queue> queue_;
     static bool shutdown_requested;
 };
 

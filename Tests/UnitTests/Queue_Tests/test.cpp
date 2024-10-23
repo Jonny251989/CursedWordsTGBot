@@ -13,7 +13,7 @@ TEST_F(QueueTest, NewQueueIsEmpty) {
 }
 
 TEST_F(QueueTest, NewQueueFront) {
-  std::optional<std::reference_wrapper<int>> task = queue.front();
+  auto task = queue.front();
   EXPECT_EQ(task, std::nullopt);
 }
 

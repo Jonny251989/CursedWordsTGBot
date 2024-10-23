@@ -10,12 +10,12 @@
 class Worker{
     public:
 
-    Worker(std::shared_ptr<Queue<CursedWordDetectingTask>> queue_ptr);
+    Worker(std::shared_ptr<Queue> queue_ptr);
 
-    void work();
+    void run();
 
     ~Worker();
 
     private:
-    std::shared_ptr<Queue<CursedWordDetectingTask>> queue_ptr_;
+    std::shared_ptr<Queue> queue_ptr_;
 };

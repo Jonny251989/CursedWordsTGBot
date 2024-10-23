@@ -1,7 +1,7 @@
 #include "server.hpp"
 
 
-    Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<CursedWordDetectingTask>> queue): ptr_bot_(std::move(ptr_bot)), queue_(queue){
+    Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue> queue): ptr_bot_(std::move(ptr_bot)), queue_(queue){
 
         ptr_bot_->getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
             ptr_bot_->getApi().sendMessage(message->chat->id, "Hi!");
@@ -13,8 +13,8 @@
                 return;
             }
 
-            queue->push(CursedWordDetectingTask(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
-            
+            queue->push(std::make_unique<CursedWordDetectingTask>(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
             ptr_bot_->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
             Logger::getInstance().logInfo(Logger::Levels::Info, message->text);
         });
