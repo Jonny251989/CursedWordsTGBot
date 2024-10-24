@@ -13,10 +13,10 @@
                 return;
             }
 
-            queue->push(std::make_unique<CursedWordDetectingTask>(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
+            queue_->push(std::make_unique<CursedWordDetectingTask>(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
             ptr_bot_->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
-            Logger::getInstance().logInfo(Logger::Levels::Info, message->text);
+            //Logger::getInstance().logInfo(Logger::Levels::Info, message->text);
         });
 
         signal(SIGINT, signal_handler);

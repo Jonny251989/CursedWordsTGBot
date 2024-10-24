@@ -35,12 +35,11 @@ int main(int argc, char *argv[]) {
     Server server(std::move(ptr_bot), ptr_queue);
     Worker worker(ptr_queue);
 
-    //std::thread server_thread(&Server::start, &server);
+    std::thread server_thread(&Server::start, &server);
     std::thread worker_thread(&Worker::run, &worker);
-    server.start();
 
-    //server_thread.detach();
-    worker_thread.detach();
+    server_thread.join();
+    worker_thread.join();
 
    
     return 0;
