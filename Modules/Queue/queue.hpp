@@ -6,29 +6,53 @@
 #include <memory>
 #include <condition_variable>
 
-#include "task.hpp"
-
+template <class Type>
 class Queue {
 
 public:
 
     Queue(const size_t limit = 100);
 
-    bool push( std::unique_ptr<Task> task);
-	size_t size();
-    bool empty();
-    std::unique_ptr<Task> front();
-    bool pop();
+    bool push( std::unique_ptr<Type> task);
+
+    std::unique_ptr<Type> take();
 
     ~Queue();
 
     private:
 
     const size_t limit_;
-    std::deque<std::unique_ptr<Task>> deque;
+    std::deque<std::unique_ptr<Type>> deque;
     std::mutex mutex;
-    std::condition_variable cond;
-
 };
 
+template <class Type>
+Queue<Type>::Queue(const size_t limit): limit_(limit){
+
+}
+
+template <class Type>
+bool Queue<Type>::push(std::unique_ptr<Type> task){
+    std::lock_guard lock(mutex);         
+    if(deque.size() < limit_){
+        deque.push_back(std::move(task));
+        return true;
+    }
+    return false;
+}
+
+template <class Type>
+std::unique_ptr<Type> Queue<Type>::take() {
+    
+    std::lock_guard lock(mutex); // Блокируем мьютекс
+    if(!deque.empty()){   
+        auto item = std::move(deque.front());
+        deque.pop_front();
+        return std::move(item);
+    }
+    return nullptr;
+}
+
+template <class Type>
+Queue<Type>::~Queue() {}
 

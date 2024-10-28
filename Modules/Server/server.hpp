@@ -19,7 +19,7 @@ class Server{
 
 public:
 
-    Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue> queue);
+    Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>> queue);
     void start();
     void terminate();
     static void signal_handler(int signal);
@@ -27,7 +27,7 @@ public:
 
 private:
     std::unique_ptr<TgBot::Bot> ptr_bot_;
-    std::shared_ptr<Queue> queue_;
-    bool shutdown_requested = true;
+    std::shared_ptr<Queue<ITask>> queue_;
+    bool shutdown_requested = false;
 };
 

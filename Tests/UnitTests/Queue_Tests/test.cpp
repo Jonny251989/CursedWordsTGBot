@@ -1,4 +1,5 @@
 #include "test.h"
+#include <iostream>
 
 void QueueTest::SetUp() {
 
@@ -14,7 +15,7 @@ TEST_F(QueueTest, NewQueueIsEmpty) {
 
 TEST_F(QueueTest, NewQueueFront) {
   auto task = queue.front();
-  EXPECT_EQ(task, nullptr);
+  EXPECT_FALSE(task);
 }
 
 TEST_F(QueueTest, NewQueuePop) {
@@ -30,9 +31,9 @@ TEST_F(QueueTest, Push) {
 TEST_F(QueueTest, Front) {
   queue.push(std::make_unique<CursedWordDetectingTask>("Hello", "my", "World", ",dear", 1));
   auto task_ptr = queue.front();
-  auto task = static_cast<CursedWordDetectingTask*>(task_ptr.get());
+  auto task = static_cast<CursedWordDetectingTask&>(task_ptr.value().get());
 
-  EXPECT_EQ(task->message, "Hello");
+  EXPECT_EQ(task.message, "Hello");
   EXPECT_EQ(queue.size(), 1);
 }
 
@@ -66,9 +67,10 @@ TEST_F(QueueTest, EqualFrontElements) {
     queue.push(std::make_unique<CursedWordDetectingTask>("Hello", "my", "World", ",dear", 1));
     queue_temp.push_back(std::make_unique<CursedWordDetectingTask>("Hello", "my", "World", ",dear", 1));
     auto task_ptr = queue.front();
-    auto task = static_cast<CursedWordDetectingTask*>(task_ptr.get());
+    auto task = static_cast<CursedWordDetectingTask&>(task_ptr.value().get());
     auto compare_task = static_cast<CursedWordDetectingTask*>(queue_temp[0].get());
-    EXPECT_EQ(task->message, compare_task->message);
+    std::cout << "qwe" << std::endl;
+    EXPECT_EQ(task.message, compare_task->message);
   }
 }
 

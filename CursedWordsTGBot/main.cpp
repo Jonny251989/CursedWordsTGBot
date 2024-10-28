@@ -43,19 +43,19 @@ int main(int argc, char *argv[]) {
     Worker worker(ptr_queue);
 
     SignalHandler handler(signals, [&](){
-            server.terminate();
-            worker.terminate();
+            static int count = 0;
+            if (!count++) {
+                // logger
+                server.terminate();
+                worker.terminate();
+            } else {
+                // logger
+                std::exit;
+            }
         }
     );
-
-
-    std::thread server_thread(&Server::start, &server);
     std::thread worker_thread(&Worker::run, &worker);
-
-    std::signal(SIGINT, SignalHandler::sendsignal);
-    std::signal(SIGTERM, SignalHandler::sendsignal);
-
-    server_thread.join();
+    Server.start();
     worker_thread.join();
    
     return 0;

@@ -1,5 +1,5 @@
 set(target queue)
 
-add_library(${target} STATIC queue.cpp)
+add_library(${target} INTERFACE queue.hpp)
 target_include_directories(${target} INTERFACE .)
-target_link_libraries( ${target}  task )
+target_link_libraries( ${target})

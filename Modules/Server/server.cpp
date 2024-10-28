@@ -1,7 +1,7 @@
 #include "server.hpp"
 
 
-    Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue> queue): ptr_bot_(std::move(ptr_bot)), queue_(queue){
+    Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>> queue): ptr_bot_(std::move(ptr_bot)), queue_(queue){
 
         ptr_bot_->getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
             ptr_bot_->getApi().sendMessage(message->chat->id, "Hi!");
@@ -23,7 +23,7 @@
         try {
                 TgBot::TgLongPoll longPoll(*ptr_bot_);
 
-                while (shutdown_requested) {
+                while (!shutdown_requested) {
                     Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
                     longPoll.start();
                 }
@@ -34,7 +34,7 @@
 
 
     void Server::terminate(){
-        shutdown_requested = false;
+        shutdown_requested = true;
     }
 
     Server::~Server(){

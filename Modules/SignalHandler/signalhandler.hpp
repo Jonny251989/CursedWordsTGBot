@@ -12,18 +12,8 @@
 
 
 class SignalHandler{
-
 public:
-
-SignalHandler(std::vector<int> signals, const std::function<void()> handler);
-~SignalHandler();
-
-static void sendsignal(int signal);
-
-
-private:
-static int count_shutdown;
-static std::unordered_map<int, std::function<void()>> signals;
-
+    SignalHandler(std::vector<int> signals, const std::function<void()> handler);
+    ~SignalHandler();
 };
 
