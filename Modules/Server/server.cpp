@@ -14,13 +14,9 @@
             }
 
             queue_->push(std::make_unique<CursedWordDetectingTask>(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id));
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
             ptr_bot_->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
-            //Logger::getInstance().logInfo(Logger::Levels::Info, message->text);
-        });
 
-        signal(SIGINT, signal_handler);
-        signal(SIGTERM, signal_handler);
+        });
     }
 
     void Server::start(){
@@ -36,19 +32,12 @@
             }
     }
 
-    void Server::signal_handler(int signal){
-        static size_t count_shutdown = 0;
-        if(count_shutdown){
-            Logger::getInstance().logInfo(Logger::Levels::Fatal, "CRUSH PROGRAMM!");
-            std::exit(EXIT_FAILURE);
-        }
+
+    void Server::terminate(){
         shutdown_requested = false;
-        count_shutdown++;
-        Logger::getInstance().logInfo(Logger::Levels::Critical, "EXIT FROM SERVER!");  
     }
 
     Server::~Server(){
 
     }
 
-bool Server::shutdown_requested = true;

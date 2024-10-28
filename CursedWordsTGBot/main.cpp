@@ -1,12 +1,16 @@
 #include <stdio.h>
+#include <csignal>
 #include <tgbot/tgbot.h>
 #include <iostream>
 #include <ostream>
-
+#include <memory>
 #include "logger.hpp"
+#include "task.hpp"
+#include "queue.hpp"
 #include "parser.hpp"
 #include "server.hpp"
 #include "worker.hpp"
+#include "signalhandler.hpp"
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -32,15 +36,27 @@ int main(int argc, char *argv[]) {
 
     std::shared_ptr<Queue> ptr_queue = std::make_shared<Queue>();
 
+    std::vector<int> signals = { SIGINT, SIGTERM };
+
+
     Server server(std::move(ptr_bot), ptr_queue);
     Worker worker(ptr_queue);
+
+    SignalHandler handler(signals, [&](){
+            server.terminate();
+            worker.terminate();
+        }
+    );
+
 
     std::thread server_thread(&Server::start, &server);
     std::thread worker_thread(&Worker::run, &worker);
 
+    std::signal(SIGINT, SignalHandler::sendsignal);
+    std::signal(SIGTERM, SignalHandler::sendsignal);
+
     server_thread.join();
     worker_thread.join();
-
    
     return 0;
 }

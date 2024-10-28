@@ -10,7 +10,7 @@
             
             std::unique_lock<std::mutex> lock(mutex);         
             deque.push_back(std::move(task));
-            cond.notify_one(); // Сигнализируем о наличии данных
+
             return true;
         }
         return false;

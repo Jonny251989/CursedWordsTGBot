@@ -21,12 +21,13 @@ public:
 
     Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue> queue);
     void start();
+    void terminate();
     static void signal_handler(int signal);
     ~Server();
 
 private:
     std::unique_ptr<TgBot::Bot> ptr_bot_;
     std::shared_ptr<Queue> queue_;
-    static bool shutdown_requested;
+    bool shutdown_requested = true;
 };
 
