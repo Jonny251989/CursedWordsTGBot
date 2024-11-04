@@ -10,13 +10,11 @@
 #include <stdexcept>
 #include <boost/algorithm/string/split.hpp>
 
-class Parser{
-    
+class Parser{ 
 public:
     Parser(const std::vector<std::string>list);
     std::unordered_map<std::string, std::string> parse_string(std::string str);
     ~Parser();
-
 private:
     void remove_spaces(std::string& str);
     std::vector<std::string> split_string(const std::string str);

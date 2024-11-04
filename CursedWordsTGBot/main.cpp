@@ -17,14 +17,12 @@ int main(int argc, char *argv[]) {
     try{
         tokens = parser.parse_string(argv[1]);
     }
-
     catch(std::invalid_argument const& ex){
         Logger::getInstance().logInfo(Logger::Levels::Info, ex.what());
         std::exit(EXIT_FAILURE);
     }
     
     std::shared_ptr<Queue<Task>> ptr_queue = std::make_shared<Queue<Task>>();
-
     std::unique_ptr<TgBot::Bot> ptr_bot= std::make_unique<TgBot::Bot>(tokens["-token"]);
 
     Logger::getInstance().setName(ptr_bot->getApi().getMe()->username);
