@@ -17,7 +17,6 @@ TEST_F(ParserTest, Size_of_some_arguments) {
   auto str_parse = parser.parse_string("-token 23fsf3 -list se_df35=_14 -number +24rf$dsvcx");
   EXPECT_EQ(str_parse.size(), 3);
 }
-
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_1) {
   Parser parser{{"-token", "-list", "-number"}};
   ASSERT_THROW(parser.parse_string("-token-list-number"), std::invalid_argument);
