@@ -26,17 +26,17 @@
         for(size_t i = 0; i < substrings.size();){
 
             if(arguments.count(substrings[i])) {
-                
-                if(i + 1 < substrings.size() && !arguments.count(substrings[i + 1])){
+                   
+                if(!arguments.count(substrings[i + 1]) && (i + 1 < substrings.size())){
                     tokens[substrings[i]] = substrings[i + 1];
                     i += 2;
                 }
                 else{
-                    throw std::invalid_argument("Empty token");
+                    throw std::invalid_argument("Empty token: " + substrings[i]);
                 }
             }
             else{
-                throw std::invalid_argument("Unknow tokens");
+                throw std::invalid_argument("Unknow tokens: " + substrings[i]);
             }
          }
 
