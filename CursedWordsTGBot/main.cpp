@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[]) {
 
-    Parser parser{{"-token"}};
+    Parser parser{{"-token", "-list", "-number"}};
     std::unordered_map<std::string, std::string> tokens;
 
     try{

@@ -24,7 +24,7 @@ TEST_F(ParserTest, ExeptionInvalidArgumentsString_1) {
     try {
       parser.parse_string("-token-list-number");
   } catch (const std::invalid_argument& e) {
-    ASSERT_STREQ(e.what(), "Unknow tokens");
+    ASSERT_STREQ(e.what(), "Unknow tokens: -token-list-number");
   }
 }
 TEST_F(ParserTest, ExeptionInvalidArgument_1) {
@@ -38,7 +38,7 @@ TEST_F(ParserTest, ExeptionInvalidArgumentsString_2) {
     try {
       parser.parse_string("-token -list #4lkdsd");
   } catch (const std::invalid_argument& e) {
-    ASSERT_STREQ(e.what(), "Empty token");
+    ASSERT_STREQ(e.what(), "Empty token: -token");
   }
 }
 TEST_F(ParserTest, ExeptionInvalidArgument_2) {
