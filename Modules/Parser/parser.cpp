@@ -32,11 +32,11 @@
                     i += 2;
                 }
                 else{
-                    throw std::invalid_argument("Empty token:" + substrings[i]);
+                    throw std::invalid_argument("Empty token");
                 }
             }
             else{
-                throw std::invalid_argument("Unknow tokens: " + substrings[i]);
+                throw std::invalid_argument("Unknow tokens");
             }
          }
 
