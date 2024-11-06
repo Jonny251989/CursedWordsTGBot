@@ -19,8 +19,7 @@ TEST_F(ParserTest, Size_of_some_arguments) {
 }
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_1) {
   Parser parser{{"-token", "-list", "-number"}};
-  ASSERT_THROW(parser.parse_string("-token-list-number"), std::invalid_argument);
-    try {
+  try {
       parser.parse_string("-token-list-number");
   } catch (const std::invalid_argument& e) {
     ASSERT_STREQ(e.what(), "Unknow tokens: -token-list-number");
@@ -33,7 +32,6 @@ TEST_F(ParserTest, ExeptionInvalidArgument_1) {
 
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_2) {
   Parser parser{{"-token", "-list", "-number"}};
-  ASSERT_THROW(parser.parse_string("-token-list-number"), std::invalid_argument);
     try {
       parser.parse_string("-token -list #4lkdsd");
   } catch (const std::invalid_argument& e) {
@@ -45,25 +43,69 @@ TEST_F(ParserTest, ExeptionInvalidArgument_2) {
   EXPECT_THROW(parser.parse_string("-token -list #4lkdsd"), std::invalid_argument);
 }
 
+TEST_F(ParserTest, ExeptionInvalidArgumentsString_3) {
+  Parser parser{{"-token", "-list", "-number"}};
+  try {
+      parser.parse_string("-token 23f84 -list #4lkdsd -number ds234 -key 7dsf023");
+  } catch (const std::invalid_argument& e) {
+    ASSERT_STREQ(e.what(), "Unknow tokens: -key");
+  }
+}
 TEST_F(ParserTest, ExeptionInvalidArgument_3) {
   Parser parser{{"-token", "-list", "-number"}};
   EXPECT_THROW(parser.parse_string("-token 23f84 -list #4lkdsd -number ds234 -key 7dsf023"), std::invalid_argument);
+}
+
+TEST_F(ParserTest, ExeptionInvalidArgumentsString_4) {
+  Parser parser{{"-token", "-list"}};
+  try {
+      parser.parse_string("-token 23f84 -list #4lkdsd -number ds234");
+  } catch (const std::invalid_argument& e) {
+    ASSERT_STREQ(e.what(), "Unknow tokens: -number");
+  }
 }
 TEST_F(ParserTest, ExeptionInvalidArgument_4) {
   Parser parser{{"-token", "-list"}};
   EXPECT_THROW(parser.parse_string("-token 23f84 -list #4lkdsd -number ds234"), std::invalid_argument);
 }
+
+TEST_F(ParserTest, ExeptionInvalidArgumentsString_5) {
+  Parser parser{{"-token", "-list", "-number"}};
+  try {
+      parser.parse_string("23f84 -list #4lkdsd -number ds234");
+  } catch (const std::invalid_argument& e) {
+    ASSERT_STREQ(e.what(), "Unknow tokens: 23f84");
+  }
+}
 TEST_F(ParserTest, ExeptionInvalidArgument_5) {
   Parser parser{{"-token", "-list", "-number"}};
   EXPECT_THROW(parser.parse_string("23f84 -list #4lkdsd -number ds234"), std::invalid_argument);
+}
+
+TEST_F(ParserTest, ExeptionInvalidArgumentsString_6) {
+  Parser parser{{"-token", "-list", "-number"}};
+  try {
+      parser.parse_string(" token 23f84 -list #4lkdsd -number ds234");
+  } catch (const std::invalid_argument& e) {
+    ASSERT_STREQ(e.what(), "Unknow tokens: ");
+  }
 }
 TEST_F(ParserTest, ExeptionInvalidArgument_6) {
   Parser parser{{"-token", "-list", "-number"}};
   EXPECT_THROW(parser.parse_string(" token 23f84 -list #4lkdsd -number ds234"), std::invalid_argument);
 }
+
+TEST_F(ParserTest, ExeptionInvalidArgumentsString_7) {
+  Parser parser{{"-token", "-list", "-number"}};
+  try {
+      parser.parse_string("-token 23f84 -list #4lkdsd -number ds234");
+  } catch (const std::invalid_argument& e) {
+    ASSERT_STREQ(e.what(), "Unknow tokens: dsd");
+  }
+}
 TEST_F(ParserTest, ExeptionInvalidArgument_7) {
   Parser parser{{"-token", "-list", "-number"}};
-  EXPECT_THROW(parser.parse_string(" token 23f84 -list #4lk dsd -number ds234"), std::invalid_argument);
+  EXPECT_THROW(parser.parse_string("-token 23f84 -list #4lk dsd -number ds234"), std::invalid_argument);
 }
 TEST_F(ParserTest, EqualOfArguments) {
   Parser parser{{"-token", "-list", "-number"}};

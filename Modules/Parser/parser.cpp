@@ -18,11 +18,9 @@
     }
 
     std::unordered_map<std::string, std::string> Parser::parse_string(std::string str){
-
         remove_spaces(str);
         auto substrings = split_string(str);
         std::unordered_map<std::string, std::string> tokens;
-
         for(size_t i = 0; i < substrings.size();){
 
             if(arguments.count(substrings[i])) {
@@ -49,10 +47,10 @@
                 }             
             }
             throw std::invalid_argument("Unknow tokens: " + unknow_tokens);
-        }
-         else if (tokens.size() < arguments.size()){
-            std::string missing_tokens;
 
+        } else if (tokens.size() < arguments.size()){
+
+            std::string missing_tokens;
             for(const auto& key_value : arguments){
                 if(!tokens.count(key_value)){
                     missing_tokens = missing_tokens + key_value + ' ';
@@ -60,7 +58,6 @@
             }
             throw std::invalid_argument("The missins tokens: " + missing_tokens);
          }
-
         return tokens;
     }
 
