@@ -4,7 +4,7 @@
         std::copy(vec.begin(), vec.end(), std::inserter(arguments, arguments.end()));
     }
 
-    void Parser::remove_spaces(std::string& str){
+    void Parser::remove_adjacent_spaces(std::string& str){
         std::string::iterator new_end = std::unique(str.begin(), str.end(), [](char lhs, char rhs){
             return (lhs == rhs) && (lhs == ' ');
             });
@@ -18,7 +18,7 @@
     }
 
     std::unordered_map<std::string, std::string> Parser::parse_string(std::string str){
-        remove_spaces(str);
+        remove_adjacent_spaces(str);
         auto substrings = split_string(str);
         std::unordered_map<std::string, std::string> tokens;
         for(size_t i = 0; i < substrings.size();){
