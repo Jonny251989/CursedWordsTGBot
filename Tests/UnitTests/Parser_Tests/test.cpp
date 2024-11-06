@@ -29,7 +29,6 @@ TEST_F(ParserTest, ExeptionInvalidArgument_1) {
   Parser parser{{"-token", "-list", "-number"}};
   EXPECT_THROW(parser.parse_string("-token-list-number"), std::invalid_argument);
 }
-
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_2) {
   Parser parser{{"-token", "-list", "-number"}};
     try {
@@ -42,7 +41,6 @@ TEST_F(ParserTest, ExeptionInvalidArgument_2) {
   Parser parser{{"-token", "-list", "-number"}};
   EXPECT_THROW(parser.parse_string("-token -list #4lkdsd"), std::invalid_argument);
 }
-
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_3) {
   Parser parser{{"-token", "-list", "-number"}};
   try {
@@ -55,7 +53,6 @@ TEST_F(ParserTest, ExeptionInvalidArgument_3) {
   Parser parser{{"-token", "-list", "-number"}};
   EXPECT_THROW(parser.parse_string("-token 23f84 -list #4lkdsd -number ds234 -key 7dsf023"), std::invalid_argument);
 }
-
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_4) {
   Parser parser{{"-token", "-list"}};
   try {
@@ -68,7 +65,6 @@ TEST_F(ParserTest, ExeptionInvalidArgument_4) {
   Parser parser{{"-token", "-list"}};
   EXPECT_THROW(parser.parse_string("-token 23f84 -list #4lkdsd -number ds234"), std::invalid_argument);
 }
-
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_5) {
   Parser parser{{"-token", "-list", "-number"}};
   try {
@@ -94,7 +90,6 @@ TEST_F(ParserTest, ExeptionInvalidArgument_6) {
   Parser parser{{"-token", "-list", "-number"}};
   EXPECT_THROW(parser.parse_string(" token 23f84 -list #4lkdsd -number ds234"), std::invalid_argument);
 }
-
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_7) {
   Parser parser{{"-token", "-list", "-number"}};
   try {
