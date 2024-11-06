@@ -77,7 +77,6 @@ TEST_F(ParserTest, ExeptionInvalidArgument_5) {
   Parser parser{{"-token", "-list", "-number"}};
   EXPECT_THROW(parser.parse_string("23f84 -list #4lkdsd -number ds234"), std::invalid_argument);
 }
-
 TEST_F(ParserTest, ExeptionInvalidArgumentsString_6) {
   Parser parser{{"-token", "-list", "-number"}};
   try {
