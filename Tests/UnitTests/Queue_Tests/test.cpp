@@ -1,9 +1,9 @@
 #include "test.h"
 
+
 void QueueTest::SetUp() {
 
 }
-
 void QueueTest::TearDown() {
 
 }
@@ -11,29 +11,24 @@ void QueueTest::TearDown() {
 TEST_F(QueueTest, NewQueueIsEmpty) {
   EXPECT_EQ(queue.size(), 0);
 }
-
 TEST_F(QueueTest, NewQueueFront) {
   std::optional<std::reference_wrapper<int>> task = queue.front();
   EXPECT_EQ(task, std::nullopt);
 }
-
 TEST_F(QueueTest, NewQueuePop) {
   EXPECT_EQ(queue.pop(), false);
   EXPECT_EQ(queue.size(), 0);
 }
-
 TEST_F(QueueTest, Push) {
   queue.push(7);
   EXPECT_EQ(queue.size(), 1);
 }
-
 TEST_F(QueueTest, Front) {
   queue.push(5);
   std::optional<std::reference_wrapper<int>> task = queue.front();
   EXPECT_EQ(task.value(), 5);
   EXPECT_EQ(queue.size(), 1);
 }
-
 TEST_F(QueueTest, QueueIsEmptyAfterAddAndPop) {
   const size_t size = 100;
   for(size_t i = 0; i < size; i++){
@@ -44,7 +39,6 @@ TEST_F(QueueTest, QueueIsEmptyAfterAddAndPop) {
   }
   EXPECT_EQ(queue.size(), 0);
 }
-
 TEST_F(QueueTest, QueueSizeAferAddAndSomePop) {
   const size_t size = 1000;
   for(size_t i = 0; i < size; i++){
@@ -56,7 +50,6 @@ TEST_F(QueueTest, QueueSizeAferAddAndSomePop) {
   }
   EXPECT_EQ(queue.size(), limit/2);
 }
-
 TEST_F(QueueTest, EqualFrontElements) {
   const size_t size = 100;
   std::deque<int> queue_temp;
@@ -66,7 +59,6 @@ TEST_F(QueueTest, EqualFrontElements) {
     EXPECT_EQ(queue.front().value(), queue_temp[0]);
   }
 }
-
 TEST_F(QueueTest, EqualElements) {
   const size_t size = 100;
   std::deque<int> queue_temp;
@@ -78,7 +70,6 @@ TEST_F(QueueTest, EqualElements) {
     queue.pop();
   }
 }
-
 TEST_F(QueueTest, FinalTestQueue) {
   EXPECT_EQ(queue.size(), 0);
 
