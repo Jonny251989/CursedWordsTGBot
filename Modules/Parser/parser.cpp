@@ -36,7 +36,6 @@ std::unordered_map<std::string, std::string> Parser::parse_string(std::string st
     }
     if(tokens.size() > arguments.size()){
         std::string unknow_tokens;
-
         for(const auto& [key, value] : tokens){
             if(!arguments.count(key)){
                 unknow_tokens = unknow_tokens + key + ' ';
@@ -45,7 +44,6 @@ std::unordered_map<std::string, std::string> Parser::parse_string(std::string st
         throw std::invalid_argument("Unknow tokens: " + unknow_tokens);
 
     } else if (tokens.size() < arguments.size()){
-
         std::string missing_tokens;
         for(const auto& key_value : arguments){
             if(!tokens.count(key_value)){
