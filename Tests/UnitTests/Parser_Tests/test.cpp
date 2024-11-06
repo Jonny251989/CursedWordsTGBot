@@ -1,9 +1,9 @@
 #include "test.h"
 
+
 void ParserTest::SetUp() {
 
 }
-
 void ParserTest::TearDown() {
 
 }
