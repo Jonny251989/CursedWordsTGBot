@@ -1,7 +1,7 @@
 #include "parser.hpp"
 
-Parser::Parser(const std::vector<std::string>vec){
-    std::copy(vec.begin(), vec.end(), std::inserter(arguments, arguments.end()));
+Parser::Parser(const std::vector<std::string>& vec){
+    std::copy(vec.begin(), vec.end(), std::back_inserter(arguments));
 }
 
 void Parser::remove_adjacent_spaces(std::string& str){
