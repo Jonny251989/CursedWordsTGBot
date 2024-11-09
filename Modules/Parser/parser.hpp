@@ -17,6 +17,6 @@ public:
     ~Parser();
 private:
     void remove_adjacent_spaces(std::string& str);
-    std::vector<std::string> split_string(const std::string str);
+    std::vector<std::string> split_string(std::string str);
     std::unordered_set<std::string> arguments;
 };
