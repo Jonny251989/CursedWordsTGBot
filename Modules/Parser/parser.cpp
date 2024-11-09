@@ -11,7 +11,7 @@ void Parser::remove_adjacent_spaces(std::string& str){
     str.erase(new_end, str.end());
 }
 
-std::vector<std::string> Parser::split_string(const std::string str){
+std::vector<std::string> Parser::split_string(std::string str){
     std::vector<std::string> substrings;
     boost::split(substrings, str, isspace);
     return substrings;
