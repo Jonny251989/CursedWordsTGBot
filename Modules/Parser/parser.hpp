@@ -12,7 +12,7 @@
 
 class Parser{ 
 public:
-    Parser(const std::vector<std::string>list);
+    Parser(const std::vector<std::string>& list);
     std::unordered_map<std::string, std::string> parse_string(std::string str);
     ~Parser();
 private:
