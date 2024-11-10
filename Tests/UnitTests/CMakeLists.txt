@@ -1,1 +1,2 @@
 add_subdirectory(Queue_Tests)
+add_subdirectory(Parser_Tests)
