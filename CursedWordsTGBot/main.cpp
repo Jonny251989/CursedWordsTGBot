@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
     Parser parser{{"-token"}};
     std::unordered_map<std::string, std::string> tokens;
-
+    std::cout<<"token: "<<argv[1]<<std::endl;
     try{
         tokens = parser.parse_string(argv[1]);
     }
