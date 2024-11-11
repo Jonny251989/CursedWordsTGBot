@@ -1,4 +1,4 @@
-set(target queue_test)
+set(target queue_tests)
 
 add_executable(${target} test.cpp main.cpp)
 target_include_directories(${target} PUBLIC .)
