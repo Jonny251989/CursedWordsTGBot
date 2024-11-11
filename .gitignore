@@ -1,4 +1,5 @@
 tgbot_workspace.code-workspace
 token.txt
 /build/
+/bins/
 
