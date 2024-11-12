@@ -8,24 +8,21 @@
 #include <string>
 #include "server.hpp"
 #include "parser.hpp"
+#include <boost/algorithm/string.hpp>
 
 
 std::string get_arguments_string(size_t argc, char**argv){
-    std::string arguments_command_line = "";
-    for(size_t i = 1; i < argc; i++){
-        if(i <= argc - 1)
-            arguments_command_line = arguments_command_line + argv[i] + " ";
-        else
-            arguments_command_line = arguments_command_line + argv[i];       
-    }
-    return arguments_command_line;
+    std::vector<std::string> arguments_command_line;
+    for(size_t i = 1; i < argc; i++)
+        arguments_command_line.push_back(argv[i]);
+    std::string joined_string = boost::algorithm::join(arguments_command_line, " ");
+    return joined_string;
 }
 
 int main(int argc, char *argv[]) {
 
     std::string arguments_command_line = get_arguments_string(argc, argv);
-    std::cout << "arguments:"<<arguments_command_line<<"\n";
-    
+ 
     Parser parser{{"-token"}};
     std::unordered_map<std::string, std::string> tokens;
     try{
@@ -35,7 +32,6 @@ int main(int argc, char *argv[]) {
         Logger::getInstance().logInfo(Logger::Levels::Info, ex.what());
         std::exit(EXIT_FAILURE);
     }
-    
     std::shared_ptr<Queue<Task>> ptr_queue = std::make_shared<Queue<Task>>();
     std::unique_ptr<TgBot::Bot> ptr_bot= std::make_unique<TgBot::Bot>(tokens["-token"]);
 
