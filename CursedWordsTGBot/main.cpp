@@ -13,7 +13,7 @@
 std::string get_arguments_string(size_t argc, char**argv){
     std::string arguments_command_line = "";
     for(size_t i = 1; i < argc; i++){
-        if(i != argc - 1)
+        if(i <= argc - 1)
             arguments_command_line = arguments_command_line + argv[i] + " ";
         else
             arguments_command_line = arguments_command_line + argv[i];       
