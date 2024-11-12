@@ -10,7 +10,6 @@
 #include "parser.hpp"
 #include <boost/algorithm/string.hpp>
 
-
 std::string get_arguments_string(size_t argc, char**argv){
     std::vector<std::string> arguments_command_line;
     for(size_t i = 1; i < argc; i++)
