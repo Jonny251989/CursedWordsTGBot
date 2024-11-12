@@ -21,12 +21,12 @@ std::string get_arguments_string(size_t argc, char**argv){
 
 int main(int argc, char *argv[]) {
 
-    std::string arguments_command_line = get_arguments_string(argc, argv);
- 
-    Parser parser{{"-token"}};
+    std::string token = "-list fde_2-234fs  -token                     7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo  -number AAH0;3!=Cx-0w+UQ ";
+
+    Parser parser{{"-token", "-list", "-number"}};
     std::unordered_map<std::string, std::string> tokens;
     try{
-        tokens = parser.parse_string(arguments_command_line);
+        tokens = parser.parsing_string(token);
     }
     catch(std::invalid_argument const& ex){
         Logger::getInstance().logInfo(Logger::Levels::Info, ex.what());
