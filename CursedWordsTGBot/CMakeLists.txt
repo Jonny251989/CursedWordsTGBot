@@ -4,4 +4,4 @@ add_executable(${target} main.cpp)
 
 target_include_directories( ${target} PUBLIC . )
 
-target_link_libraries(${target} PUBLIC server_bot parser)
+target_link_libraries(${target} PUBLIC server_bot queue logger parser worker task signalhandler)
