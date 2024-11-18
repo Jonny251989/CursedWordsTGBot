@@ -14,18 +14,17 @@
 #include "task.hpp"
 #include "logger.hpp"
 
+
 class Server{
 
 public:
-
-    Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<CursedWordDetectingTask>> queue);
+    Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>> queue);
     void start();
-    static void signal_handler(int signal);
+    void terminate();
     ~Server();
 
 private:
     std::unique_ptr<TgBot::Bot> ptr_bot_;
-    std::shared_ptr<Queue<CursedWordDetectingTask>> queue_;
-    static bool shutdown_requested;
+    std::shared_ptr<Queue<ITask>> queue_;
+    bool shutdown_requested = false;
 };
-

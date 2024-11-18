@@ -3,54 +3,50 @@
 #include <deque>
 #include <mutex>
 #include <optional>
+#include <memory>
 #include <condition_variable>
 
-template <typename T>
+template <class Type>
 class Queue {
 
 public:
-    Queue(const size_t limit_ = 100): limit(limit_){
-
-    }
-    bool push(T task){
-        if(deque.size() < limit){
-            std::lock_guard lg(m);
-            deque.push_back(task);
-            return true;
-        }
-        return false;
-    }
-	size_t size(){
-        std::lock_guard lg(m);
-        return deque.size();
-    }
-    std::optional<std::reference_wrapper<T>> front(){
-        
-        if(!deque.empty()){
-            std::lock_guard lg(m);
-            return std::ref(deque.front());
-        }
-        return std::nullopt;
-    };
-    bool pop(){
-        
-        if(!deque.empty()){         
-            std::lock_guard lg(m);
-            deque.pop_front();
-            return true;
-        }
-        return false;
-    }
-    ~Queue(){
-            
-    }
+    Queue(const size_t limit = 100);
+    bool push( std::unique_ptr<Type> task);
+    std::unique_ptr<Type> take();
+    ~Queue();
 
 private:
-    const size_t limit;
-    std::deque<T> deque;
-    std::mutex m;
-    std::condition_variable cond;
-
+    const size_t limit_;
+    std::deque<std::unique_ptr<Type>> deque;
+    std::mutex mutex;
 };
 
+template <class Type>
+Queue<Type>::Queue(const size_t limit): limit_(limit){
 
+}
+
+template <class Type>
+bool Queue<Type>::push(std::unique_ptr<Type> task){
+    std::lock_guard lock(mutex);         
+    if(deque.size() < limit_){
+        deque.push_back(std::move(task));
+        return true;
+    }
+    return false;
+}
+
+template <class Type>
+std::unique_ptr<Type> Queue<Type>::take() {
+    
+    std::lock_guard lock(mutex);
+    if(!deque.empty()){   
+        auto item = std::move(deque.front());
+        deque.pop_front();
+        return item;
+    }
+    return nullptr;
+}
+
+template <class Type>
+Queue<Type>::~Queue() {}
