@@ -6,20 +6,19 @@
 #include <string>
 #include "logger.hpp"
 
-class Task{
+class ITask{
 
     public:
 
-    Task();
+    ITask();
     virtual void execute() = 0;
-    virtual ~Task();
+    virtual ~ITask();
 };
 
 
-class CursedWordDetectingTask: public Task{
+class CursedWordDetectingTask: public ITask{
 
     public:
-
     CursedWordDetectingTask(std::string mss, std::string cht, std::string fN, std::string lN, std::int64_t id);
     virtual void execute() override;
     ~CursedWordDetectingTask();
@@ -30,7 +29,5 @@ class CursedWordDetectingTask: public Task{
     std::string firstName;
     std::string lastName;
     std::int64_t id_m;
+
 };
-
-
-

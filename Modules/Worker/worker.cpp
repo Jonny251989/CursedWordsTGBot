@@ -1,16 +1,18 @@
 #include "worker.hpp"
 
-Worker::Worker(std::shared_ptr<Queue<CursedWordDetectingTask>> queue_ptr):queue_ptr_(queue_ptr){
+Worker::Worker(std::shared_ptr<Queue<ITask>> queue_ptr):queue_ptr_(queue_ptr){
 
 }
 
-void Worker::work(){
+void Worker::terminate(){
+    shutdown_requested = true;
+}
 
-    while(queue_ptr_->size()){
-        std::optional<std::reference_wrapper<CursedWordDetectingTask>> task = queue_ptr_->front();
-        task.value().get().execute();
-        if (queue_ptr_->pop())
-            continue;
+void Worker::run(){
+    decltype(queue_ptr_->take()) task_ptr;
+    while ((task_ptr = queue_ptr_->take()) || !shutdown_requested ){
+        if (task_ptr)
+            task_ptr->execute();
     }
 }
 
