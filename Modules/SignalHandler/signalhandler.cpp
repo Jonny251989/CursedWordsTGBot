@@ -1,6 +1,5 @@
 #include "signalhandler.hpp"
 
-
 SignalHandler* handler_ptr = nullptr;
 
 SignalHandler::SignalHandler(std::vector<int> vec_of_signals, std::function<void()> handler){

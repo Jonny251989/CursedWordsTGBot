@@ -14,9 +14,8 @@
 #include "task.hpp"
 #include "logger.hpp"
 
-
 class Server{
-
+    
 public:
     Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>> queue);
     void start();
