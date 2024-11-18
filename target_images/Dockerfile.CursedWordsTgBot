@@ -8,4 +8,5 @@ COPY ./ /app
 
 RUN /app/build.sh
 
+#ENTRYPOINT ["./bins/CursedWordsTGBot/CursedWordsTGBot", ${command_line_arguments}]
 ENTRYPOINT ./bins/CursedWordsTGBot/CursedWordsTGBot $command_line_arguments
