@@ -8,7 +8,6 @@
 #include <string>
 #include "logger.hpp"
 
-
 class SignalHandler{
     
 public:
