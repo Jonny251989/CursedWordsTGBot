@@ -26,7 +26,7 @@ std::string get_arguments_string(size_t argc, char**argv){
 }
 
 int main(int argc, char *argv[]) {
-
+    
     try{
         std::string token = get_arguments_string(argc, argv);
         Parser parser{{"-token"}};
