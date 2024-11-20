@@ -25,5 +25,5 @@ public:
 private:
     std::unique_ptr<TgBot::Bot> ptr_bot_;
     std::shared_ptr<Queue<ITask>> queue_;
-    bool shutdown_requested = false;
+    std::atomic<bool> shutdown_requested{false};
 };
