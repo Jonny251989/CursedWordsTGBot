@@ -17,7 +17,7 @@
 #include "worker.hpp"
 #include "signalhandler.hpp"
 
-std::string get_arguments_string(size_t argc, char**argv){
+inline std::string get_arguments_string(size_t argc, char**argv){
     std::vector<std::string> arguments_command_line;
     for(size_t i = 1; i < argc; i++)
         arguments_command_line.push_back(argv[i]);
