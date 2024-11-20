@@ -4,7 +4,6 @@ ITask::ITask(){
 
 }
 
-
 ITask::~ITask(){
 
 }
@@ -17,7 +16,6 @@ CursedWordDetectingTask::CursedWordDetectingTask(std::string mss, std::string ch
 void CursedWordDetectingTask::execute(){
     Logger::getInstance().logInfo(Logger::Levels::Info, message);
 }
-
 
 CursedWordDetectingTask::~CursedWordDetectingTask(){
 
