@@ -17,5 +17,5 @@ class Worker{
 
     private:
     std::shared_ptr<Queue<ITask>> queue_ptr_;
-    bool shutdown_requested = false;
+    std::atomic<bool> shutdown_requested{false};
 };
