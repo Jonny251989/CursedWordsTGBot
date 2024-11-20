@@ -4,9 +4,6 @@ ITask::ITask(){
 
 }
 
-void ITask::execute(){
-
-}
 
 ITask::~ITask(){
 
