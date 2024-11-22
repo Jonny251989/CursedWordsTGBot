@@ -7,7 +7,7 @@
 #include "queue.hpp"
 #include <experimental/random>
 
-std::string generated_words(size_t size){
+inline std::string generated_words(size_t size){
     std::string word = "";
     for(size_t i = 0; i < size; i++){
         char ch = std::experimental::randint(65,122);

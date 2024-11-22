@@ -13,6 +13,7 @@
                 return;
             }
             if (!queue_->push(std::make_unique<CursedWordDetectingTask>(message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id))){
+                Logger::getInstance().logInfo(Logger::Levels::Critical, "Queue is full!"); 
                 std::this_thread::sleep_for (std::chrono::milliseconds(100));
             }
             ptr_bot_->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);

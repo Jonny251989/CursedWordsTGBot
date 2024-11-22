@@ -17,7 +17,7 @@
 #include "worker.hpp"
 #include "signalhandler.hpp"
 
-inline std::string get_arguments_string(size_t argc, char**argv){
+std::string get_arguments_string(size_t argc, char**argv){
     std::vector<std::string> arguments_command_line;
     for(size_t i = 1; i < argc; i++)
         arguments_command_line.push_back(argv[i]);
@@ -57,12 +57,6 @@ int main(int argc, char *argv[]) {
         server.start();
         worker_thread.join();
 
-    }catch(std::invalid_argument const& ex){
-        Logger::getInstance().logInfo(Logger::Levels::Info, ex.what());
-        std::exit(EXIT_FAILURE);
-    }catch(std::runtime_error const& ex){
-        Logger::getInstance().logInfo(Logger::Levels::Info, ex.what());
-        std::exit(EXIT_FAILURE);
     }catch(std::exception const& ex){
         Logger::getInstance().logInfo(Logger::Levels::Info, ex.what());
         std::exit(EXIT_FAILURE);
