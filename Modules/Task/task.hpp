@@ -8,9 +8,8 @@
 
 class ITask{
 public:
-    ITask();
     virtual void execute() = 0;
-    virtual ~ITask();
+    ~ITask() = default;
 };
 
 
