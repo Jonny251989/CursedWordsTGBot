@@ -1,5 +1,4 @@
 #include "test.hpp"
-#include <iostream>
 
 void QueueTest::SetUp() {
 
