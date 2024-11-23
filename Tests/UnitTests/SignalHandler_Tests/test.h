@@ -29,5 +29,4 @@ protected:
     void init_handler(const std::vector<int>& signals);
 
     void TearDown() override;
-
 };
