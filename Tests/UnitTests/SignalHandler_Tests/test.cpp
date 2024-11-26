@@ -1,67 +1,57 @@
 #include "test.h"
 
-    // Метод для имитации сигнала
-    void SignalHandlerTest::send_signal(int signal) {
-        raise(signal);
-    }
+void SignalHandlerTest::send_signal(int signal) {
+    raise(signal);
+}
 
-    // Метод для ожидания вызова коллбэка
-    void SignalHandlerTest::wait_for_callback(int expected_count) {
-        std::unique_lock<std::mutex> lock(mtx);
-        cv.wait(lock, [&]() { return callback_counter.load() == expected_count; });
-    }
+void SignalHandlerTest::test_callback() {
+    callback_counter++;
+    cv.notify_one();
+}
 
-    // Метод для создания и инициализации SignalHandler
-    void SignalHandlerTest::init_handler(const std::vector<int>& signals) {
-        handler = new SignalHandler(signals, test_callback);
-    }
+void SignalHandlerTest::wait_for_callback(int expected_count) {
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, [&]() { return callback_counter.load() == expected_count; });
+}
 
-    void SignalHandlerTest::TearDown() {
-        delete handler;
-    }
-
-// Тест на вызов коллбэка при получении сигнала
-TEST_F(SignalHandlerTest, CallbackIsInvokedOnSignal) {
-    std::vector<int> signals = {SIGINT}; // например, используем сигнал SIGINT
-
-    // Инициализация SignalHandler
-    init_handler(signals);
-
-    // Ожидаем, что коллбэк будет вызван
-    send_signal(SIGINT);
+void SignalHandlerTest::TearDown() {
     
-    // Ожидаем уведомления, что коллбэк был вызван
+}
+
+TEST_F(SignalHandlerTest, CallbackIsInvokedOnSignal) {
+
+    std::vector<int> signals = {SIGINT, SIGTERM}; 
+    SignalHandler signalHandler(signals, [&](){
+        test_callback();
+    });
+
+    send_signal(SIGINT);
     wait_for_callback(1);
 
-    // Проверка, что коллбэк действительно был вызван
     ASSERT_EQ(callback_counter.load(), 1);
 }
 
-// Тест на повторную инициализацию SignalHandler (должен выбросить исключение)
 TEST_F(SignalHandlerTest, ThrowExceptionOnSecondInitialization) {
     std::vector<int> signals = {SIGINT};
 
-    // Инициализация первого обработчика
-    init_handler(signals);
+    SignalHandler signalHandler(signals, [&](){
+        test_callback();
+    });
 
-    // Попытка инициализировать второй обработчик - должно вызвать исключение
-    ASSERT_THROW(init_handler(signals), std::runtime_error);
+    ASSERT_THROW(SignalHandler(signals, [&](){ test_callback(); }), std::runtime_error);
 }
 
-// Тест на правильное поведение при нескольких сигналах
+// // Тест на правильное поведение при нескольких сигналах
 TEST_F(SignalHandlerTest, MultipleSignalsInvocation) {
+
     std::vector<int> signals = {SIGINT, SIGTERM};
+    SignalHandler signalHandler(signals, [&](){
+        test_callback();
+    });
 
-    // Инициализация SignalHandler
-    init_handler(signals);
-
-    // Отправка двух сигналов
     send_signal(SIGINT);
     send_signal(SIGTERM);
-
-    // Ожидаем, что коллбэк будет вызван дважды
     wait_for_callback(2);
 
-    // Проверка, что коллбэк был вызван дважды
     ASSERT_EQ(callback_counter.load(), 2);
 }
