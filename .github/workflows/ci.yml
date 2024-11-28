@@ -25,12 +25,13 @@ jobs:
           sudo apt-get install -y libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev
           sudo apt-get install -y libgtest-dev
 
+        
+      - name: Install tgbot-cpp
+        run: |
           mkdir tgbot-cpp
-          git clone https://github.com/reo7sp/tgbot-cpp
+          git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
           cd tgbot-cpp
-          cmake . && \
-          make -j4 && \
-          make install
+          cmake . -DCMAKE_INSTALL_PREFIX=$HOME/.local && make -j$(nproc) && make install
 
       # Шаг 3: Создаем директорию для сборки
       - name: Create build directory
