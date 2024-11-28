@@ -1,16 +1,14 @@
 #include "test.h"
 
-void SignalHandlerTest::test_callback() {
+void SignalHandlerTest::TearDown() {
+    
+}
 
+void SignalHandlerTest::test_callback() {
     std::unique_lock<std::mutex> lck(mtx);
     callback_counter++;
     lck.unlock();
-
     cv.notify_one();
-}
-
-void SignalHandlerTest::TearDown() {
-    
 }
 
 TEST_F(SignalHandlerTest, CallbackIsInvokedOnSignal) {
