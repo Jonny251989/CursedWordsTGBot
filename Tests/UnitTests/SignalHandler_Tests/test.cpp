@@ -1,9 +1,11 @@
 #include "test.h"
 
 void SignalHandlerTest::test_callback() {
-    mtx.lock();
+
+    std::unique_lock<std::mutex> lck(mtx);
     callback_counter++;
-    mtx.unlock();
+    lck.unlock();
+
     cv.notify_one();
 }
 
