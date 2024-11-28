@@ -1,11 +1,10 @@
 {
 	"folders": [
 		{
-			"path": "../CursedWordsTGBot",
-			"name": "worked"
+			"path": "./",
+			"name": "CursedWordsTGBot"
 		}
-
-	],
+    ],
 	"settings": {
 		"files.associations": {
 			"array": "cpp",
