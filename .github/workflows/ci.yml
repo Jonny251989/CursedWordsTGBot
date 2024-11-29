@@ -48,7 +48,10 @@ jobs:
       # Шаг 5: Компиляция проекта
       - name: Build project
         run: |
-          make
+          cd build
+          pwd
+          make all
+          ls -l
 
       # Шаг 6: Запуск тестов (если они есть)
       - name: Run tests
