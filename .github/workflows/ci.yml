@@ -26,10 +26,13 @@ jobs:
 
       - name: Install tgbot-cpp
         run: |
-          mkdir tgbot-cpp
+          cd $HOME
           git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
-          cd tgbot-cpp
-          cmake . -DCMAKE_INSTALL_PREFIX=$HOME/.local && make -j$(nproc) && make install
+          mkdir tgbot_build
+          cd tgbot_build
+          cmake ..
+          make -j4
+          sudo make install
 
       # Шаг 3: Создаем директорию для сборки
       - name: Create build directory
