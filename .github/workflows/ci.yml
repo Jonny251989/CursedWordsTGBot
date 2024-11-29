@@ -39,7 +39,9 @@ jobs:
       - name: Configure project with CMake
         run: |
           cd build
-          cmake ..
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          # Проверяем, что Makefile был создан
+          ls -l
 
       # Шаг 5: Компиляция проекта
       - name: Build project
