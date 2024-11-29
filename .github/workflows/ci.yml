@@ -1,5 +1,4 @@
 name: TGBot Workflow
-
 on:
   push:
     branches:
@@ -7,7 +6,6 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   build:
     runs-on: ubuntu-latest  # Для Ubuntu, но можно выбрать другие операционные системы
@@ -26,7 +24,6 @@ jobs:
           sudo apt-get install -y libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev
           sudo apt-get install -y libgtest-dev
 
-        
       - name: Install tgbot-cpp
         run: |
           mkdir tgbot-cpp
@@ -47,7 +44,6 @@ jobs:
       # Шаг 5: Компиляция проекта
       - name: Build project
         run: |
-    
           make
 
       # Шаг 6: Запуск тестов (если они есть)
