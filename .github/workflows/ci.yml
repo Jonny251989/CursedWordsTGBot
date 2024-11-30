@@ -45,17 +45,15 @@ jobs:
       # Шаг 4: Запуск CMake для конфигурации проекта
       - name: Configure project with CMake
         run: |
-          cd build
-          pwd
-          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cd $HOME/build
+          # Указываем правильный путь к исходным файлам проекта (в данном случае это $HOME/tgbot-cpp)
+          cmake $HOME/tgbot-cpp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/local
 
-      # Шаг 5: Компиляция проекта
+      # Шаг 6: Сборка проекта
       - name: Build project
         run: |
-
-          mkdir -p $HOME/local
-          cmake -DCMAKE_INSTALL_PREFIX=$HOME/local -DCMAKE_LIBRARY_PATH=$HOME/local/lib -DCMAKE_INCLUDE_PATH=$HOME/local/include ..
-          make
+          cd $HOME/build
+          make -j$(nproc)
 
       # Шаг 6: Запуск тестов (если они есть)
       - name: Run tests
