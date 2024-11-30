@@ -40,7 +40,8 @@ jobs:
 
       # Шаг 3: Создаем директорию для сборки
       - name: Create build directory
-        run: mkdir build
+        run: |
+           mkdir -p $HOME/build
 
       # Шаг 4: Запуск CMake для конфигурации проекта
       - name: Configure project with CMake
