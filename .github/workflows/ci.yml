@@ -41,19 +41,14 @@ jobs:
           cd build
           pwd
           cmake .. -DCMAKE_BUILD_TYPE=Release
-          # Проверяем, что Makefile был создан
-          tail -n 20 CMakeCache.txt  # Выводим последние 20 строк из CMakeCache.txt
-          # Выводим содержимое директории для проверки наличия Makefile
-          ls -l
-          pwd
 
       # Шаг 5: Компиляция проекта
       - name: Build project
         run: |
-          cd build
-          pwd
-          make all
-          ls -l
+          mkdir -p $HOME/local
+          cmake -DCMAKE_INSTALL_PREFIX=$HOME/local ..
+          make
+          make install
 
       # Шаг 6: Запуск тестов (если они есть)
       - name: Run tests
