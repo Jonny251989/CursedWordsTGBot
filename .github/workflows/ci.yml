@@ -45,8 +45,7 @@ jobs:
       # Шаг 5: Компиляция проекта
       - name: Build project
         run: |
-          mkdir -p $HOME/local
-          cmake -DCMAKE_INSTALL_PREFIX=$HOME/local ..
+          cmake -DCMAKE_INSTALL_PREFIX=$HOME/local -DCMAKE_LIBRARY_PATH=$HOME/local/lib -DCMAKE_INCLUDE_PATH=$HOME/local/include ..
           make
           make install
 
