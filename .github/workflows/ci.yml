@@ -48,7 +48,7 @@ jobs:
         run: |
           mkdir -p $HOME/build
           cd $HOME/build
-          # Указываем правильный путь к исходным файлам проекта (в данном случае это $HOME/tgbot-cpp)
+
           cmake $HOME/tgbot-cpp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/local
 
       # Шаг 6: Сборка проекта
