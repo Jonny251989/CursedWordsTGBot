@@ -27,9 +27,16 @@ jobs:
       - name: Install tgbot-cpp
         run: |
           cd $HOME
+          # Клонируем репозиторий
           git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
           cd tgbot-cpp
-          cmake . -DCMAKE_INSTALL_PREFIX=/usr/local && make -j$(nproc) && make install
+          # Создаем директорию для установки
+          mkdir -p $HOME/local
+          # Конфигурируем CMake с пользовательским путем установки
+          cmake . -DCMAKE_INSTALL_PREFIX=$HOME/local
+          # Собираем и устанавливаем проект
+          make -j$(nproc)
+          make install
 
       # Шаг 3: Создаем директорию для сборки
       - name: Create build directory
@@ -45,9 +52,10 @@ jobs:
       # Шаг 5: Компиляция проекта
       - name: Build project
         run: |
+
+          mkdir -p $HOME/local
           cmake -DCMAKE_INSTALL_PREFIX=$HOME/local -DCMAKE_LIBRARY_PATH=$HOME/local/lib -DCMAKE_INCLUDE_PATH=$HOME/local/include ..
           make
-          make install
 
       # Шаг 6: Запуск тестов (если они есть)
       - name: Run tests
