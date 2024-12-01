@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/ivan/git_projects/CursedWordsTGBot/CursedWordsTGBot/build",
+  "command": "/usr/bin/g++  -I/home/ivan/git_projects/CursedWordsTGBot/CursedWordsTGBot/. -g -o CMakeFiles/CursedWordsTGBot.dir/main.o -c /home/ivan/git_projects/CursedWordsTGBot/CursedWordsTGBot/main.cpp",
+  "file": "/home/ivan/git_projects/CursedWordsTGBot/CursedWordsTGBot/main.cpp"
+}
+]

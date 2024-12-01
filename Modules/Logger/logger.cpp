@@ -13,7 +13,6 @@
         bot_name_ = name;
     }
 
-    // Запись информационного сообщения
     void Logger::logInfo(const Levels& level, const std::string& message, const std::source_location location) {
         if(level >= level_){
 
