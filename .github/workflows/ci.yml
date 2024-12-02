@@ -50,7 +50,7 @@ jobs:
       - name: Configure project with CMake
         run: |
           #mkdir -p $HOME/build
-          cd $HOME/build
+          cd github/workspace && ls -al
 
           cmake $HOME/tgbot-cpp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/build
 
