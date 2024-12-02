@@ -54,7 +54,7 @@ jobs:
           ls -la
           mkdir -p build
           ls -la
-          cmake ./-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build
+          cmake .-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build
 
       # Шаг 6: Сборка проекта
       - name: Build project
