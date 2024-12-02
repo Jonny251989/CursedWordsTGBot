@@ -59,6 +59,8 @@ jobs:
       - name: Build project
         run: |
           ls -la
+          cd build
+          ls -la
           make -j$(nproc)
 
       # Шаг 6: Запуск тестов (если они есть)
