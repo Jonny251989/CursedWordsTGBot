@@ -34,9 +34,10 @@ jobs:
           cd tgbot-cpp
           # Создаем директорию для установки
           ls -la
-          mkdir -p build
+
           # Конфигурируем CMake с пользовательским путем установки
-          cmake . -DCMAKE_INSTALL_PREFIX=./build
+          cmake . 
+          #-DCMAKE_INSTALL_PREFIX=./
           # Собираем и устанавливаем проект
           make -j$(nproc)
           make install
@@ -53,7 +54,7 @@ jobs:
         run: |
           mkdir -p build
           ls -la
-          cmake ./tgbot-cpp -DCMAKE_BUILD_TYPE=Release
+          cmake ..
 
       # Шаг 6: Сборка проекта
       - name: Build project
