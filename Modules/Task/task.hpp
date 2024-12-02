@@ -7,28 +7,22 @@
 #include "logger.hpp"
 
 class ITask{
-
-    public:
-
-    ITask();
+public:
     virtual void execute() = 0;
-    virtual ~ITask();
+    ~ITask() = default;
 };
 
-
 class CursedWordDetectingTask: public ITask{
-
-    public:
+public:
     CursedWordDetectingTask(std::string mss, std::string cht, std::string fN, std::string lN, std::int64_t id);
     virtual void execute() override;
     ~CursedWordDetectingTask();
-
-    private:
+private:
     std::string message;
     std::string chat_title;
     std::string firstName;
     std::string lastName;
     std::int64_t id_m;
-
 };
+
 

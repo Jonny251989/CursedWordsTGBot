@@ -14,18 +14,14 @@
 #include "task.hpp"
 #include "logger.hpp"
 
-
-class Server{
-
+class Server{    
 public:
     Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>> queue);
     void start();
     void terminate();
     ~Server();
-
 private:
     std::unique_ptr<TgBot::Bot> ptr_bot_;
     std::shared_ptr<Queue<ITask>> queue_;
-    bool shutdown_requested = false;
-
+    std::atomic<bool> shutdown_requested{false};
 };
