@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_VERSION
+ARG BASE_IMAGE_VERSION=latest
 
 FROM tgbot_base:${BASE_IMAGE_VERSION}
 
@@ -6,6 +6,6 @@ WORKDIR /app
 
 COPY ./ /app
 
-RUN /app/build.sh
+RUN /app/build-local.sh
 
 ENTRYPOINT ./bins/CursedWordsTGBot/CursedWordsTGBot $command_line_arguments
