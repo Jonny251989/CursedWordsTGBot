@@ -1,34 +1,29 @@
 #include "test.h"
 
-void SignalHandlerTest::send_signal(int signal) {
-    raise(signal);
-}
-
-void SignalHandlerTest::test_callback() {
-    callback_counter++;
-    cv.notify_one();
-}
-
-void SignalHandlerTest::wait_for_callback(int expected_count) {
-    std::unique_lock<std::mutex> lock(mtx);
-    cv.wait(lock, [&]() { return callback_counter.load() == expected_count; });
-}
-
 void SignalHandlerTest::TearDown() {
     
 }
 
-TEST_F(SignalHandlerTest, CallbackIsInvokedOnSignal) {
+void SignalHandlerTest::test_callback() {
+    std::unique_lock<std::mutex> lck(mtx);
+    callback_counter++;
+    lck.unlock();
+    cv.notify_one();
+}
 
+TEST_F(SignalHandlerTest, CallbackIsInvokedOnSignal) {
+    int expected_count = 1;
     std::vector<int> signals = {SIGINT, SIGTERM}; 
     SignalHandler signalHandler(signals, [&](){
         test_callback();
     });
 
-    send_signal(SIGINT);
-    wait_for_callback(1);
+    raise(SIGINT);
 
-    ASSERT_EQ(callback_counter.load(), 1);
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, [&]() { return callback_counter == expected_count; });
+
+    ASSERT_EQ(callback_counter, 1);
 }
 
 TEST_F(SignalHandlerTest, ThrowExceptionOnSecondInitialization) {
@@ -43,15 +38,16 @@ TEST_F(SignalHandlerTest, ThrowExceptionOnSecondInitialization) {
 
 // // Тест на правильное поведение при нескольких сигналах
 TEST_F(SignalHandlerTest, MultipleSignalsInvocation) {
-
+    int expected_count = 2;
     std::vector<int> signals = {SIGINT, SIGTERM};
     SignalHandler signalHandler(signals, [&](){
         test_callback();
     });
 
-    send_signal(SIGINT);
-    send_signal(SIGTERM);
-    wait_for_callback(2);
+    raise(SIGINT);
+    raise(SIGTERM);
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, [&]() { return callback_counter == expected_count; });
 
-    ASSERT_EQ(callback_counter.load(), 2);
+    ASSERT_EQ(callback_counter, 2);
 }
