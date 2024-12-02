@@ -36,7 +36,7 @@ jobs:
           ls -la
 
           # Конфигурируем CMake с пользовательским путем установки
-          cmake .-DCMAKE_INSTALL_PREFIX=./
+          cmake ./tgbot-cpp -DCMAKE_INSTALL_PREFIX=./
           # Собираем и устанавливаем проект
           make -j$(nproc)
           make install
