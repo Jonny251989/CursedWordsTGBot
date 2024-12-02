@@ -1,4 +1,4 @@
-#include "test_threadsafequeue.hpp"
+#include "multithreaded_tests.hpp"
 
 void ThreadSafeQueueTest::SetUp() {
 
