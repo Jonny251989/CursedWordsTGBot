@@ -58,13 +58,13 @@ jobs:
       # Шаг 6: Сборка проекта
       - name: Build project
         run: |
-          cd build/
           ls -la
           make -j$(nproc)
 
       # Шаг 6: Запуск тестов (если они есть)
       - name: Run tests
         run: |
+          ls -la
           cd build/Tests/UnitTests/
           ./Parser_Tests/parser_tests*
           ./Queue_Tests/queue_tests*
