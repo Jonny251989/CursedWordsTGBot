@@ -14,6 +14,7 @@ jobs:
       # Шаг 1: Проверяем исходный код из репозитория
       - name: Checkout code
         uses: actions/checkout@v2
+          ls -al /github/workspace
 
       # Шаг 2: Установка зависимостей (если они есть)
       - name: Install dependencies
