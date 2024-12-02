@@ -27,6 +27,7 @@ jobs:
       - name: Install tgbot-cpp
         run: |
           cd $HOME
+          ls -la
           # Клонируем репозиторий
           git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
           cd tgbot-cpp
