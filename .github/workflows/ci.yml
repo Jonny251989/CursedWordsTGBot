@@ -53,7 +53,7 @@ jobs:
         run: |
           mkdir -p build
           ls -la
-          cmake $HOME/tgbot-cpp -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build
+          cmake ./tgbot-cpp -DCMAKE_BUILD_TYPE=Release
 
       # Шаг 6: Сборка проекта
       - name: Build project
