@@ -36,8 +36,7 @@ jobs:
           ls -la
 
           # Конфигурируем CMake с пользовательским путем установки
-          cmake . 
-          #-DCMAKE_INSTALL_PREFIX=./
+          cmake .-DCMAKE_INSTALL_PREFIX=./
           # Собираем и устанавливаем проект
           make -j$(nproc)
           make install
@@ -52,9 +51,10 @@ jobs:
       # Шаг 4: Запуск CMake для конфигурации проекта
       - name: Configure project with CMake
         run: |
+          ls -la
           mkdir -p build
           ls -la
-          cmake ..
+          cmake ./-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build
 
       # Шаг 6: Сборка проекта
       - name: Build project
