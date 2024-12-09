@@ -15,7 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
           
-
       # Шаг 2: Установка зависимостей (если они есть)
       - name: Install dependencies
         run: |
