@@ -1,6 +1,6 @@
 set(target CursedWordsTGBot)
 
-find_package(tgbot)
+find_package(libTgBot)
 add_executable(${target} main.cpp)
 
 target_include_directories( ${target} PUBLIC . )
