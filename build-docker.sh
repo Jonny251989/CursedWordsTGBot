@@ -1,4 +1,7 @@
 #!/bin/bash -e
 
-docker run --rm -it -v $(pwd):/tgbot -w /tgbot tgbot_base:1.0 /bin/bash -c "./build-local.sh"
-docker build -t "tgbot:1.0" --build-arg BASE_IMAGE_VERSION=1.0 -f target_images/Dockerfile.CursedWordsTgBot .
+source ./set_versions.sh
+
+docker run --rm -it -v $(pwd):/tgbot -w /tgbot tgbot_base:${BASE_IMAGE_VERSION} /bin/bash -c "./build-local.sh"
+
+docker build -t "tgbot:${TARGET_IMAGE_VERSION}" --build-arg BASE_IMAGE_VERSION=${BASE_IMAGE_VERSION} -f target_images/Dockerfile.CursedWordsTgBot .
