@@ -8,32 +8,6 @@ void ThreadSafeQueueTest::TearDown() {
 
 }
 
-TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
-    const int size_of_queue = 70;
-    Queue<TestTask> queue_(size_of_queue);
-    
-    const int size_words = 5;
-    const int size_operations = 1000;
-    std::atomic<int> pushCount{0};  // Счётчик количества успешных вставок
-    std::atomic<int> takeCount{0};  // Счётчик количества успешных извлечений
-    auto pushTask = [&]() {
-        for (int i = 0; i < size_operations; ++i) {
-            auto message = generated_words(size_words);
-            auto name = generated_words(size_words);
-             auto task = std::make_unique<TestTask>(message, name);
-            if((queue_.push(std::move(task)))){
-                pushCount++;
-            }      
-        }
-    };
-
-    std::thread pushThreads{pushTask};
-
-    pushThreads.join();
-
-    ASSERT_EQ(pushCount, size_of_queue);
-}
-
 TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
     const int size_of_queue = 100;
     Queue<TestTask> queue_(size_of_queue);
@@ -67,6 +41,32 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
     takeThreads.join();
     
     ASSERT_EQ(pushCount, takeCount);
+}
+
+TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
+    const int size_of_queue = 70;
+    Queue<TestTask> queue_(size_of_queue);
+    
+    const int size_words = 5;
+    const int size_operations = 1000;
+    std::atomic<int> pushCount{0};  // Счётчик количества успешных вставок
+    std::atomic<int> takeCount{0};  // Счётчик количества успешных извлечений
+    auto pushTask = [&]() {
+        for (int i = 0; i < size_operations; ++i) {
+            auto message = generated_words(size_words);
+            auto name = generated_words(size_words);
+             auto task = std::make_unique<TestTask>(message, name);
+            if((queue_.push(std::move(task)))){
+                pushCount++;
+            }      
+        }
+    };
+
+    std::thread pushThreads{pushTask};
+
+    pushThreads.join();
+
+    ASSERT_EQ(pushCount, size_of_queue);
 }
 
 TEST_F(ThreadSafeQueueTest, FullTest) {
@@ -114,7 +114,6 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
         pushThreads[i].join();
         takeThreads[i].join();
     }
-    std::cout<<"pushCount: "<<pushCount<<", takeCount: "<<takeCount<<"\n";
     ASSERT_EQ(pushCount, takeCount);
     ASSERT_EQ(t_set.size(), 0);
 }
