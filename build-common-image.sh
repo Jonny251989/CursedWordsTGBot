@@ -1,3 +1,4 @@
 #!/bin/bash -e
+source ./set_versions.sh
 
-docker build -t "tgbot_base:1.0" -f common_images/Dockerfile.base .
+docker build -t "tgbot:${TARGET_IMAGE_VERSION}" -f common_images/Dockerfile.base .
