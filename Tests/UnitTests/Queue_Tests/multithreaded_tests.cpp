@@ -50,7 +50,6 @@ TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
     const int size_words = 5;
     const int size_operations = 1000;
     std::atomic<int> pushCount{0};  // Счётчик количества успешных вставок
-    std::atomic<int> takeCount{0};  // Счётчик количества успешных извлечений
     auto pushTask = [&]() {
         for (int i = 0; i < size_operations; ++i) {
             auto message = generated_words(size_words);
