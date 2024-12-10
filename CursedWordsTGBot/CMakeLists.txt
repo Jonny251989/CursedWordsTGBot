@@ -1,6 +1,8 @@
 set(target CursedWordsTGBot)
 
 
+list(APPEND CMAKE_PREFIX_PATH "./home/ivan/tgbot-cpp/")
+
 find_package(TgBot)
 
 add_executable(${target} main.cpp)
