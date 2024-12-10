@@ -1,7 +1,7 @@
 set(target CursedWordsTGBot)
 
 
-find_package(tgbot-cpp)
+find_package(TgBot)
 
 add_executable(${target} main.cpp)
 
