@@ -124,10 +124,10 @@ TEST_F(ThreadSafeQueueTest, TestPushAndTakeConcurrent) {
     std::atomic<int> tasks_taken(0);
     std::atomic<int> tasks_pushed(0);
     const size_t size_words = 10;
-    const size_t size_operations = 200;
+    const size_t number_of_operations = 200;
 
     auto push_task = [&]() {
-        for (size_t i = 0; i < size_operations;) {
+        for (size_t i = 0; i < number_of_operations;) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
@@ -137,7 +137,7 @@ TEST_F(ThreadSafeQueueTest, TestPushAndTakeConcurrent) {
         }
     };
     auto take_task = [&]() {
-        for (size_t i = 0; i < size_operations;) {
+        for (size_t i = 0; i < number_of_operations;) {
             std::unique_ptr<TestTask> task;
             while(!(task = queue_.take()));
             tasks_taken++; i++;
@@ -160,9 +160,9 @@ TEST_F(ThreadSafeQueueTest, TestTakeFromEmptyQueue) {
     const int size_of_queue = 90;
     Queue<TestTask> queue_(size_of_queue);
     std::atomic<int> tasks_taken(0);
-    const size_t size_operations = 10000;
+    const size_t number_of_operations = 10000;
     auto take_task = [&]() {
-        for (size_t i = 0; i < size_operations; ++i) {
+        for (size_t i = 0; i < number_of_operations; ++i) {
             auto task = queue_.take();
             if (task) {
                 tasks_taken++;
@@ -180,11 +180,11 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeOfSetTest) {
     Queue<TestTask> queue_(size_of_queue);
     std::mutex set_mutex;
     const int size_words = 5;
-    const int size_operations = 500;
+    const int number_of_operations = 500;
     std::unordered_set<TestTask> t_set;
 
     auto pushTask = [&]() {
-        for (int i = 0; i < size_operations;) {
+        for (int i = 0; i < number_of_operations;) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
@@ -196,7 +196,7 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeOfSetTest) {
         }
     };
     auto takeTask = [&]() {
-        for (int i = 0; i < size_operations;) {
+        for (int i = 0; i < number_of_operations;) {
             std::unique_ptr<TestTask> task_ptr;
             while (!(task_ptr = queue_.take()));
             std::lock_guard<std::mutex> lock(set_mutex);
