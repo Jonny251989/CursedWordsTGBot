@@ -1,5 +1,5 @@
 #!/bin/bash -e
 
-export BASE_IMAGE_VERSION="1.0"
+export COMMON_IMAGES_VERSION="1.0"
 
-export TARGET_IMAGE_VERSION="1.0"
+export TARGET_IMAGES_VERSION="1.0"
