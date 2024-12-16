@@ -14,7 +14,10 @@ add_subdirectory(Tests)
 
 list(APPEND CMAKE_PREFIX_PATH "/home/ivan/tgbot-cpp/")
 
-set(TgBot_DIR "/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot")
+# set(TgBot_DIR "/home/vtroynyakov/WorkSpace/tgbot-cpp/CMakeFiles/Export/lib/cmake/TgBot")
+
+message("QWERTY")
+message(${TgBot_DIR})
 
 find_package(TgBot)
 

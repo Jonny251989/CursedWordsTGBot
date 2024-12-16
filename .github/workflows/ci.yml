@@ -36,7 +36,7 @@ jobs:
           ls -la
 
           # Конфигурируем CMake с пользовательским путем установки
-          cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
+          cmake . -DCMAKE_INSTALL_PREFIX=./
           # Собираем и устанавливаем проект
           make -j$(nproc)
           make install
@@ -54,7 +54,7 @@ jobs:
           ls -la
           mkdir -p build
           ls -la
-          cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build
+          cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DTgBot_DIR=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot
 
       # Шаг 6: Сборка проекта
       - name: Build project

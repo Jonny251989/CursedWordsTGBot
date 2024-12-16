@@ -1,3 +1,0 @@
-/home/ivan/git_projects/CursedWordsTGBot/CursedWordsTGBot/build/CMakeFiles/CursedWordsTGBot.dir
-/home/ivan/git_projects/CursedWordsTGBot/CursedWordsTGBot/build/CMakeFiles/edit_cache.dir
-/home/ivan/git_projects/CursedWordsTGBot/CursedWordsTGBot/build/CMakeFiles/rebuild_cache.dir
