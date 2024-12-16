@@ -14,6 +14,8 @@ add_subdirectory(Tests)
 
 list(APPEND CMAKE_PREFIX_PATH "/home/ivan/tgbot-cpp/")
 
+set(TgBot_DIR "/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot")
+
 find_package(TgBot)
 
 include_directories("/home/ivan/tgbot-cpp/include/tgbot/")
