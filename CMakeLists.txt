@@ -21,4 +21,3 @@ include_directories("/home/ivan/tgbot-cpp/include/tgbot/")
 link_directories("/home/ivan/tgbot-cpp/include/tgbot/")
 
 target_include_directories( ${target} PUBLIC . /home/ivan/tgbot-cpp/include/tgbot/)
-
