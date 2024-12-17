@@ -2,10 +2,10 @@ name: TGBot Workflow
 on:
   push:
     branches:
-      - main
+      - CI
   pull_request:
     branches:
-      - main
+      - CI
 jobs:
   build:
     runs-on: ubuntu-latest  # Для Ubuntu, но можно выбрать другие операционные системы
