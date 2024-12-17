@@ -14,10 +14,15 @@ add_subdirectory(Tests)
 
 list(APPEND CMAKE_PREFIX_PATH "/home/ivan/tgbot-cpp/")
 
+# set(TgBot_DIR "/home/vtroynyakov/WorkSpace/tgbot-cpp/CMakeFiles/Export/lib/cmake/TgBot")
+
+message("QWERTY")
+message(${TgBot_DIR})
+
 find_package(TgBot)
 
-include_directories("/home/ivan/tgbot-cpp/include/tgbot/")
+# include_directories("/home/ivan/tgbot-cpp/include/tgbot/")
 
-link_directories("/home/ivan/tgbot-cpp/include/tgbot/")
+# link_directories("/home/ivan/tgbot-cpp/include/tgbot/")
 
 target_include_directories( ${target} PUBLIC . /home/ivan/tgbot-cpp/include/tgbot/)
