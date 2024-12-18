@@ -13,12 +13,16 @@ add_subdirectory(Modules)
 add_subdirectory(Tests)
 
 
-#set(TgBot_DIR "/home/ivan/tgbot-cpp/CMakeFiles/Export/lib/cmake/TgBot/")
+#set(TgBot_DIR "/home/ivan/tgbot-cpp/CMakeFiles/Export/lib/cmake/TgBot/") 
 
-message("QWERTY")
-message(${TgBot_DIR})
+# TgBot_LIBRARIES TgBot_include_DIRS
+
+# message("QWERTY")
+# message(${TgBot_DIR})
 
 find_package(TgBot)
+
+message(${TgBot_DIR})
 
 #   if(TgBot_FOUND)
         #set(TgBot_LIBRARIES " ")
