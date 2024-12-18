@@ -12,7 +12,7 @@ add_library(${target} SHARED server.cpp)
 
 #/usr/local/lib/libTgBot.a
 
-target_include_directories( ${target} PUBLIC . ${TgBot_include_DIRS} ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${GTEST_INCLUDE_DIRS})
+target_include_directories( ${target} PUBLIC . ${TgBot_include_DIR} ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${GTEST_INCLUDE_DIRS})
 
 if (CURL_FOUND)
     target_include_directories( ${target} PUBLIC ${CURL_INCLUDE_DIRS} )
