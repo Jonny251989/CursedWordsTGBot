@@ -41,7 +41,7 @@ jobs:
           make install
           ls -la
           ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot/
-          ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/CMakeFiles/Export/lib/
+          ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/
           ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/include/tgbot/
 
       # Шаг 3: Создаем директорию для сборки
