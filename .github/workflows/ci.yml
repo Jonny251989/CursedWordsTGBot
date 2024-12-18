@@ -42,7 +42,9 @@ jobs:
           ls -la
           ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot/
           ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/
-          ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/include/tgbot/
+          ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/include/
+           echo "SHOW ./include/"
+           ls ./include/
 
       # Шаг 3: Создаем директорию для сборки
       - name: Create build directory
