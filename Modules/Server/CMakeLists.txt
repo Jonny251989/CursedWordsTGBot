@@ -19,6 +19,6 @@ if (CURL_FOUND)
     target_compile_definitions(${target} PRIVATE -DHAVE_CURL )
 endif()
 
-target_link_libraries( ${target}  ${TgBot_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} queue task logger)
+target_link_libraries( ${target}  ${TgBot_LIBRARIES}/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} queue task logger)
 
 set_target_properties(server_bot PROPERTIES LINKER_LANGUAGE CXX)
