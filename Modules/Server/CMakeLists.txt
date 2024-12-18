@@ -37,11 +37,9 @@ message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 #     message(STATUS "Directory ${CMAKE_CURRENT_SOURCE_DIR} does not exist!")
 # endif()
 
-get_directory_property(dirs DIRECTORY ${CMAKE_SOURCE_DIR} INCLUDE_DIRECTORIES)
-message(STATUS "INCLUDE_DIRECTORIES: ${dirs}")
-
-# Проходим по найденным директориям и выводим их
-foreach(dir ${dirs})
+get_target_property(includedirs ${target} INCLUDE_DIRECTORIES)
+message(STATUS "INCLUDE_DIRECTORIES for ${target}: ${includedirs}")
+foreach(dir ${includedirs})
     message(STATUS "dir='${dir}'")
 endforeach()
 
