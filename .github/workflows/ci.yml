@@ -54,10 +54,7 @@ jobs:
           ls -la
           mkdir -p build
           ls -la
-          cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build 
-          -DTgBot_DIR=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot/
-          -DTgBot_LIBRARIES=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/
-          -DTgBot_include_DIRS=home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/include/
+          cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DTgBot_DIR=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot
 
       # Шаг 6: Сборка проекта
       - name: Build project
