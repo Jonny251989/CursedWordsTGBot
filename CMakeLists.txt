@@ -21,6 +21,8 @@ add_subdirectory(Tests)
 # message(${TgBot_DIR})
 
 #set(BASE_PATH "/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp")
+set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot/")
+message("TgBot_DIR is defined as: ${TgBot_DIR}")
 
 
 find_package(TgBot)
@@ -32,7 +34,7 @@ else()
     message("BASE_PATH is not defined!")
 endif()
 
-set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot")
+
 set(TgBot_include_DIR "${BASE_PATH}/include")
 set(TgBot_LIBRARIES "${BASE_PATH}/CMakeFiles/Export/lib")
 
