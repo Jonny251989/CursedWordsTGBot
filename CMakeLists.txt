@@ -12,21 +12,21 @@ add_subdirectory(CursedWordsTGBot)
 add_subdirectory(Modules)
 add_subdirectory(Tests)
 
-list(APPEND CMAKE_PREFIX_PATH "/home/ivan/tgbot-cpp/")
 
-set(TgBot_DIR "/home/ivan/tgbot-cpp/CMakeFiles/Export/lib/cmake/TgBot/")
+#set(TgBot_DIR "/home/ivan/tgbot-cpp/CMakeFiles/Export/lib/cmake/TgBot/")
 
 message("QWERTY")
 message(${TgBot_DIR})
 
 find_package(TgBot)
 
-if(TgBot_FOUND)
+#   if(TgBot_FOUND)
+        #set(TgBot_LIBRARIES " ")
+        #set(TgBot_include_DIRS " ")
+#   else
+    #message("DANAGER!")
 
-endif()
+#   endif()
 
-# include_directories("/home/ivan/tgbot-cpp/include/tgbot/")
 
-# link_directories("/home/ivan/tgbot-cpp/include/tgbot/")
-
-target_include_directories( ${target} PUBLIC . /home/ivan/tgbot-cpp/include/tgbot/)
+target_include_directories( ${target} PUBLIC .)
