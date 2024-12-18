@@ -20,17 +20,29 @@ add_subdirectory(Tests)
 # message("QWERTY")
 # message(${TgBot_DIR})
 
+#set(BASE_PATH "/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp")
+
+
 find_package(TgBot)
 
 message("FILE LOCATION IS ")
-message(${TgBot_DIR})
+if(DEFINED BASE_PATH)
+    message("BASE_PATH is defined as: ${BASE_PATH}")
+else()
+    message("BASE_PATH is not defined!")
+endif()
 
-#   if(TgBot_FOUND)
-        #set(TgBot_LIBRARIES " ")
-        #set(TgBot_include_DIRS " ")
-#   else
-    #message("DANAGER!")
+set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot")
+set(TgBot_include_DIR "${BASE_PATH}/include")
+set(TgBot_LIBRARIES "${BASE_PATH}/CMakeFiles/Export/lib")
 
-#   endif()
+  if(TgBot_FOUND)
+    # set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot")
+    # set(TgBot_include_DIR "${BASE_PATH}/include")
+    # set(TgBot_LIBRARIES "${BASE_PATH}/CMakeFiles/Export/lib")
+  else()
+    message("DANAGER!")
+
+  endif()
 
 target_include_directories( ${target} PUBLIC .)
