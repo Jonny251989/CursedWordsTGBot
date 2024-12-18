@@ -35,16 +35,16 @@ else()
 endif()
 
 
-set(TgBot_include_DIR "${BASE_PATH}/include")
-set(TgBot_LIBRARIES "${BASE_PATH}/CMakeFiles/Export/lib")
+set(TgBot_include_DIR "${BASE_PATH}/include/tgbot/")
+set(TgBot_LIBRARIES "${BASE_PATH}/lib")
 
-  if(TgBot_FOUND)
-    # set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot")
-    # set(TgBot_include_DIR "${BASE_PATH}/include")
-    # set(TgBot_LIBRARIES "${BASE_PATH}/CMakeFiles/Export/lib")
-  else()
-    message("DANAGER!")
+#   if(TgBot_FOUND)
+#     # set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot")
+#     # set(TgBot_include_DIR "${BASE_PATH}/include")
+#     # set(TgBot_LIBRARIES "${BASE_PATH}/CMakeFiles/Export/lib")
+#   else()
+#     message("DANAGER!")
 
-  endif()
+#   endif()
 
 target_include_directories( ${target} PUBLIC .)
