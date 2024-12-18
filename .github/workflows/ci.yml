@@ -40,6 +40,7 @@ jobs:
           make -j$(nproc)
           make install
           ls -la
+          ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot/
 
       # Шаг 3: Создаем директорию для сборки
       - name: Create build directory
@@ -54,7 +55,6 @@ jobs:
           mkdir -p build
           ls -la
           cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DTgBot_DIR=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot
-
 
       # Шаг 6: Сборка проекта
       - name: Build project
