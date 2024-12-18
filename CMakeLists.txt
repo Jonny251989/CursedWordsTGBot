@@ -22,6 +22,7 @@ add_subdirectory(Tests)
 
 find_package(TgBot)
 
+message("FILE LOCATION IS ")
 message(${TgBot_DIR})
 
 #   if(TgBot_FOUND)
