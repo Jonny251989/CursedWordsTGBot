@@ -24,7 +24,6 @@ add_subdirectory(Tests)
 set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot/")
 set(TgBot_include_DIR "${BASE_PATH}/include/")
 set(TgBot_LIBRARIES "${BASE_PATH}/lib/")
-message("TgBot_DIR is defined as: ${TgBot_DIR}")
 
 
 find_package(TgBot)
