@@ -8,19 +8,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot/")
-
-if(DEFINED BASE_PATH)
+if(NOT DEFINED BASE_PATH)
+    message(STATUS "BASE_PATH is not defined. Using default value.")
+    set(BASE_PATH "/home/ivan/tgbot-cpp/")  # Указываем путь по умолчанию
+else()
+    message(STATUS "Using BASE_PATH: ${BASE_PATH}")
     set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot/")
     set(TgBot_include_DIR "${BASE_PATH}/include/")
     set(TgBot_LIBRARIES "${BASE_PATH}/lib/")
-    # message("BASE_PATH is defined as: ${BASE_PATH}")
-    # message("TgBot_DIR is defined as: ${TgBot_DIR}")
-    # message("TgBot_include_DIR is defined as: ${TgBot_include_DIR}")
-    # message("TgBot_LIBRARIES is defined as: ${TgBot_LIBRARIES}")
-else()
-    message("BASE_PATH is not defined!")
 endif()
+
 
 add_subdirectory(CursedWordsTGBot)
 add_subdirectory(Modules)
