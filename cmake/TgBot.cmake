@@ -4,16 +4,15 @@
 if(NOT BASE_PATH)
     message(STATUS "BASE_PATH is not defined. Using default value.")
     set(BASE_PATH "/usr/local")  # Указываем путь по умолчанию /usr/local/include 
-    #set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot/")
-    set(TgBot_include_DIR "${BASE_PATH}/include/")
-    set(TgBot_LIBRARIES "${BASE_PATH}/lib")
-
+    
 else()
     message(STATUS "Using BASE_PATH: ${BASE_PATH}")
     set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot/")
-    set(TgBot_include_DIR "${BASE_PATH}/include/")
-    set(TgBot_LIBRARIES "${BASE_PATH}/lib")
+
 endif()
+
+set(TgBot_include_DIR "${BASE_PATH}/include/")
+set(TgBot_LIBRARIES "${BASE_PATH}/lib")
 
 find_package(TgBot REQUIRED)
 
