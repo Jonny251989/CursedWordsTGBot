@@ -18,7 +18,7 @@ jobs:
       # Шаг 2: Установка зависимостей (если они есть)
       - name: Install dependencies
         run: |
-          ls -al
+          # ls -al
           sudo apt-get update
           sudo apt-get upgrade -y
           sudo apt-get install -y build-essential g++ make cmake libcurl4-openssl-dev libssl-dev libjsoncpp-dev git zlib1g-dev
@@ -27,43 +27,43 @@ jobs:
 
       - name: Install tgbot-cpp
         run: |
-          ls -la
+          # ls -la
           # Клонируем репозиторий
           git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
           cd tgbot-cpp
           # Создаем директорию для установки
-          ls -la
+          # ls -la
 
           # Конфигурируем CMake с пользовательским путем установки
           cmake . -DCMAKE_INSTALL_PREFIX=./
           # Собираем и устанавливаем проект
           make -j$(nproc)
           make install
-          ls -la
-          ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot/
-          ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/
-          ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/include/
-           echo "SHOW ./include/"
-           ls ./include/
+          # ls -la
+          # ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot/
+          # ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/
+          # ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/include/
+          #  echo "SHOW ./include/"
+          #  ls ./include/
 
       # Шаг 3: Создаем директорию для сборки
       - name: Create build directory
         run: |
-          ls -la
+          # ls -la
           mkdir -p build
 
       # Шаг 4: Запуск CMake для конфигурации проекта
       - name: Configure project with CMake
         run: |
-          ls -la
+          # ls -la
           mkdir -p build
-          ls -la
+          # ls -la
           cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DBASE_PATH=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
 
       # Шаг 6: Сборка проекта
       - name: Build project
         run: |
-          ls -la
+          #ls -la
           #cd build
           #ls -la
           make -j$(nproc)
@@ -71,7 +71,7 @@ jobs:
       # Шаг 6: Запуск тестов (если они есть)
       - name: Run tests
         run: |
-          ls -la
+          # ls -la
           mkdir -p ./CursedWordsTGBot
           mkdir -p ./Tests/Queue_Tests
           mkdir -p ./Tests/Parser_Tests
