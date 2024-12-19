@@ -20,6 +20,9 @@ endif()
 
 target_link_libraries( ${target}  ${TgBot_LIBRARIES}/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} queue task logger)
 
+message("TgBot_DIR is defined as: ${TgBot_DIR}")
+message("TgBot_include_DIR is defined as: ${TgBot_include_DIR}")
+message("TgBot_LIBRARIES is defined as: ${TgBot_LIBRARIES}")
 
 message(STATUS "INCLUDE_DIRECTORIES: ${dirs}")
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
