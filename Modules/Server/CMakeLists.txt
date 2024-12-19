@@ -8,18 +8,6 @@ find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(CURL)
 
-if(DEFINED BASE_PATH)
-    set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot/")
-    set(TgBot_include_DIR "${BASE_PATH}/include/")
-    set(TgBot_LIBRARIES "${BASE_PATH}/lib/")
-    # message("BASE_PATH is defined as: ${BASE_PATH}")
-    # message("TgBot_DIR is defined as: ${TgBot_DIR}")
-    # message("TgBot_include_DIR is defined as: ${TgBot_include_DIR}")
-    # message("TgBot_LIBRARIES is defined as: ${TgBot_LIBRARIES}")
-else()
-    message("BASE_PATH is not defined!")
-endif()
-
 add_library(${target} SHARED server.cpp)
 
 target_include_directories( ${target} PUBLIC . ${TgBot_include_DIR} ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${GTEST_INCLUDE_DIRS})
@@ -33,10 +21,11 @@ endif()
 target_link_libraries( ${target}  ${TgBot_LIBRARIES}/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} queue task logger)
 
 
+set_target_properties(server_bot PROPERTIES LINKER_LANGUAGE CXX)
+
+
 # get_target_property(includedirs ${target} INCLUDE_DIRECTORIES)
 # message(STATUS "INCLUDE_DIRECTORIES for ${target}: ${includedirs}")
 # foreach(dir ${includedirs})
 #     message(STATUS "dir='${dir}'")
 # endforeach()
-
-set_target_properties(server_bot PROPERTIES LINKER_LANGUAGE CXX)
