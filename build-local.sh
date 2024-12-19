@@ -6,7 +6,8 @@ cd $project_directory
 
 mkdir -p build
 cd build
-cmake ..
+# cmake ..
+cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DBASE_PATH=/home/ivan/tgbot-cpp/
 make -j$(nproc)
 
 mkdir -p ../bins/CursedWordsTGBot
