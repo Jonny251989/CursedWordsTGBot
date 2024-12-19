@@ -7,10 +7,10 @@ cd $project_directory
 mkdir -p build
 cd build
 # cmake ..
-: ${BASE_PATH:="/home/ivan/tgbot-cpp"}
+: ${BASE_PATH:=""}
 
 # Запуск cmake с использованием переменной BASE_PATH
-cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DBASE_PATH=$BASE_PATH
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DBASE_PATH=$BASE_PATH
 make -j$(nproc)
 
 mkdir -p ../bins/CursedWordsTGBot
