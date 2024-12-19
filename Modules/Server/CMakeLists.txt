@@ -23,6 +23,9 @@ target_link_libraries( ${target}  ${TgBot_LIBRARIES}/libTgBot.a ${CMAKE_THREAD_L
 message("HERE HERE HERE HERE HERE!")
 
 if(DEFINED BASE_PATH)
+    set(TgBot_DIR "${BASE_PATH}/lib/cmake/TgBot/")
+    set(TgBot_include_DIR "${BASE_PATH}/include/")
+    set(TgBot_LIBRARIES "${BASE_PATH}/lib/")
     message("BASE_PATH is defined as: ${BASE_PATH}")
     message("TgBot_DIR is defined as: ${TgBot_DIR}")
     message("TgBot_include_DIR is defined as: ${TgBot_include_DIR}")
