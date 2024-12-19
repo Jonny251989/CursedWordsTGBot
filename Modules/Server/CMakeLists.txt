@@ -22,10 +22,14 @@ target_link_libraries( ${target}  ${TgBot_LIBRARIES}/libTgBot.a ${CMAKE_THREAD_L
 
 message("HERE HERE HERE HERE HERE!")
 
-message("BASE_PATH is defined as: ${BASE_PATH}")
-message("TgBot_DIR is defined as: ${TgBot_DIR}")
-message("TgBot_include_DIR is defined as: ${TgBot_include_DIR}")
-message("TgBot_LIBRARIES is defined as: ${TgBot_LIBRARIES}")
+if(DEFINED BASE_PATH)
+    message("BASE_PATH is defined as: ${BASE_PATH}")
+    message("TgBot_DIR is defined as: ${TgBot_DIR}")
+    message("TgBot_include_DIR is defined as: ${TgBot_include_DIR}")
+    message("TgBot_LIBRARIES is defined as: ${TgBot_LIBRARIES}")
+else()
+    message("BASE_PATH is not defined!")
+endif()
 
 message(STATUS "INCLUDE_DIRECTORIES: ${dirs}")
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
