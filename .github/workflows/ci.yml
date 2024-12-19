@@ -72,7 +72,11 @@ jobs:
       - name: Run tests
         run: |
           ls -la
-          cd build/Tests/UnitTests/
+          mkdir -p ./CursedWordsTGBot
+          mkdir -p ./Tests/Queue_Tests
+          mkdir -p ./Tests/Parser_Tests
+          mkdir -p ./Tests/SignalHandler_Tests
+          cd Tests/UnitTests/
           ./Parser_Tests/parser_tests*
           ./Queue_Tests/queue_tests*
           ./SignalHandler_Tests/signalhandler_tests*
