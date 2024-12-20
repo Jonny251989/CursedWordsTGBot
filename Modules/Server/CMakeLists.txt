@@ -23,7 +23,6 @@ target_link_libraries( ${target} ${TgBot_LIBRARIES}/libTgBot.a ${CMAKE_THREAD_LI
 
 set_target_properties(server_bot PROPERTIES LINKER_LANGUAGE CXX)
 
-
 # get_target_property(includedirs ${target} INCLUDE_DIRECTORIES)
 # message(STATUS "INCLUDE_DIRECTORIES for ${target}: ${includedirs}")
 # foreach(dir ${includedirs})
