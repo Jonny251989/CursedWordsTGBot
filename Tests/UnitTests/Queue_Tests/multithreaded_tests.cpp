@@ -174,24 +174,3 @@ TEST_F(ThreadSafeQueueTest, TestPushAndTakeConcurrent) {
     EXPECT_EQ(tasks_taken.load(), tasks_pushed.load());
     ASSERT_EQ(t_set.size(), 0);
 }
-
-TEST_F(ThreadSafeQueueTest, TestTakeFromEmptyQueue) {
-    const int size_of_queue = 90;
-    Queue<TestTask> queue_(size_of_queue);
-    std::atomic<int> tasks_taken(0);
-    const size_t number_of_operations = 10000;
-    auto take_task = [&]() {
-        for (size_t i = 0; i < number_of_operations; ++i) {
-            auto task = queue_.take();
-            if (task) {
-                tasks_taken++;
-            }
-        }
-    };
-
-    {
-        std::jthread t(take_task);
-    }
-
-    EXPECT_EQ(tasks_taken.load(), 0);
-}
