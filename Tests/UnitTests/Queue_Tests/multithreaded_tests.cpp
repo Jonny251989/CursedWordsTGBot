@@ -24,7 +24,8 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
-            std::lock_guard<std::mutex> lck{set_mutex};
+            if ( i == size_operations - 1) 
+                std::lock_guard<std::mutex> lck{set_mutex};
             if((queue_.push(std::move(task)))){
                 i++; pushCount++;
                 t_set.insert({message, name});
