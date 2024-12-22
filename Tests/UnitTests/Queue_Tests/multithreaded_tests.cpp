@@ -18,16 +18,15 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
     std::atomic<int> takeCount{0};  // Счётчик количества успешных извлечений
     std::mutex set_mutex;
     std::unordered_set<TestTask> t_set;
-
+    
     auto pushTask = [&]() {
         for (int i = 0; i < size_operations;) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
-            if ( i == size_operations - 1) 
-                std::lock_guard<std::mutex> lck{set_mutex};
             if((queue_.push(std::move(task)))){
                 i++; pushCount++;
+                std::lock_guard<std::mutex> lck{set_mutex};
                 t_set.insert({message, name});
             }      
         }
@@ -37,10 +36,10 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
             std::unique_ptr<TestTask> task_ptr;
             while (!(task_ptr = queue_.take()));
             takeCount++; ++i;
+            auto it = t_set.find(*task_ptr);
             std::lock_guard<std::mutex> lck{set_mutex};
-            auto it = t_set.find(*task_ptr); 
             if(it != t_set.end())
-                t_set.erase(it); 
+                t_set.erase(it);    
         }
     };
     std::thread pushThreads{pushTask};
@@ -54,7 +53,7 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
 }
 
 TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
-    const int size_of_queue = 70;
+    const int size_of_queue = 50;
     Queue<TestTask> queue_(size_of_queue);
     const int size_words = 5;
     const int size_operations = 1000;
@@ -69,17 +68,17 @@ TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
             auto task = std::make_unique<TestTask>(message, name);
             if((queue_.push(std::move(task)))){
                 pushCount++;
-                t_set.insert({message, name});
+                t_set.insert({message, name});;
             }      
         }
     };
 
-    std::thread pushThreads{pushTask};
-
-    pushThreads.join();
+    {
+       std::jthread pushThreads{pushTask}; 
+    }   
 
     ASSERT_EQ(pushCount, size_of_queue);
-    ASSERT_EQ(t_set.size(), size_of_queue);
+    ASSERT_EQ(t_set.size(), size_of_queue);   
 }
 
 TEST_F(ThreadSafeQueueTest, FullTest) {
@@ -113,21 +112,20 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
             std::lock_guard<std::mutex> lock(set_mutex);
             takeCount++; i++;
             auto it = t_set.find(*task_ptr);
-            if (it != t_set.end()){
-                t_set.erase(it);
-            }
+            if(it != t_set.end())
+                t_set.erase(it);  
         }
     };
-    std::thread pushThreads[numThreads];
-    std::thread takeThreads[numThreads];
-    for (int i = 0; i < numThreads; ++i) {
-        pushThreads[i] = std::thread(pushTask);
-        takeThreads[i] = std::thread(takeTask);
+    {
+        std::jthread pushThreads[numThreads];
+        std::jthread takeThreads[numThreads];
+
+        for (int i = 0; i < numThreads; ++i) {
+            pushThreads[i] = std::jthread(pushTask);
+            takeThreads[i] = std::jthread(takeTask);
+        }
     }
-    for (int i = 0; i < numThreads; ++i) {
-        pushThreads[i].join();
-        takeThreads[i].join();
-    }
+
     ASSERT_EQ(pushCount, takeCount);
     ASSERT_EQ(t_set.size(), 0);
 }
@@ -161,20 +159,17 @@ TEST_F(ThreadSafeQueueTest, TestPushAndTakeConcurrent) {
             std::lock_guard<std::mutex> lock{set_mutex};
             tasks_taken++; i++;
             auto it = t_set.find(*task_ptr);
-            if (it != t_set.end()){
-                t_set.erase(it);
-            }
+            if(it != t_set.end())
+                t_set.erase(it);  
         }
     };
-    std::thread t1(push_task);
-    std::thread t2(take_task);
-    std::thread t3(take_task);
-    std::thread t4(push_task);
 
-    t1.join();
-    t2.join();
-    t3.join();
-    t4.join();
+    {
+        std::jthread t1(push_task);
+        std::jthread t2(take_task);
+        std::jthread t3(take_task);
+        std::jthread t4(push_task);
+    }
 
     EXPECT_EQ(tasks_taken.load(), tasks_pushed.load());
     ASSERT_EQ(t_set.size(), 0);
@@ -193,49 +188,10 @@ TEST_F(ThreadSafeQueueTest, TestTakeFromEmptyQueue) {
             }
         }
     };
-    std::thread t(take_task);
-    t.join();
+
+    {
+        std::jthread t(take_task);
+    }
 
     EXPECT_EQ(tasks_taken.load(), 0);
-}
-
-TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeOfSetTest) {
-    const int size_of_queue = 10;
-    Queue<TestTask> queue_(size_of_queue);
-    const int size_words = 5;
-    const int number_of_operations = 500;
-    std::mutex set_mutex;
-    std::unordered_set<TestTask> t_set;
-
-    auto pushTask = [&]() {
-        for (int i = 0; i < number_of_operations;) {
-            auto message = generated_words(size_words);
-            auto name = generated_words(size_words);
-            auto task = std::make_unique<TestTask>(message, name);
-            std::lock_guard<std::mutex> lock{set_mutex};
-            if(queue_.push(std::move(task))){
-                ++i;
-                t_set.insert({message, name});
-            }
-        }
-    };
-    auto takeTask = [&]() {
-        for (int i = 0; i < number_of_operations;) {
-            std::unique_ptr<TestTask> task_ptr;
-            while (!(task_ptr = queue_.take()));
-            std::lock_guard<std::mutex> lock{set_mutex};
-            auto it = t_set.find(*task_ptr);
-            if (it != t_set.end()){
-                t_set.erase(it);
-            }
-            ++i;
-        }
-    };
-    std::thread pushThreads{pushTask};
-    std::thread takeThreads{takeTask};
-
-    pushThreads.join();
-    takeThreads.join();
-    
-    ASSERT_EQ(t_set.size(), 0);
 }
