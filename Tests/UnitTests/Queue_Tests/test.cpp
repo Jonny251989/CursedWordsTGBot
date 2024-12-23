@@ -1,4 +1,4 @@
-#include "onethreaded_tests.hpp"
+#include "test.hpp"
 
 void QueueTest::SetUp() {
 
