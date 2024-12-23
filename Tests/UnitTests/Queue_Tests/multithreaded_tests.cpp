@@ -36,8 +36,8 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
             std::unique_ptr<TestTask> task_ptr;
             while (!(task_ptr = queue_.take()));
             takeCount++; ++i;
-            auto it = t_set.find(*task_ptr);
             std::lock_guard<std::mutex> lck{set_mutex};
+            auto it = t_set.find(*task_ptr);
             if(it != t_set.end())
                 t_set.erase(it);    
         }
@@ -47,6 +47,8 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
 
     pushThreads.join();
     takeThreads.join();
+    
+    std::cout<<pushCount<<", "<<takeCount<<"\n";
     
     ASSERT_EQ(pushCount, takeCount);
     ASSERT_EQ(t_set.size(), 0);
