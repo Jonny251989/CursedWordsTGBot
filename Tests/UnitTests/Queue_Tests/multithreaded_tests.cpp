@@ -77,10 +77,12 @@ TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
 
     {
        std::jthread pushThreads{pushTask}; 
-    }   
+    }
+
+    ASSERT_LE(queue_.take() ? 1 : 0, size_of_queue) << "Queue exceeded the limit!";
 
     ASSERT_EQ(pushCount, size_of_queue);
-    ASSERT_EQ(t_set.size(), size_of_queue);   
+    ASSERT_EQ(t_set.size(), size_of_queue);
 }
 
 TEST_F(ThreadSafeQueueTest, FullTest) {
