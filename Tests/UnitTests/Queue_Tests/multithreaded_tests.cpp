@@ -24,9 +24,9 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
+            std::lock_guard<std::mutex> lck{set_mutex};
             if((queue_.push(std::move(task)))){
                 i++; pushCount++;
-                std::lock_guard<std::mutex> lck{set_mutex};
                 t_set.insert({message, name});
             }      
         }
@@ -38,8 +38,8 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
             takeCount++; ++i;
             std::lock_guard<std::mutex> lck{set_mutex};
             auto it = t_set.find(*task_ptr);
-            assert(it != t_set.end());
-            t_set.erase(it);    
+            assert(it != t_set.end());              
+            t_set.erase(it);     
         }
     };
     std::thread pushThreads{pushTask};
@@ -57,30 +57,42 @@ TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
     Queue<TestTask> queue_(size_of_queue);
     const int size_words = 5;
     const int size_operations = 1000;
-    std::atomic<int> pushCount{0};
     std::mutex set_mutex;
     std::unordered_set<TestTask> t_set;
 
     auto pushTask = [&]() {
-        for (int i = 0; i < size_operations; ++i) {
+        for (int i = 0; i < size_operations;) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
+            std::lock_guard<std::mutex> lock{set_mutex};
             if((queue_.push(std::move(task)))){
-                pushCount++;
+                i++;
                 t_set.insert({message, name});;
             }      
         }
     };
 
+    auto takeTask = [&]() {
+        for (size_t i = 0; i < size_operations;) {
+            std::unique_ptr<TestTask> task_ptr;
+            while(!(task_ptr = queue_.take()));
+            i++;
+            std::lock_guard<std::mutex> lock{set_mutex};
+            auto it = t_set.find(*task_ptr);
+            assert(it != t_set.end());              
+            t_set.erase(it); 
+        }
+    };
+
     {
-       std::jthread pushThreads{pushTask}; 
+        std::jthread pushThreads(pushTask);
+        std::jthread takethreads(takeTask);
     }
 
     ASSERT_LE(queue_.take() ? 1 : 0, size_of_queue) << "Queue exceeded the limit!";
 
-    ASSERT_EQ(pushCount, size_of_queue);
-    ASSERT_EQ(t_set.size(), size_of_queue);
+    ASSERT_EQ(t_set.size(), 0);
 }
 
 TEST_F(ThreadSafeQueueTest, FullTest) {
@@ -114,8 +126,8 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
             std::lock_guard<std::mutex> lock(set_mutex);
             takeCount++; i++;
             auto it = t_set.find(*task_ptr);
-            assert(it != t_set.end());
-            t_set.erase(it);  
+            assert(it != t_set.end());              
+            t_set.erase(it);   
         }
     };
     {
@@ -161,8 +173,8 @@ TEST_F(ThreadSafeQueueTest, TestPushAndTakeConcurrent) {
             std::lock_guard<std::mutex> lock{set_mutex};
             tasks_taken++; i++;
             auto it = t_set.find(*task_ptr);
-            assert(it != t_set.end());           
-            t_set.erase(it);  
+            assert(it != t_set.end());              
+            t_set.erase(it); 
         }
     };
 
