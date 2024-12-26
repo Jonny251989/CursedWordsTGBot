@@ -14,8 +14,8 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
     
     const int size_words = 5;
     const int size_operations = 1000;
-    std::atomic<int> pushCount{0};  // Счётчик количества успешных вставок
-    std::atomic<int> takeCount{0};  // Счётчик количества успешных извлечений
+    std::atomic<int> pushCount{0};
+    std::atomic<int> takeCount{0};
     std::mutex set_mutex;
     std::unordered_set<TestTask> t_set;
     
@@ -38,8 +38,8 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
             takeCount++; ++i;
             std::lock_guard<std::mutex> lck{set_mutex};
             auto it = t_set.find(*task_ptr);
-            if(it != t_set.end())
-                t_set.erase(it);    
+            assert(it != t_set.end());
+            t_set.erase(it);    
         }
     };
     std::thread pushThreads{pushTask};
@@ -47,9 +47,7 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
 
     pushThreads.join();
     takeThreads.join();
-    
-    std::cout<<pushCount<<", "<<takeCount<<"\n";
-    
+
     ASSERT_EQ(pushCount, takeCount);
     ASSERT_EQ(t_set.size(), 0);
 }
@@ -59,7 +57,7 @@ TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
     Queue<TestTask> queue_(size_of_queue);
     const int size_words = 5;
     const int size_operations = 1000;
-    std::atomic<int> pushCount{0};  // Счётчик количества успешных вставок
+    std::atomic<int> pushCount{0};
     std::mutex set_mutex;
     std::unordered_set<TestTask> t_set;
 
@@ -116,8 +114,8 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
             std::lock_guard<std::mutex> lock(set_mutex);
             takeCount++; i++;
             auto it = t_set.find(*task_ptr);
-            if(it != t_set.end())
-                t_set.erase(it);  
+            assert(it != t_set.end());
+            t_set.erase(it);  
         }
     };
     {
@@ -163,8 +161,8 @@ TEST_F(ThreadSafeQueueTest, TestPushAndTakeConcurrent) {
             std::lock_guard<std::mutex> lock{set_mutex};
             tasks_taken++; i++;
             auto it = t_set.find(*task_ptr);
-            if(it != t_set.end())
-                t_set.erase(it);  
+            assert(it != t_set.end());           
+            t_set.erase(it);  
         }
     };
 
