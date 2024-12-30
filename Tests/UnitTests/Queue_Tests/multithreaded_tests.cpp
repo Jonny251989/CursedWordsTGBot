@@ -61,38 +61,25 @@ TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
     std::unordered_set<TestTask> t_set;
 
     auto pushTask = [&]() {
-        for (int i = 0; i < size_operations;) {
+        for (int i = 0; i < size_operations; i++) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
             std::lock_guard<std::mutex> lock{set_mutex};
             if((queue_.push(std::move(task)))){
-                i++;
-                t_set.insert({message, name});;
-            }      
-        }
-    };
-
-    auto takeTask = [&]() {
-        for (size_t i = 0; i < size_operations;) {
-            std::unique_ptr<TestTask> task_ptr;
-            while(!(task_ptr = queue_.take()));
-            i++;
-            std::lock_guard<std::mutex> lock{set_mutex};
-            auto it = t_set.find(*task_ptr);
-            assert(it != t_set.end());              
-            t_set.erase(it); 
+                t_set.insert({message, name});
+            }       
         }
     };
 
     {
-        std::jthread pushThreads(pushTask);
-        std::jthread takethreads(takeTask);
+        std::jthread pushThreads_one(pushTask);
+        std::jthread pushThreads_two(pushTask);
+        std::jthread pushThreads_three(pushTask);
     }
 
     ASSERT_LE(queue_.take() ? 1 : 0, size_of_queue) << "Queue exceeded the limit!";
-
-    ASSERT_EQ(t_set.size(), 0);
+    ASSERT_EQ(t_set.size(), size_of_queue);
 }
 
 TEST_F(ThreadSafeQueueTest, FullTest) {
