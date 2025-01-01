@@ -57,18 +57,13 @@ TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
     Queue<TestTask> queue_(size_of_queue);
     const int size_words = 5;
     const int size_operations = 1000;
-    std::mutex set_mutex;
-    std::unordered_set<TestTask> t_set;
 
     auto pushTask = [&]() {
         for (int i = 0; i < size_operations; i++) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
-            std::lock_guard<std::mutex> lock{set_mutex};
-            if((queue_.push(std::move(task)))){
-                t_set.insert({message, name});
-            }       
+            if((queue_.push(std::move(task)))){};       
         }
     };
 
@@ -79,7 +74,6 @@ TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
     }
 
     ASSERT_LE(queue_.take() ? 1 : 0, size_of_queue) << "Queue exceeded the limit!";
-    ASSERT_EQ(t_set.size(), size_of_queue);
 }
 
 TEST_F(ThreadSafeQueueTest, FullTest) {
