@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         Parser parser{{"-token"}};
         std::unordered_map<std::string, std::string> tokens;
         tokens = parser.parse_string(token);
-        std::unique_ptr<TgBot::Bot> ptr_bot = std::make_unique<TgBot::Bot>(tokens["-token"]);
+        std::unique_ptr<TgBot::Bot> ptr_bot = std::make_unique<TgBot::Bot>("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
 
         Logger::getInstance().setName(ptr_bot->getApi().getMe()->username);
         Logger::getInstance().setLevel(Logger::Levels::Debug);

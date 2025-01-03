@@ -13,6 +13,8 @@
 #include "queue.hpp"
 #include "task.hpp"
 #include "logger.hpp"
+#include "classificator.hpp"
+#include "reactor.hpp"
 
 class Server{
     
