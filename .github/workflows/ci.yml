@@ -2,10 +2,10 @@ name: TGBot Workflow
 on:
   push:
     branches:
-      - CI
+      - classificator_reactor
   pull_request:
     branches:
-      - CI
+      - classificator_reactor
 jobs:
   build:
     runs-on: ubuntu-latest  # Для Ubuntu, но можно выбрать другие операционные системы
