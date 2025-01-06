@@ -2,7 +2,8 @@
 
 void ReactorResultTest::SetUp() {
 
-
+//7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ
+std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
 ptr_testing_bot = std::make_shared<TgBot::Bot>(token);
 
 // run_bot(token);
