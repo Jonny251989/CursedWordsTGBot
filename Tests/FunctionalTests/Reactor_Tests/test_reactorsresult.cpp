@@ -1,8 +1,7 @@
 #include "test_reactorsresult.hpp"
 
 void ReactorResultTest::SetUp() {
-//7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ
-std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
+
 
 ptr_testing_bot = std::make_shared<TgBot::Bot>(token);
 
@@ -15,7 +14,6 @@ void ReactorResultTest::TearDown() {
 }
 
 void ReactorResultTest::testing_reactor(){
-    // std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
     //     TgBot::Bot bot(token);
     ptr_testing_bot->getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
          ptr_testing_bot->getApi().sendMessage(message->chat->id, "Hi!");
