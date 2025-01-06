@@ -1,13 +1,13 @@
 #include "classificator.hpp"
 
-CursedWordDetectingClassificator::CursedWordDetectingClassificator(){
+SimpleClassificator::SimpleClassificator(const std::string& message): message_(message){
 
 }
 
-bool CursedWordDetectingClassificator::check(const CRTask& task){
+bool SimpleClassificator::check(){
     return true;
 }
 
-CursedWordDetectingClassificator::~CursedWordDetectingClassificator(){
+SimpleClassificator::~SimpleClassificator(){
 
 }

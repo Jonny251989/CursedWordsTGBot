@@ -12,12 +12,12 @@
             if (StringTools::startsWith(message->text, "/start")) {
                 return;
             }
-            if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<CursedWordDetectingClassificator>(), std::make_shared<CursedWordDetectingReactor>(),
-              message->text, message->chat->title, message->from->firstName, message->from->lastName, message->from->id))){
+            if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<SimpleClassificator>(message->text),
+             std::make_shared<EchoReactor>(ptr_bot_, message->text, message->chat->id, message->from)))){
+
                 Logger::getInstance().logInfo(Logger::Levels::Critical, "Queue is full!"); 
                 std::this_thread::sleep_for (std::chrono::milliseconds(100));
             }
-            ptr_bot_->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
         });
     }
 

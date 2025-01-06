@@ -5,6 +5,7 @@ CRTask::CRTask(std::shared_ptr<IClassificator> classificator, std::shared_ptr<IR
 }
 
 void CRTask::execute(){
+    reactor_->react(classificator_->check());
 
 }
 
@@ -13,18 +14,18 @@ CRTask::~CRTask(){
 }
 
 
-CursedWordDetectingTask::CursedWordDetectingTask(std::shared_ptr<IClassificator> classificator, std::shared_ptr<IReactor> reactor, std::string mss, std::string cht, std::string fN, std::string lN, std::int64_t id)
-: CRTask(classificator, reactor), message(mss), chat_title(cht),firstName(fN), lastName(lN),  id_m(id){
+CursedWordDetectingTask::CursedWordDetectingTask(std::shared_ptr<IClassificator> classificator, std::shared_ptr<IReactor> reactor)
+: CRTask(classificator, reactor){
 
 }
 
-void CursedWordDetectingTask::execute(){
-    if(this->classificator_->check(*this))
-        Logger::getInstance().logInfo(Logger::Levels::Info, ("Message " + this->reactor_->send_message() + " is good! \n"));
-    else
-        Logger::getInstance().logInfo(Logger::Levels::Info, ("Message " + this->reactor_->send_message() + " is terrible! \n"));
+// void CursedWordDetectingTask::execute(){
+//     if(this->classificator_->check(*this))
+//         Logger::getInstance().logInfo(Logger::Levels::Info, ("Message " + this->reactor_->send_message() + " is good! \n"));
+//     else
+//         Logger::getInstance().logInfo(Logger::Levels::Info, ("Message " + this->reactor_->send_message() + " is terrible! \n"));
     
-}
+// }
 
 CursedWordDetectingTask::~CursedWordDetectingTask(){
 

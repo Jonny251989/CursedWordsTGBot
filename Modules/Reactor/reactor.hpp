@@ -1,24 +1,27 @@
 #pragma once
 
+#include <tgbot/tgbot.h>
 #include <stdio.h>
 #include <cstdint>
 #include <iostream>
 #include <string>
 #include "logger.hpp"
-#include "task.hpp"
 
 class IReactor{
 public:
-    virtual std::string send_message() = 0;
-    ~IReactor() = default;
+    virtual void react(bool) = 0;
+    virtual ~IReactor() = default;
 };
 
 
-class CursedWordDetectingReactor: public IReactor{
+class EchoReactor: public IReactor{
 public:
-    CursedWordDetectingReactor();
-    virtual std::string send_message() override;
-    ~CursedWordDetectingReactor();
+    EchoReactor(std::shared_ptr<TgBot::Bot> ptr_bot, std::string message, std::int64_t chat_id, TgBot::User::Ptr from);
+    virtual void react(bool classification_result) final;
+    ~EchoReactor();
 private:
-
+    std::shared_ptr<TgBot::Bot> ptr_bot_;
+    std::string message_;
+    std::int64_t chat_id_;
+    TgBot::User::Ptr from_;
 };
