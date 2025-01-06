@@ -15,12 +15,11 @@ public:
     ~ITask() = default;
 };
 
-class IClassificator;
-class IReactor;
+
 class CRTask: public ITask{
 public:
     CRTask(std::shared_ptr<IClassificator> classificator, std::shared_ptr<IReactor> react);
-    virtual void execute() override;
+    virtual void execute() final;
     ~CRTask();
 protected:
     std::shared_ptr<IClassificator> classificator_; 
@@ -30,13 +29,7 @@ protected:
 
 class CursedWordDetectingTask: public CRTask{
 public:
-    CursedWordDetectingTask(std::shared_ptr<IClassificator> classificator, std::shared_ptr<IReactor> react, std::string mss, std::string cht, std::string fN, std::string lN, std::int64_t id);
-    virtual void execute() override;
+    CursedWordDetectingTask(std::shared_ptr<IClassificator> classificator, std::shared_ptr<IReactor> react);
     ~CursedWordDetectingTask();
-private:
-    std::string message;
-    std::string chat_title;
-    std::string firstName;
-    std::string lastName;
-    std::int64_t id_m;
+
 };

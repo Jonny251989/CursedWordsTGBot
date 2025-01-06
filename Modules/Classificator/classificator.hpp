@@ -6,21 +6,18 @@
 #include <iostream>
 #include <string>
 #include "logger.hpp"
-#include "task.hpp"
-
-class CRTask;
 
 class IClassificator{
 public:
-    virtual bool check(const CRTask&) = 0;
-    ~IClassificator() = default;
+    virtual bool check() = 0;
+    virtual ~IClassificator() = default;
 };
 
-class CursedWordDetectingClassificator: public IClassificator{
+class SimpleClassificator: public IClassificator{
 public:
-    CursedWordDetectingClassificator();
-    virtual bool check(const CRTask&) override;
-    ~CursedWordDetectingClassificator();
+    SimpleClassificator(const std::string& message);
+    virtual bool check() override;
+    ~SimpleClassificator();
 private:
-
+    std::string message_;
 };
