@@ -73,9 +73,9 @@ jobs:
         run: |
           # ls -la
           mkdir -p ./CursedWordsTGBot
-          mkdir -p ./Tests/Queue_Tests
-          mkdir -p ./Tests/Parser_Tests
-          mkdir -p ./Tests/SignalHandler_Tests
+          mkdir -p ./Tests/UnitTests/Queue_Tests
+          mkdir -p ./Tests/UnitTests/Parser_Tests
+          mkdir -p ./Tests/UnitTests/SignalHandler_Tests
           cd Tests/UnitTests/
           ./Parser_Tests/parser_tests*
           ./Queue_Tests/queue_tests*
