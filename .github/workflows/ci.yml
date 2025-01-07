@@ -50,7 +50,7 @@ jobs:
         run: |
 
           cd build
-          cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DTGBOT-CPP_INSTALL_PFEFIX=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DTGBOT-CPP_INSTALL_PFEFIX=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
 
       # Шаг 6: Сборка проекта
       - name: Build project
