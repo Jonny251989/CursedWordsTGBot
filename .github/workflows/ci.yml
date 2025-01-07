@@ -18,21 +18,16 @@ jobs:
       # Шаг 2: Установка зависимостей (если они есть)
       - name: Install dependencies
         run: |
-          # ls -al
           sudo apt-get update
           sudo apt-get upgrade -y
           sudo apt-get install -y build-essential g++ make cmake libcurl4-openssl-dev libssl-dev libjsoncpp-dev git zlib1g-dev
           sudo apt-get install -y libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev
           sudo apt-get install -y libgtest-dev
 
-          # Клонируем репозиторий
           git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
           cd tgbot-cpp
-          # Создаем директорию для установки
 
-          # Конфигурируем CMake с пользовательским путем установки
           cmake . -DCMAKE_INSTALL_PREFIX=./
-          # Собираем и устанавливаем проект
           make -j$(nproc)
           make install
 
