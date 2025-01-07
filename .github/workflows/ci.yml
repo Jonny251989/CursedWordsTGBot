@@ -47,6 +47,7 @@ jobs:
       # Шаг 6: Запуск тестов (если они есть)
       - name: Run tests
         run: |
+          cd build
           mkdir -p ./CursedWordsTGBot
           mkdir -p ./Tests/UnitTests/Queue_Tests
           mkdir -p ./Tests/UnitTests/Parser_Tests
