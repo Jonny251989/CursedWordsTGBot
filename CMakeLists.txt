@@ -16,4 +16,9 @@ add_subdirectory(Tests)
 
 find_package(TgBot REQUIRED)
 
-target_include_directories(${target} PUBLIC . ${TgBot_include_DIR})
+include_directories(${TgBot_include_DIR})
+
+if (CURL_FOUND)
+    target_include_directories( ${target} PUBLIC ${CURL_INCLUDE_DIRS} )
+    target_compile_definitions(${target} PRIVATE -DHAVE_CURL )
+endif()
