@@ -3,4 +3,4 @@ token.txt
 /build/
 /bins/
 update-tgbot-version.patch
-
+/Test/FunctionalTests/Reactor_Tests/messages.txt
