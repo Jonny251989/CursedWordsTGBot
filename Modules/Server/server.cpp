@@ -6,12 +6,26 @@
         ptr_bot_->getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
             ptr_bot_->getApi().sendMessage(message->chat->id, "Hi!");
         });
-
         ptr_bot_->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
+        // Логируем текст полученного сообщения
+        printf("Received message: %s\n", message->text.c_str());
 
+        // Отправляем ответ в тот же чат
+        std::string response = "You said: " + message->text;
+        ptr_bot_->getApi().sendMessage(message->chat->id, response);
+    });
+        ptr_bot_->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
+        if (message->from->isBot) {
+            // Сообщение от бота
+            printf("Message received from bot: %s\n", message->text.c_str());
+        } else {
+            // Сообщение от пользователя
+            printf("Message received from user: %s\n", message->text.c_str());
+        }
             if (StringTools::startsWith(message->text, "/start")) {
                 return;
             }
+            std::cout<<"ID chat: "<<message->chat->id<<"\n";
             if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<SimpleClassificator>(message->text),
              std::make_shared<EchoReactor>(ptr_bot_, message->text, message->chat->id, message->from)))){
 
@@ -19,6 +33,8 @@
                 std::this_thread::sleep_for (std::chrono::milliseconds(100));
             }
         });
+
+
     }
 
     void Server::start(){
