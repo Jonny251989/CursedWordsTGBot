@@ -10,7 +10,7 @@ cd build
 : ${BASE_PATH:=""}
 
 # Запуск cmake с использованием переменной BASE_PATH
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DBASE_PATH=$BASE_PATH
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DTGBOT-CPP_INSTALL_PFEFIX=$BASE_PATH
 make -j$(nproc)
 
 mkdir -p ../bins/CursedWordsTGBot
