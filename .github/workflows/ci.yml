@@ -5,7 +5,10 @@ on:
       - CI
   pull_request:
     branches:
-      - CI
+      - CI  # Запускать для пул-реквестов на ветку CI
+    types:
+      - synchronize  # Запускать при коммитах в существующие пул-реквесты
+      - reopened     # Запускать при повторном открытии пул-реквеста
 jobs:
   build:
     runs-on: ubuntu-latest  # Для Ubuntu, но можно выбрать другие операционные системы
