@@ -48,12 +48,13 @@ jobs:
       - name: Run tests
         run: |
           cd build
-          mkdir -p ./CursedWordsTGBot
-          mkdir -p ./Tests/UnitTests/Queue_Tests
-          mkdir -p ./Tests/UnitTests/Parser_Tests
-          mkdir -p ./Tests/UnitTests/SignalHandler_Tests
-          cd Tests/UnitTests
-          ./Parser_Tests/parser_tests*
-          ./Queue_Tests/queue_tests*
-          ./SignalHandler_Tests/signalhandler_tests*
-          #./ThreadSafeQueue_Tests/threadsafequeue_test*
+          ctest --verbose
+          # mkdir -p ./CursedWordsTGBot
+          # mkdir -p ./Tests/UnitTests/Queue_Tests
+          # mkdir -p ./Tests/UnitTests/Parser_Tests
+          # mkdir -p ./Tests/UnitTests/SignalHandler_Tests
+          # cd Tests/UnitTests
+          # ./Parser_Tests/parser_tests*
+          # ./Queue_Tests/queue_tests*
+          # ./SignalHandler_Tests/signalhandler_tests*
+          # #./ThreadSafeQueue_Tests/threadsafequeue_test*
