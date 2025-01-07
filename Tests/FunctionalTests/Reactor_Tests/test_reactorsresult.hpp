@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 #include <memory>
+#include <fstream>
 #include <string>
 #include <unordered_set>
 #include <map>
