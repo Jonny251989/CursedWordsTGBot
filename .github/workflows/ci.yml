@@ -48,6 +48,7 @@ jobs:
       - name: Run tests
         run: |
           cd build
+          cd Tests/UnitTests
           ctest --verbose
           # mkdir -p ./CursedWordsTGBot
           # mkdir -p ./Tests/UnitTests/Queue_Tests
