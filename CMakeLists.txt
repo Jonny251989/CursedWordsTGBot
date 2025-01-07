@@ -10,6 +10,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 include(cmake/TgBot.cmake)
 
+enable_testing() 
+
 add_subdirectory(CursedWordsTGBot)
 add_subdirectory(Modules)
 add_subdirectory(Tests)
