@@ -6,10 +6,8 @@ cd $project_directory
 
 mkdir -p build
 cd build
-# cmake ..
 : ${TGBOT_CPP_INSTALL_PFEFIX:=""}
 
-# Запуск cmake с использованием переменной BASE_PATH
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DTGBOT_CPP_INSTALL_PFEFIX=$TGBOT_CPP_INSTALL_PFEFIX
 make -j$(nproc)
 
