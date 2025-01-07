@@ -42,9 +42,8 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./ -DTGBOT_CPP_INSTALL_PFEFIX=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
           make -j$(nproc)
 
-      # Шаг 6: Запуск тестов (если они есть)
+      # Шаг 4: Запуск тестов (если они есть)
       - name: Run tests
         run: |
-          cd build
           ctest --verbose
 
