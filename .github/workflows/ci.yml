@@ -25,13 +25,10 @@ jobs:
           sudo apt-get install -y libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev
           sudo apt-get install -y libgtest-dev
 
-      - name: Install tgbot-cpp
-        run: |
           # Клонируем репозиторий
           git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
           cd tgbot-cpp
           # Создаем директорию для установки
-
 
           # Конфигурируем CMake с пользовательским путем установки
           cmake . -DCMAKE_INSTALL_PREFIX=./
@@ -39,23 +36,12 @@ jobs:
           make -j$(nproc)
           make install
 
-
       # Шаг 3: Создаем директорию для сборки
-      - name: Create build directory
-        run: |
-          mkdir -p build
-
-      # Шаг 4: Запуск CMake для конфигурации проекта
-      - name: Configure project with CMake
-        run: |
-
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DTGBOT-CPP_INSTALL_PFEFIX=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
-
-      # Шаг 6: Сборка проекта
       - name: Build project
         run: |
-          #cd build
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./ -DTGBOT-CPP_INSTALL_PFEFIX=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
           make -j$(nproc)
 
       # Шаг 6: Запуск тестов (если они есть)
