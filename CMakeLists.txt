@@ -12,13 +12,15 @@ include(cmake/TgBot.cmake)
 
 enable_testing() 
 
+find_package(TgBot REQUIRED)
+find_package(Threads REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
+find_package(CURL)
+
 add_subdirectory(CursedWordsTGBot)
 add_subdirectory(Modules)
 add_subdirectory(Tests)
-
-find_package(TgBot REQUIRED)
-
-include_directories(${TgBot_include_DIR})
 
 if (CURL_FOUND)
     target_include_directories( ${target} PUBLIC ${CURL_INCLUDE_DIRS} )
