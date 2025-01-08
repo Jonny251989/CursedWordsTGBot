@@ -25,15 +25,6 @@ void ReactorResultTest::generator(){
         std::this_thread::sleep_for(std::chrono::seconds(9));
     }
 
-    // ptr_testing_bot->getEvents().onCommand("cmd@otherbot", [&](TgBot::Message::Ptr message) {
-    //     while (std::getline(inputFile, line)) {
-        
-    //         ptr_testing_bot->getApi().sendMessage(chat_id, line);
-    //         std::this_thread::sleep_for(std::chrono::seconds(9));
-    //      }
-    // });
-
-
     inputFile.close();
 
     ptr_testing_bot->getApi().sendMessage(chat_id, "Congratulations!Your TGBot works!\n");
@@ -56,8 +47,30 @@ TEST_F(ReactorResultTest, FirstTest) {
 
 
 
+void ReactorResultTest::checker(){
+    chat_id = -4673074190;
+    ptr_testing_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
+        if (StringTools::startsWith(message->text, "/start")) {
+            return;
+        }
+         ptr_testing_bot->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
+    });
+    try {
+        TgBot::TgLongPoll longPoll( *ptr_testing_bot);
+        while (true) {
+            printf("Long poll started\n");
+            longPoll.start();
+        }
+    } catch (TgBot::TgException& e) {
+        printf("error: %s\n", e.what());
+    }
+}
 
 
+
+
+
+/*
 
 void ReactorResultTest::testing_reactor(){
         TgBot::Bot bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
@@ -85,25 +98,4 @@ void ReactorResultTest::testing_reactor(){
 }
 
 
-
-
-
-void ReactorResultTest::checker(){
-    chat_id = -4673074190;
-    ptr_testing_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-        if (StringTools::startsWith(message->text, "/start")) {
-            return;
-        }
-         ptr_testing_bot->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
-    });
-    try {
-        TgBot::TgLongPoll longPoll( *ptr_testing_bot);
-        while (true) {
-            printf("Long poll started\n");
-            longPoll.start();
-        }
-    } catch (TgBot::TgException& e) {
-        printf("error: %s\n", e.what());
-    }
-}
-
+*/
