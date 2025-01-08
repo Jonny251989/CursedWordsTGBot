@@ -14,9 +14,11 @@ find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(CURL)
 
-include(cmake/TgBot.cmake)
+
 enable_testing()
 
+
+include(cmake/TgBot.cmake)
 
 set(PATH_TO_LIBRARIES ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} )
 
