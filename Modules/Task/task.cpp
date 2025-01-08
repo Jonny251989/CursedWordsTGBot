@@ -19,13 +19,6 @@ CursedWordDetectingTask::CursedWordDetectingTask(std::shared_ptr<IClassificator>
 
 }
 
-// void CursedWordDetectingTask::execute(){
-//     if(this->classificator_->check(*this))
-//         Logger::getInstance().logInfo(Logger::Levels::Info, ("Message " + this->reactor_->send_message() + " is good! \n"));
-//     else
-//         Logger::getInstance().logInfo(Logger::Levels::Info, ("Message " + this->reactor_->send_message() + " is terrible! \n"));
-    
-// }
 
 CursedWordDetectingTask::~CursedWordDetectingTask(){
 
