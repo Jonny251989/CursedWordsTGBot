@@ -16,6 +16,6 @@ set(TgBot_LIBRARIES "${TGBOT_CPP_INSTALL_PFEFIX}/lib")
 
 find_package(TgBot REQUIRED)
 
-set(TGBOT_BASE_PATH ${TGBOT_CPP_INSTALL_PFEFIX} CACHE PATH "Base path for the TgBot project")
+set(TGBOT_CPP_INSTALL_PFEFIX ${TGBOT_CPP_INSTALL_PFEFIX} CACHE PATH "Base path for the TgBot project")
 set(TgBot_INCLUDE_DIR ${TgBot_include_DIR} CACHE PATH "Include directory for TgBot")
-set(TGBOT_CPP_INSTALL_PFEFIX ${TgBot_LIBRARIES} CACHE PATH "Library directory for TgBot")
+set(TgBot_LIB_DIR ${TgBot_LIBRARIES} CACHE PATH "Library directory for TgBot")
