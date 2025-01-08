@@ -16,12 +16,13 @@ void ReactorResultTest::generator(){
         std::cerr << "Не удалось открыть файл!" << std::endl;
         return; 
     }
-    //cmd@otherbot
+    
     std::string line;
 
     while (std::getline(inputFile, line)) {
         
         ptr_testing_bot->getApi().sendMessage(chat_id, line);
+        m_map[line];
         std::this_thread::sleep_for(std::chrono::seconds(9));
     }
 
@@ -33,14 +34,21 @@ void ReactorResultTest::generator(){
 TEST_F(ReactorResultTest, FirstTest) {
     auto testing_fun = [&](){
         generator();
+        //checker();
     };
+    auto checker_fun = [&](){
+        checker();
+    };
+
     std::thread testingThread{testing_fun};
+    std::thread checkerThread{checker_fun};
 
     run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
 
     //testing_reactor();
     
     testingThread.join();
+    checkerThread.join();
 }
 
 
@@ -48,12 +56,14 @@ TEST_F(ReactorResultTest, FirstTest) {
 
 
 void ReactorResultTest::checker(){
-    chat_id = -4673074190;
+    chat_id = -1002432345513;
     ptr_testing_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-        if (StringTools::startsWith(message->text, "/start")) {
-            return;
+        
+         ptr_testing_bot->getApi().sendMessage(chat_id, "CHEKER GOT MESSAGE: " + message->text);
+        
+        if (m_map.find(message->text) != m_map.end()) {
+            m_map[message->text] = message->text;
         }
-         ptr_testing_bot->getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
     });
     try {
         TgBot::TgLongPoll longPoll( *ptr_testing_bot);
