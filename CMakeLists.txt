@@ -16,7 +16,8 @@ find_package(Boost COMPONENTS system REQUIRED)
 find_package(CURL)
 
 include(cmake/TgBot.cmake)
-enable_testing()
+
+set(PATH_TO_LIBRARIES ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} )
 
 add_subdirectory(CursedWordsTGBot)
 add_subdirectory(Modules)
@@ -26,3 +27,5 @@ if (CURL_FOUND)
     target_include_directories( ${target} PUBLIC ${CURL_INCLUDE_DIRS} )
     target_compile_definitions(${target} PRIVATE -DHAVE_CURL )
 endif()
+
+enable_testing()
