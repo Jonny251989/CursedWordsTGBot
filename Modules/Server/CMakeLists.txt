@@ -1,5 +1,13 @@
 
 set(target server_bot)
+set(Boost_USE_MULTITHREADED ON)
+
+find_package(TgBot REQUIRED)
+find_package(Threads REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
+find_package(CURL)
+
 
 add_library(${target} STATIC server.cpp)
 
