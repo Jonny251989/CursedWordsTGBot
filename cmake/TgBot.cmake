@@ -1,6 +1,5 @@
 # cmake/TgBot.cmake
 
-# Проверка, была ли передана переменная BASE_PATH
 if(NOT TGBOT_CPP_INSTALL_PREFIX)
     message(STATUS "TGBOT_CPP_INSTALL_PREFIX is not defined. Using default value.")
     set(TGBOT_CPP_INSTALL_PREFIX "/usr/local")  # Указываем путь по умолчанию /usr/local/include 
