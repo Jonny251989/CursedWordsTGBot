@@ -19,10 +19,11 @@ find_package(Boost COMPONENTS system REQUIRED)
 find_package(CURL)
 
 add_subdirectory(CursedWordsTGBot)
-add_subdirectory(Modules)
-add_subdirectory(Tests)
 
 if (CURL_FOUND)
     target_include_directories( ${target} PUBLIC ${CURL_INCLUDE_DIRS} )
     target_compile_definitions(${target} PRIVATE -DHAVE_CURL )
 endif()
+
+add_subdirectory(Modules)
+add_subdirectory(Tests)
