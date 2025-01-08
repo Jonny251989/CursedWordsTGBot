@@ -18,6 +18,12 @@ if (CURL_FOUND)
 endif()
 
 
+message(STATUS "TgBot_LIBRARIES: ${TgBot_LIBRARIES}")
+message(STATUS "CMAKE_THREAD_LIBS_INIT: ${CMAKE_THREAD_LIBS_INIT}")
+message(STATUS "OPENSSL_LIBRARIES: ${OPENSSL_LIBRARIES}")
+message(STATUS "Boost_LIBRARIES: ${Boost_LIBRARIES}")
+message(STATUS "CURL_LIBRARIES: ${CURL_LIBRARIES}")
+
 target_link_libraries( ${target} ${TgBot_LIBRARIES}/libTgBot.a ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES} queue task logger classificator reactor)
 
 set_target_properties(server_bot PROPERTIES LINKER_LANGUAGE CXX)

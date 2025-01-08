@@ -39,16 +39,17 @@ TEST_F(ReactorResultTest, FirstTest) {
     auto checker_fun = [&](){
         checker();
     };
-
-    std::thread testingThread{testing_fun};
     std::thread checkerThread{checker_fun};
+    std::thread testingThread{testing_fun};
 
     run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
 
+    //checker();
+
     //testing_reactor();
-    
-    testingThread.join();
     checkerThread.join();
+    testingThread.join();
+
 }
 
 
