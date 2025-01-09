@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - classificator_reactor
+    types:
+      - synchronize  # Запускать при коммитах в существующие пул-реквесты
+      - reopened     # Запускать при повторном открытии пул-реквеста
 jobs:
   build:
     runs-on: ubuntu-latest  # Для Ubuntu, но можно выбрать другие операционные системы
@@ -18,66 +21,29 @@ jobs:
       # Шаг 2: Установка зависимостей (если они есть)
       - name: Install dependencies
         run: |
-          # ls -al
           sudo apt-get update
           sudo apt-get upgrade -y
           sudo apt-get install -y build-essential g++ make cmake libcurl4-openssl-dev libssl-dev libjsoncpp-dev git zlib1g-dev
           sudo apt-get install -y libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev
           sudo apt-get install -y libgtest-dev
 
-      - name: Install tgbot-cpp
-        run: |
-          # ls -la
-          # Клонируем репозиторий
           git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
           cd tgbot-cpp
-          # Создаем директорию для установки
-          # ls -la
 
-          # Конфигурируем CMake с пользовательским путем установки
           cmake . -DCMAKE_INSTALL_PREFIX=./
-          # Собираем и устанавливаем проект
           make -j$(nproc)
           make install
-          # ls -la
-          # ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/cmake/TgBot/
-          # ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/lib/
-          # ls /home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp/include/
-          #  echo "SHOW ./include/"
-          #  ls ./include/
 
       # Шаг 3: Создаем директорию для сборки
-      - name: Create build directory
-        run: |
-          # ls -la
-          mkdir -p build
-
-      # Шаг 4: Запуск CMake для конфигурации проекта
-      - name: Configure project with CMake
-        run: |
-          # ls -la
-          mkdir -p build
-          # ls -la
-          cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./build -DBASE_PATH=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
-
-      # Шаг 6: Сборка проекта
       - name: Build project
         run: |
-          #ls -la
-          #cd build
-          #ls -la
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./ -DTGBOT_CPP_INSTALL_PREFIX=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
           make -j$(nproc)
 
-      # Шаг 6: Запуск тестов (если они есть)
+      # Шаг 4: Запуск тестов (если они есть)
       - name: Run tests
         run: |
-          # ls -la
-          mkdir -p ./CursedWordsTGBot
-          mkdir -p ./Tests/Queue_Tests
-          mkdir -p ./Tests/Parser_Tests
-          mkdir -p ./Tests/SignalHandler_Tests
-          cd Tests/UnitTests/
-          ./Parser_Tests/parser_tests*
-          ./Queue_Tests/queue_tests*
-          ./SignalHandler_Tests/signalhandler_tests*
-          #./ThreadSafeQueue_Tests/threadsafequeue_test*
+          cd build
+          ctest --verbose
