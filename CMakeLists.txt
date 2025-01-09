@@ -9,21 +9,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(Boost_USE_MULTITHREADED ON)
 
-find_package(TgBot REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
-find_package(CURL)
+find_package(CURL REQUIRED)
 
 include(cmake/TgBot.cmake)
-
-set (PATH_TO_LIBRARIES ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${CURL_LIBRARIES})
+enable_testing()
 
 add_subdirectory(CursedWordsTGBot)
 add_subdirectory(Modules)
 add_subdirectory(Tests)
-
-if (CURL_FOUND)
-    target_include_directories( ${target} PUBLIC ${CURL_INCLUDE_DIRS} )
-    target_compile_definitions(${target} PRIVATE -DHAVE_CURL )
-endif()

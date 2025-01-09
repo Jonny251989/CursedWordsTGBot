@@ -1,10 +1,13 @@
 #include "test_reactorsresult.hpp"
 
+size_t ReactorResultTest::count = 0;
+
 void ReactorResultTest::TearDown() {
 
 }
 
 void ReactorResultTest::SetUp() {
+    count = 0;
     std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
     ptr_testing_bot = std::make_shared<TgBot::Bot>(token);
 }
@@ -23,7 +26,7 @@ void ReactorResultTest::generator(){
         
         ptr_testing_bot->getApi().sendMessage(chat_id, line);
         m_map[line];
-        std::this_thread::sleep_for(std::chrono::seconds(9));
+        std::this_thread::sleep_for(std::chrono::seconds(5));
     }
 
     inputFile.close();
@@ -32,36 +35,29 @@ void ReactorResultTest::generator(){
 }
 
 TEST_F(ReactorResultTest, FirstTest) {
-    auto testing_fun = [&](){
-        generator();
-        //checker();
+    auto generator_f = [&](){
+        generator();//
     };
-    auto checker_fun = [&](){
+    auto checker_f = [&](){
         checker();
     };
-    std::thread checkerThread{checker_fun};
-    std::thread testingThread{testing_fun};
 
+    std::thread generatorThread{generator_f};
+    generatorThread.join();
     run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
-
+    std::thread checkerThread{checker_f}; 
+    checkerThread.join();
     //checker();
 
-    //testing_reactor();
-    checkerThread.join();
-    testingThread.join();
 
 }
-
-
-
-
 
 void ReactorResultTest::checker(){
     chat_id = -1002432345513;
     ptr_testing_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-        
-         ptr_testing_bot->getApi().sendMessage(chat_id, "CHEKER GOT MESSAGE: " + message->text);
-        
+        count++;
+        ptr_testing_bot->getApi().sendMessage(chat_id, "CHEKER" +std::to_string(count) + ": " + message->text);
+    
         if (m_map.find(message->text) != m_map.end()) {
             m_map[message->text] = message->text;
         }
@@ -76,37 +72,3 @@ void ReactorResultTest::checker(){
         printf("error: %s\n", e.what());
     }
 }
-
-
-
-
-
-/*
-
-void ReactorResultTest::testing_reactor(){
-        TgBot::Bot bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
-    bot.getEvents().onCommand("Hello, World!", [&bot](TgBot::Message::Ptr message) {
-        bot.getApi().sendMessage(message->chat->id, "GOOOOD!");
-    });
-    bot.getEvents().onAnyMessage([&bot](TgBot::Message::Ptr message) {
-        printf("User wrote %s\n", message->text.c_str());
-        printf("User wrote %s\n", std::to_string(message->chat->id).c_str());
-        if (StringTools::startsWith(message->text, "/start")) {
-            return;
-        }
-        bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
-    });
-    try {
-        printf("Bot username: %s\n", bot.getApi().getMe()->username.c_str());
-        TgBot::TgLongPoll longPoll(bot);
-        while (true) {
-            printf("Long poll started\n");
-            longPoll.start();
-        }
-    } catch (TgBot::TgException& e) {
-        printf("error: %s\n", e.what());
-    }
-}
-
-
-*/
