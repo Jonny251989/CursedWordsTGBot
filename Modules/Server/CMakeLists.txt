@@ -1,7 +1,6 @@
 
 set(target server_bot)
 
-
 add_library(${target} STATIC server.cpp)
 
 target_include_directories( ${target} PUBLIC . ${TgBot_include_DIR} ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${GTEST_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS})
