@@ -30,6 +30,7 @@ protected:
     void checker();
 
 private:
+    static size_t count;
     std::shared_ptr<TgBot::Bot> ptr_testing_bot;
     std::int64_t chat_id;
     std::unordered_map<std::string, std::string> m_map;
