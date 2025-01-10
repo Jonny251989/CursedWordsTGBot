@@ -28,7 +28,9 @@ protected:
     void testing_reactor();
     void generator();
     void checker();
-    std::unordered_map<std::string, std::string> m_map;
+    std::unordered_map<std::string, bool> m_map;
+    std::string gen_message;
+    std::string answ_message;
 private:
     static size_t count;
     std::shared_ptr<TgBot::Bot> t_bot;

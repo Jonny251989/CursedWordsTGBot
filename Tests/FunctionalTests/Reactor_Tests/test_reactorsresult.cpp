@@ -7,7 +7,8 @@ void ReactorResultTest::TearDown() {
 }
 
 void ReactorResultTest::SetUp() {
-    count = 0;
+    std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
+    t_bot = std::make_shared<TgBot::Bot>(token);
 }
 
 
@@ -21,7 +22,8 @@ void ReactorResultTest::generator(){
     std::string line;
     while (std::getline(inputFile, line)) {  
         t_bot->getApi().sendMessage(chat_id, line);
-        m_map[line];
+        gen_message = line;
+        m_map[gen_message] = false;
         std::this_thread::sleep_for(std::chrono::seconds(3));
     }
     inputFile.close();
@@ -32,36 +34,31 @@ void ReactorResultTest::generator(){
 }
 
 TEST_F(ReactorResultTest, FirstTest) {
-    auto generator_f = [&](){
-        generator();
-    };
-    // auto checker_f = [&](){
-    //     checker();
+    // auto generator_f = [&](){
+    //     generator();
     // };
+    auto checker_f = [&](){
+        checker();
+    };
     auto main_f = [&](){
         run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
     };
-    std::thread generatorThread{generator_f};   
     std::thread mainThread{main_f};
-
-    checker();
-
-    generatorThread.join();
+    std::thread checkerThread{checker_f};     
+    generator();
+    checkerThread.join();
     mainThread.join();
-
-
 }
 
 void ReactorResultTest::checker(){
     chat_id = -1002432345513;
-    std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
-    t_bot = std::make_shared<TgBot::Bot>(token);
-
+    
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
          std::cout<<"message in message: "<<message->text<<"\n";
-        if (m_map.find(message->text) != m_map.end()) {
-            //std::cout<<"SIZE AFTER: "<<m_map.size()<<"\nMessage: "<<message->text<<"\n";
-            m_map[message->text] = message->text;
+         
+        answ_message = message->text;
+        if ((answ_message.find(gen_message) != std::string::npos) && !m_map[gen_message]) {
+            m_map[gen_message] = true;
         }
     });
     try {
@@ -71,7 +68,6 @@ void ReactorResultTest::checker(){
             longPoll.start();
         }
     } catch (TgBot::TgException& e) {
-        t_bot->getApi().sendMessage(chat_id, "Error!");
         printf("error: %s\n", e.what());
     }
 }
