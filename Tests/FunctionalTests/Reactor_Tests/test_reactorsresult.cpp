@@ -15,7 +15,7 @@ void ReactorResultTest::SetUp() {
 
 void ReactorResultTest::generator(){
     chat_id = -1002432345513;
-    std::ifstream inputFile("./Tests/FunctionalTests/Reactor_Tests/messages.txt");
+    std::ifstream inputFile("./messages.txt");
     if (!inputFile) {
         std::cerr << "Не удалось открыть файл!" << std::endl;
     }
@@ -33,7 +33,7 @@ void ReactorResultTest::generator(){
     }
     shutdown_requested = true;
     kill(getpid(), SIGINT);
-    kill(getpid(), SIGTERM);
+    //kill(getpid(), SIGTERM);
 }
 
 TEST_F(ReactorResultTest, FirstTest) {
