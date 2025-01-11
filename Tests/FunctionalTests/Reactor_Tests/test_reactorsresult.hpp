@@ -17,8 +17,6 @@
 #include "run_bot.hpp"
 
 
-
-
 class ReactorResultTest : public ::testing::Test{
 
 protected:
@@ -31,6 +29,7 @@ protected:
     std::unordered_map<std::string, bool> m_map;
     std::string gen_message;
     std::string answ_message;
+    std::atomic<bool> shutdown_requested;
 private:
     static size_t count;
     std::shared_ptr<TgBot::Bot> t_bot;

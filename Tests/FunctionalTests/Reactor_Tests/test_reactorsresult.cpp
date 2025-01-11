@@ -9,6 +9,7 @@ void ReactorResultTest::TearDown() {
 void ReactorResultTest::SetUp() {
     std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
     t_bot = std::make_shared<TgBot::Bot>(token);
+    shutdown_requested = false;
 }
 
 
@@ -31,6 +32,9 @@ void ReactorResultTest::generator(){
     for(auto it = m_map.begin(); it != m_map.end(); it++){
         std::cout<<"key: "<<it->first<<", value: "<<it->second<<"\n";
     }
+    shutdown_requested = true;
+    kill(getpid(), SIGINT);
+    kill(getpid(), SIGTERM);
 }
 
 TEST_F(ReactorResultTest, FirstTest) {
@@ -63,8 +67,8 @@ void ReactorResultTest::checker(){
     });
     try {
         TgBot::TgLongPoll longPoll( *t_bot);
-        while (true) {
-            printf("Long poll started\n");
+        while (!shutdown_requested) {
+            printf("LONG POLL IS WORKING!\n");
             longPoll.start();
         }
     } catch (TgBot::TgException& e) {
