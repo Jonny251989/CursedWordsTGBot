@@ -2,11 +2,12 @@ name: TGBot Workflow
 on:
   push:
     branches:
-      - CI
+      - '**'
   pull_request:
     branches:
-      - CI  # Запускать для пул-реквестов на ветку CI
+      - '**'
     types:
+      - opened
       - synchronize  # Запускать при коммитах в существующие пул-реквесты
       - reopened     # Запускать при повторном открытии пул-реквеста
 jobs:
