@@ -12,10 +12,6 @@
             if (StringTools::startsWith(message->text, "/start")) {
                 return;
             }
-
-            // std::cout<<"ID chat"<< message->chat->id<<"\n";
-
-
             if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<SimpleClassificator>(message->text),
              std::make_shared<EchoReactor>(ptr_bot_, message->text, message->chat->id, message->from)))){
 
