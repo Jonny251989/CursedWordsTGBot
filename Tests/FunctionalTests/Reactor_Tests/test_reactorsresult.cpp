@@ -15,7 +15,7 @@ void ReactorResultTest::SetUp() {
 
 void ReactorResultTest::generator(){
     chat_id = -1002432345513;
-    std::ifstream inputFile("./messages.txt");
+    std::ifstream inputFile("./Tests/FunctionalTests/Reactor_Tests/messages.txt");
     if (!inputFile) {
         std::cerr << "Не удалось открыть файл!" << std::endl;
     }
@@ -57,7 +57,10 @@ void ReactorResultTest::checker(){
     chat_id = -1002432345513;
     
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-         std::cout<<"message in message: "<<message->text<<"\n";
+        message->messageId;
+        message->replyToMessage->text;
+        if(message->replyToMessage !=nullptr)
+            std::cout<<"replyToMessage: "<<message->replyToMessage->text<<",\n";
          
         answ_message = message->text;
         if ((answ_message.find(gen_message) != std::string::npos) && !m_map[gen_message]) {
@@ -67,7 +70,7 @@ void ReactorResultTest::checker(){
     try {
         TgBot::TgLongPoll longPoll( *t_bot);
         while (!shutdown_requested) {
-            printf("LONG POLL IS WORKING!\n");
+            //printf("LONG POLL IS WORKING!\n");
             longPoll.start();
         }
     } catch (TgBot::TgException& e) {
