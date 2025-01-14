@@ -28,49 +28,56 @@ void ReactorResultTest::generator(){
     }
     inputFile.close();
     std::cout<<"Generator works!\n";
-    for(auto it = m_map.begin(); it != m_map.end(); it++){
-        std::cout<<"key: "<<it->first<<", value: "<<it->second<<"\n";
-    }
-    shutdown_requested = true;
-    kill(getpid(), SIGINT);
     //kill(getpid(), SIGTERM);
 }
 
 TEST_F(ReactorResultTest, FirstTest) {
-    // auto generator_f = [&](){
-    //     generator();
-    // };
-    auto checker_f = [&](){
-        checker();
+    auto generator_f = [&](){
+        generator();
     };
+    // auto checker_f = [&](){
+    //     checker();
+    // };
     auto main_f = [&](){
         run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
     };
     std::thread mainThread{main_f};
-    std::thread checkerThread{checker_f};     
-    generator();
-    checkerThread.join();
+    std::thread generatorThread{generator_f};     
+    checker();
+    kill(getpid(), SIGINT);
+    for(auto it = m_map.begin(); it != m_map.end(); it++){
+        std::cout<<"key: "<<it->first<<", value: "<<it->second<<"\n";
+    }
+    generatorThread.join();
     mainThread.join();
 }
 
 void ReactorResultTest::checker(){
     chat_id = -1002432345513;
-    
+    auto last_change_time = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
+
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-        message->messageId;
-        message->replyToMessage->text;
+        // message->messageId;
+        // message->replyToMessage->text;
         if(message->replyToMessage !=nullptr)
             std::cout<<"replyToMessage: "<<message->replyToMessage->text<<",\n";
-         
+            
+        //elapsed_seconds = std::chrono::duration<double>::zero();
+        last_change_time = std::chrono::steady_clock::now();
+        //now = std::chrono::steady_clock::now();
         answ_message = message->text;
         if ((answ_message.find(gen_message) != std::string::npos) && !m_map[gen_message]) {
             m_map[gen_message] = true;
         }
+
+        
     });
     try {
         TgBot::TgLongPoll longPoll( *t_bot);
-        while (!shutdown_requested) {
-            //printf("LONG POLL IS WORKING!\n");
+        while (m_map.size() < size_map && elapsed_seconds.count() < limit_time) {
+            elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
+            std::cout<<"different times: "<<elapsed_seconds.count()<<", size of map: "<<m_map.size()<<"\n";
             longPoll.start();
         }
     } catch (TgBot::TgException& e) {
