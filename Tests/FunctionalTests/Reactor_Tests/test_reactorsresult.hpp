@@ -15,6 +15,7 @@
 #include "queue.hpp"
 #include <tgbot/tgbot.h>
 #include "run_bot.hpp"
+#include <chrono>
 
 
 class ReactorResultTest : public ::testing::Test{
@@ -34,5 +35,8 @@ private:
     static size_t count;
     std::shared_ptr<TgBot::Bot> t_bot;
     std::int64_t chat_id;
+    const size_t size_map = 10;
+    const size_t limit_time = 10;
+    
     //std::unordered_map<std::string, std::string> m_map;
 };
