@@ -16,6 +16,8 @@
 #include <tgbot/tgbot.h>
 #include "run_bot.hpp"
 #include <chrono>
+#include <pthread.h>
+#include <csignal>
 
 
 class ReactorResultTest : public ::testing::Test{
@@ -27,9 +29,9 @@ protected:
     void testing_reactor();
     void generator();
     void checker();
-    std::unordered_map<std::string, bool> m_map;
-    std::string gen_message;
-    std::string answ_message;
+    std::int32_t send_messageId;
+    std::int32_t answer_messageId;
+    std::unordered_map<std::int32_t, std::int32_t> m_map;
     std::atomic<bool> shutdown_requested;
 private:
     static size_t count;
