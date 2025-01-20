@@ -24,7 +24,6 @@ void ReactorResultTest::generator(){
     while (std::getline(inputFile, line)) {  
         auto message = t_bot->getApi().sendMessage(chat_id, line);
         send_messageId = message->messageId;
-        std::cout<<"SEND MESSAGE WITH ID "<< message->messageId<<"\n";
         m_map[send_messageId];
         std::this_thread::sleep_for(std::chrono::seconds(3));
     }
@@ -60,12 +59,14 @@ TEST_F(ReactorResultTest, FirstTest) {
 
 void ReactorResultTest::checker(){
     chat_id = -1002432345513;
+
     auto last_change_time = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-        std::cout<<"GET ASNWER MESSAGE WITH ID "<< message->messageId<<"\n";
+
         last_change_time = std::chrono::steady_clock::now();
+
         answer_messageId = message->messageId;
         m_map[send_messageId] = answer_messageId;
     });
@@ -73,7 +74,7 @@ void ReactorResultTest::checker(){
         TgBot::TgLongPoll longPoll( *t_bot);
         while (m_map.size() < size_map && elapsed_seconds.count() < limit_time) {
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
-            std::cout<<"different times: "<<elapsed_seconds.count()<<", size of map: "<<m_map.size()<<"\n";
+            std::cout<<"different times: "<<(int)elapsed_seconds.count()<<", size of map: "<<m_map.size()<<"\n";
             longPoll.start();
         }
     } catch (TgBot::TgException& e) {
