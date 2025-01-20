@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include "logger.hpp"
+#include "tgbot/types/ReplyParameters.h"
 
 class IReactor{
 public:
