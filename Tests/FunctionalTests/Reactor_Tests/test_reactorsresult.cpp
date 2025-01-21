@@ -1,7 +1,5 @@
 #include "test_reactorsresult.hpp"
 
-size_t ReactorResultTest::count = 0;
-
 void ReactorResultTest::TearDown() {
 
 }
@@ -10,6 +8,7 @@ void ReactorResultTest::SetUp() {
     std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
     t_bot = std::make_shared<TgBot::Bot>(token);
     shutdown_requested = false;
+    count = 0;
 }
 
 
@@ -23,40 +22,12 @@ void ReactorResultTest::generator(){
     std::string line;
     while (std::getline(inputFile, line)) {  
         auto message = t_bot->getApi().sendMessage(chat_id, line);
-        send_messageId = message->messageId;
-        m_map[send_messageId];
+        sent_message = line;
+        count++;
         std::this_thread::sleep_for(std::chrono::seconds(3));
     }
     inputFile.close();
     std::cout<<"Generator's works finished!\n";
-}
-
-// void* thread_function(void* arg) {
-//     run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
-//     return nullptr;
-// }
-
-TEST_F(ReactorResultTest, FirstTest) {
-    auto generator_f = [&](){
-        generator();
-    };
-    // auto checker_f = [&](){
-    //     checker();
-    // };
-    auto main_f = [&](){
-        run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
-    };
-    std::thread mainThread{main_f};
-    std::thread generatorThread{generator_f};     
-    checker();
-    std::raise(SIGINT);
-
-    generatorThread.join();
-    mainThread.join();
-
-    for(auto it = m_map.begin(); it != m_map.end(); it++){
-        EXPECT_EQ(std::abs(it->first - it ->second), 1); // TO_DO: ASSERT
-    }
 }
 
 void ReactorResultTest::checker(){
@@ -65,20 +36,37 @@ void ReactorResultTest::checker(){
     std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-        std::cout<<message->replyToMessage->text<<"\n";
-        std::cout<<"GET ASNWER MESSAGE WITH ID "<< message->messageId<<"\n";
+        EXPECT_EQ(sent_message, message->replyToMessage->text);
         last_change_time = std::chrono::steady_clock::now();
-        answer_messageId = message->messageId;
-        m_map[send_messageId] = answer_messageId;
+
     });
     try {
         TgBot::TgLongPoll longPoll( *t_bot);
-        while (m_map.size() < size_map && elapsed_seconds.count() < limit_time) {
-            std::cout<<"different times: "<<elapsed_seconds.count()<<", size of map: "<<m_map.size()<<"\n";
+        while (count < size_map && elapsed_seconds.count() < limit_time) {
             longPoll.start();
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
+            std::cout<<"different times by int: "<<(int)(elapsed_seconds.count())<<"\ndifferent times by double: "<<elapsed_seconds.count()<<"\nsize of map: "<<count<<"\n";
         }
     } catch (TgBot::TgException& e) {
         printf("error: %s\n", e.what());
     }
+}
+
+TEST_F(ReactorResultTest, FirstTest) {
+    auto generator_f = [&](){
+        generator();
+    };
+
+    auto main_f = [&](){
+        run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
+    };
+
+    std::thread mainThread{main_f};
+    std::thread generatorThread{generator_f};     
+    checker();
+
+    std::raise(SIGINT);
+
+    generatorThread.join();
+    mainThread.join();
 }

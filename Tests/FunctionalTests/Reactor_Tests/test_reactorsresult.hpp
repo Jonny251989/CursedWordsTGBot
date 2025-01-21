@@ -29,12 +29,11 @@ protected:
     void testing_reactor();
     void generator();
     void checker();
-    std::int32_t send_messageId;
-    std::int32_t answer_messageId;
-    std::unordered_map<std::int32_t, std::int32_t> m_map;
+
+    std::string sent_message;
     std::atomic<bool> shutdown_requested;
 private:
-    static size_t count;
+    size_t count;
     std::shared_ptr<TgBot::Bot> t_bot;
     std::int64_t chat_id;
     const size_t size_map = 10;
