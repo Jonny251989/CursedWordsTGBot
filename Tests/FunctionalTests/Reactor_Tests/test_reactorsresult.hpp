@@ -21,23 +21,17 @@
 
 
 class ReactorResultTest : public ::testing::Test{
-
 protected:
     void SetUp() override;
     void TearDown() override;
-
-    void testing_reactor();
     void generator();
     void checker();
 
-    std::string sent_message;
-    std::atomic<bool> shutdown_requested;
 private:
-    size_t count;
+    size_t count_sending_messages;
     std::shared_ptr<TgBot::Bot> t_bot;
     std::int64_t chat_id;
+    std::string sent_message;
     const size_t size_map = 10;
-    const size_t limit_time = 10;
-    
-    //std::unordered_map<std::string, std::string> m_map;
+    const size_t limit_time = 6;
 };

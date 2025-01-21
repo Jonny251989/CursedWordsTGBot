@@ -7,13 +7,11 @@ void ReactorResultTest::TearDown() {
 void ReactorResultTest::SetUp() {
     std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
     t_bot = std::make_shared<TgBot::Bot>(token);
-    shutdown_requested = false;
-    count = 0;
+    count_sending_messages = 0;
+    chat_id = -1002432345513;
 }
 
-
 void ReactorResultTest::generator(){
-    chat_id = -1002432345513;
     //std::ifstream inputFile("./messages.txt");
     std::ifstream inputFile("./Tests/FunctionalTests/Reactor_Tests/messages.txt");
     if (!inputFile) {
@@ -23,7 +21,7 @@ void ReactorResultTest::generator(){
     while (std::getline(inputFile, line)) {  
         auto message = t_bot->getApi().sendMessage(chat_id, line);
         sent_message = line;
-        count++;
+        count_sending_messages++;
         std::this_thread::sleep_for(std::chrono::seconds(3));
     }
     inputFile.close();
@@ -31,21 +29,19 @@ void ReactorResultTest::generator(){
 }
 
 void ReactorResultTest::checker(){
-    chat_id = -1002432345513;
     auto last_change_time = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
         EXPECT_EQ(sent_message, message->replyToMessage->text);
         last_change_time = std::chrono::steady_clock::now();
-
     });
     try {
         TgBot::TgLongPoll longPoll( *t_bot);
-        while (count < size_map && elapsed_seconds.count() < limit_time) {
+        while (count_sending_messages < size_map && elapsed_seconds.count() < limit_time) {
             longPoll.start();
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
-            std::cout<<"different times by int: "<<(int)(elapsed_seconds.count())<<"\ndifferent times by double: "<<elapsed_seconds.count()<<"\nsize of map: "<<count<<"\n";
+            std::cout<<"different times: "<<elapsed_seconds.count()<<"\ncount of sending messages: "<<count_sending_messages<<"\n";
         }
     } catch (TgBot::TgException& e) {
         printf("error: %s\n", e.what());
