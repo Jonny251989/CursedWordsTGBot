@@ -6,7 +6,6 @@ ptr_bot_(ptr_bot), message_(message), chat_id_(chat_id), messageId_(messageId), 
 }
 
 void EchoReactor::react(bool classification_result){
-    // std::shared_ptr<ReplyParameters> repl_ptr {std::make_share<ReplyParameters>(messageID)};
 
     ptr_bot_->getApi().sendMessage(chat_id_, "Message with ID " + std::to_string(messageId_) + " is cursed word!",
      nullptr, std::make_shared<TgBot::ReplyParameters>(messageId_, chat_id_)); //
