@@ -15,15 +15,14 @@ public:
 };
 
 
-class EchoReactor: public IReactor{
+class EchoReactor final: public IReactor{
 public:
-    EchoReactor(std::shared_ptr<TgBot::Bot> ptr_bot, std::string message, std::int64_t chat_id, std::int32_t messageId, TgBot::User::Ptr from);
-    virtual void react(bool classification_result) final;
+    EchoReactor(std::shared_ptr<TgBot::Bot> ptr_bot, std::string message, std::int64_t chat_id, std::int32_t messageId);
+    void react(bool classification_result) final;
     ~EchoReactor();
 private:
     std::shared_ptr<TgBot::Bot> ptr_bot_;
     std::string message_;
     std::int64_t chat_id_;
     std::int32_t messageId_;
-    TgBot::User::Ptr from_;
 };
