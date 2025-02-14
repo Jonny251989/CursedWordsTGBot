@@ -7,8 +7,10 @@
 #include <string>
 #include "logger.hpp"
 #include "mutex"
-#include <pybind11/embed.h>
-#include <pybind11/pybind11.h>
+#include <cstdio>  // для popen и pclose
+#include <cstdlib>  // для std::stod
+#include <chrono>
+#include <stdexcept>
 
 
 class IClassificator{
@@ -23,7 +25,6 @@ public:
     virtual std::string check() override;
     ~SimpleClassificator();
 
-    pybind11::module_ script_;
 
 private:
     std::string message_;

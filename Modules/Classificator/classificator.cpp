@@ -2,35 +2,56 @@
 
 SimpleClassificator::SimpleClassificator(const std::string& message): message_(message){
     
-    pybind11::module_ sys = pybind11::module_::import("sys");
-    sys.attr("path").attr("append")("./Modules/Classificator/");
-
-    try {
-        script_ = pybind11::module_::import("classifier");
-    } catch (const pybind11::error_already_set& e) {
-        std::cerr << "Ошибка при импорте модуля: " << e.what() << std::endl;
-    }
 
 }
 
     
 std::string SimpleClassificator::check() {
-   
-    pybind11::object result;
+    // Начало замера времени
+    auto start_time = std::chrono::high_resolution_clock::now();
 
-    try {
-        result = script_.attr("classify_message")(message_);
-    } catch (const pybind11::error_already_set& e) {
-        std::cerr << "Ошибка при вызове функции: " << e.what() << std::endl;
-        return "Ошибка при вызове функции.";
+    // Формируем команду для запуска Python-скрипта
+    std::string command = "python3 ./Modules/Classificator/classifier.py \"" + message_ + "\"";
+
+    // Открываем процесс и захватываем его вывод
+    FILE* pipe = popen(command.c_str(), "r");
+    if (!pipe) {
+        return "Ошибка при запуске Python-скрипта.";
     }
 
-    double toxicity_prob = result.cast<double>();
+    // Читаем вывод скрипта
+    char buffer[128];
+    std::string result;
+    while (fgets(buffer, sizeof(buffer), pipe)) {
+        result += buffer;
+    }
 
-    if (toxicity_prob > 0.5) {
-        return "Вероятность, что сообщение матное -  " + std::to_string(toxicity_prob);
-    } else {
-        return "Вероятность, что сообщение не матное -  " + std::to_string(toxicity_prob);
+    // Закрываем процесс
+    int status = pclose(pipe);
+    if (status != 0) {
+        return "Ошибка при выполнении Python-скрипта.";
+    }
+
+    // Конец замера времени
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end_time - start_time;  // Разница во времени
+
+    // Выводим время работы
+    std::cout << "ВРЕМЯ ВЫПОЛНЕНИЯ КЛАССИФИКАЦИИ: " << duration.count() << " секунд" << std::endl;
+
+    try {
+        double toxicity_prob = std::stod(result);  // Преобразуем строку в double
+
+        if (toxicity_prob > 0.5) {
+            return "Сообщение токсичное! Вероятность: " + std::to_string(toxicity_prob) + "\n";
+        } else {
+            return "Сообщение не токсичное. Вероятность: " + std::to_string(toxicity_prob) + "\n";
+        }
+
+    } catch (const std::invalid_argument& e) {
+        return "Ошибка: не удалось преобразовать результат в число.";
+    } catch (const std::out_of_range& e) {
+        return "Ошибка: число выходит за пределы допустимого диапазона.";
     }
 }
 
