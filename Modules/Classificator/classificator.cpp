@@ -19,7 +19,6 @@ std::string SimpleClassificator::check() {
     pybind11::object result;
 
     try {
-        std::cout<<"check()\n";
         result = script_.attr("classify_message")(message_);
     } catch (const pybind11::error_already_set& e) {
         std::cerr << "Ошибка при вызове функции: " << e.what() << std::endl;
