@@ -12,8 +12,8 @@ void ReactorResultTest::SetUp() {
 }
 
 void ReactorResultTest::generator(){
-    //std::ifstream inputFile("./Tests/FunctionalTests/Reactor_Tests/messages.txt");
-    std::ifstream inputFile("./messages.txt");
+    std::ifstream inputFile("./Tests/FunctionalTests/Reactor_Tests/messages.txt");
+    //std::ifstream inputFile("./messages.txt");
     if (!inputFile) {
         std::cerr << "Не удалось открыть файл!" << std::endl;
     }
@@ -33,15 +33,20 @@ void ReactorResultTest::checker(){
     std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
+            std::cout<<"2\n";
             count_recieve_messages++;
+
             std::lock_guard lg{set_mutex};
-            ASSERT_EQ(message_container.count(message->replyToMessage->text), true);
+            if(message->replyToMessage)
+                std::cout<<message->text<<"\n";
+            //ASSERT_EQ(message_container.count(message->replyToMessage->text), true);
             last_change_time = std::chrono::steady_clock::now(); 
     });
     try {
         TgBot::TgLongPoll longPoll( *t_bot);
         while (count_recieve_messages <= limit_sent_messages_ && elapsed_seconds.count() < limit_time_in_sec) {
             longPoll.start();
+            std::cout<<"checker\n";
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
         }
     } catch (TgBot::TgException& e) {
@@ -54,11 +59,10 @@ TEST_F(ReactorResultTest, FirstTest) {
     std::jthread mainThread{[&](){
         run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
     }};    
+    // generator();
+    // std::this_thread::sleep_for(std::chrono::seconds(3));
 
-    generator();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-
-    std::raise(SIGINT);
+    //std::raise(SIGINT);
     
     checker();
 

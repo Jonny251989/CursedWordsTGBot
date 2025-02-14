@@ -12,6 +12,7 @@ Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }
+
         if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<SimpleClassificator>(message->text),
             std::make_shared<EchoReactor>(ptr_bot_, message->text, message->chat->id, message->messageId)))){
 

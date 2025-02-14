@@ -20,7 +20,7 @@
 
 void run_bot(std::string token){
 
-        std::unique_ptr<TgBot::Bot> ptr_bot = std::make_unique<TgBot::Bot>(token);
+        std::unique_ptr<TgBot   ::Bot> ptr_bot = std::make_unique<TgBot::Bot>(token);
 
         Logger::getInstance().setName(ptr_bot->getApi().getMe()->username);
         Logger::getInstance().setLevel(Logger::Levels::Debug);
