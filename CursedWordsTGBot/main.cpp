@@ -17,8 +17,6 @@
 #include "worker.hpp"
 #include "signalhandler.hpp"
 
-#include <pybind11/embed.h>
-
 
 std::string get_arguments_string(size_t argc, char**argv){
     std::vector<std::string> arguments_command_line;
@@ -29,9 +27,6 @@ std::string get_arguments_string(size_t argc, char**argv){
 }
 
 int main(int argc, char *argv[]) {
-
-
-    pybind11::scoped_interpreter guard{};
 
     try{
 
