@@ -17,6 +17,9 @@
 #include "worker.hpp"
 #include "signalhandler.hpp"
 
+#include <pybind11/embed.h>
+
+
 std::string get_arguments_string(size_t argc, char**argv){
     std::vector<std::string> arguments_command_line;
     for(size_t i = 1; i < argc; i++)
@@ -26,8 +29,12 @@ std::string get_arguments_string(size_t argc, char**argv){
 }
 
 int main(int argc, char *argv[]) {
-    
+
+
+    pybind11::scoped_interpreter guard{};
+
     try{
+
         std::string token = get_arguments_string(argc, argv);
         Parser parser{{"-token"}};
         std::unordered_map<std::string, std::string> tokens;
