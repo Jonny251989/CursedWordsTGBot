@@ -2,11 +2,12 @@ name: TGBot Workflow
 on:
   push:
     branches:
-      - classificator_reactor
+      - '**'
   pull_request:
     branches:
-      - classificator_reactor
+      - '**'
     types:
+      - opened
       - synchronize  # Запускать при коммитах в существующие пул-реквесты
       - reopened     # Запускать при повторном открытии пул-реквеста
 jobs:
