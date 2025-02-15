@@ -11,6 +11,12 @@ find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(CURL REQUIRED)
+find_package(Python3 REQUIRED COMPONENTS Development)
+
+
+set(NUMPY_INCLUDE_DIR "/home/ivan/.local/lib/python3.10/site-packages/numpy/core/include")
+include_directories(${Python3_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIR})
+
 
 include(cmake/TgBot.cmake)
 enable_testing()
