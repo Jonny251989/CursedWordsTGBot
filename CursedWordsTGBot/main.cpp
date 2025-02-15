@@ -16,6 +16,8 @@
 #include "server.hpp"
 #include "worker.hpp"
 #include "signalhandler.hpp"
+#include <Python.h>
+#include <numpy/arrayobject.h>
 
 
 std::string get_arguments_string(size_t argc, char**argv){
@@ -28,8 +30,9 @@ std::string get_arguments_string(size_t argc, char**argv){
 
 int main(int argc, char *argv[]) {
 
+    Py_Initialize();
+    import_array();
     try{
-
         std::string token = get_arguments_string(argc, argv);
         Parser parser{{"-token"}};
         std::unordered_map<std::string, std::string> tokens;

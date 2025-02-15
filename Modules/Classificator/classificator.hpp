@@ -11,7 +11,8 @@
 #include <cstdlib>  // для std::stod
 #include <chrono>
 #include <stdexcept>
-
+#include <Python.h>
+#include <numpy/arrayobject.h>
 
 class IClassificator{
 public:

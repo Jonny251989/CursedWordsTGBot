@@ -16,7 +16,8 @@
 #include "server.hpp"
 #include "worker.hpp"
 #include "signalhandler.hpp"
-
+#include <Python.h>
+#include <numpy/arrayobject.h>
 
 void run_bot(std::string token){
 
