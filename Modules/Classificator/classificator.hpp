@@ -11,8 +11,9 @@
 #include <cstdlib>  // для std::stod
 #include <chrono>
 #include <stdexcept>
-#include <Python.h>
-#include <numpy/arrayobject.h>
+#include "client.hpp"
+#include <grpcpp/grpcpp.h>
+
 
 class IClassificator{
 public:
@@ -24,9 +25,10 @@ class SimpleClassificator: public IClassificator{
 public:
     SimpleClassificator(const std::string& message);
     virtual std::string check() override;
-    ~SimpleClassificator();
+    ~SimpleClassificator(); 
 
 
 private:
     std::string message_;
+    std::unique_ptr<ToxicityClassifierClient> ptr_client_;
 };
