@@ -13,6 +13,8 @@
 #include <stdexcept>
 
 
+
+
 class IClassificator{
 public:
     virtual std::string check() = 0;
@@ -23,9 +25,10 @@ class SimpleClassificator: public IClassificator{
 public:
     SimpleClassificator(const std::string& message);
     virtual std::string check() override;
-    ~SimpleClassificator();
+    ~SimpleClassificator(); 
 
 
 private:
     std::string message_;
+    //std::unique_ptr<ToxicityClassifierClient> ptr_client_;
 };
