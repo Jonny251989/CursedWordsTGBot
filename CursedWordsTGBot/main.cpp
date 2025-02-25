@@ -16,7 +16,7 @@
 #include "server.hpp"
 #include "worker.hpp"
 #include "signalhandler.hpp"
-
+#include <grpcpp/grpcpp.h>
 
 std::string get_arguments_string(size_t argc, char**argv){
     std::vector<std::string> arguments_command_line;
@@ -29,7 +29,6 @@ std::string get_arguments_string(size_t argc, char**argv){
 int main(int argc, char *argv[]) {
 
     try{
-
         std::string token = get_arguments_string(argc, argv);
         Parser parser{{"-token"}};
         std::unordered_map<std::string, std::string> tokens;
@@ -41,6 +40,6 @@ int main(int argc, char *argv[]) {
         Logger::getInstance().logInfo(Logger::Levels::Info, ex.what());
         std::exit(EXIT_FAILURE);
     }
-
+    grpc_shutdown();
     return 0;
 };

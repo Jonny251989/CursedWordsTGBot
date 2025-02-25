@@ -11,7 +11,7 @@
 #include <cstdlib>  // для std::stod
 #include <chrono>
 #include <stdexcept>
-
+#include "client.hpp"
 
 
 
@@ -30,5 +30,5 @@ public:
 
 private:
     std::string message_;
-    //std::unique_ptr<ToxicityClassifierClient> ptr_client_;
+    std::unique_ptr<ToxicityClassifierClient> ptr_client_;
 };
