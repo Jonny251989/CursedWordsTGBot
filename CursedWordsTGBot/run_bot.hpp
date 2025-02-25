@@ -20,10 +20,11 @@
 void run_bot(std::string token){
 
         std::unique_ptr<TgBot   ::Bot> ptr_bot = std::make_unique<TgBot::Bot>(token);
-
+        std::cout<<"setName\n";
         Logger::getInstance().setName(ptr_bot->getApi().getMe()->username);
+        std::cout<<"setLevel\n";
         Logger::getInstance().setLevel(Logger::Levels::Debug);
-
+        std::cout<<"make Queue\n";
         std::shared_ptr<Queue<ITask>> ptr_queue = std::make_shared<Queue<ITask>> ();
         Server server(std::move(ptr_bot), ptr_queue);
         Worker worker(ptr_queue);
