@@ -11,6 +11,7 @@ find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(CURL REQUIRED)
+find_package(ToxicityClassifierClient CONFIG REQUIRED)
 
 include(cmake/TgBot.cmake)
 enable_testing()
