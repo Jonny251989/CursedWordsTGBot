@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 #include "logger.hpp"
-#include "client.hpp"
+
 
 class IReactor{
 public:
