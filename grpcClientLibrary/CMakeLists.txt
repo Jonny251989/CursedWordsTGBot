@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(ToxicityClassifierClient)
+project(toxicity_classifier)
 
-set(target ToxicityClassifierClient)
+set(target toxicity_classifier)
 
 # Настройка путей для Protobuf и gRPC
 list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib/cmake/protobuf")
@@ -22,13 +22,6 @@ set(GRPC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/toxicity_classifier.grpc.pb.h)
 # Создаем статическую библиотеку
 add_library(${target} STATIC client.cpp ${PROTO_SRCS} ${GRPC_SRCS})
 
-# Указываем заголовочные файлы
-target_include_directories(${target}
-    PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>  # Для сборки
-    $<INSTALL_INTERFACE:include>                   # Для установки
-)
-
 # Линкуем зависимости
 target_link_libraries(${target}
     PUBLIC
@@ -42,49 +35,3 @@ target_link_libraries(${target}
     protobuf::libprotobuf
     utf8_range::utf8_validity
 )
-
-# Генерация файлов конфигурации для find_package
-include(CMakePackageConfigHelpers)
-
-# Создаем файл конфигурации
-configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/ToxicityClassifierClientConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/ToxicityClassifierClientConfig.cmake
-    INSTALL_DESTINATION lib/cmake/ToxicityClassifierClient
-)
-
-# Создаем файл версии
-write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/ToxicityClassifierClientConfigVersion.cmake
-    VERSION 1.0.0
-    COMPATIBILITY AnyNewerVersion
-)
-
-# Устанавливаем библиотеку и заголовочные файлы
-install(
-    TARGETS ${target}
-    EXPORT ToxicityClassifierClientTargets
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-)
-
-# Устанавливаем экспортированные цели
-install(
-    EXPORT ToxicityClassifierClientTargets
-    FILE ToxicityClassifierClientTargets.cmake
-    NAMESPACE ToxicityClassifierClient::
-    DESTINATION lib/cmake/ToxicityClassifierClient
-)
-
-# Устанавливаем файлы конфигурации
-install(
-    FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/ToxicityClassifierClientConfig.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/ToxicityClassifierClientConfigVersion.cmake
-    DESTINATION lib/cmake/ToxicityClassifierClient
-)
-
-# Устанавливаем заголовочные файлы
-install(FILES client.hpp DESTINATION include)
-install(FILES ${PROTO_HDRS} ${GRPC_HDRS} DESTINATION include)

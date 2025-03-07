@@ -37,7 +37,6 @@ void ReactorResultTest::checker(){
 
             std::lock_guard lg{set_mutex};
             if(message->replyToMessage)
-                std::cout<<message->text<<"\n";
             //ASSERT_EQ(message_container.count(message->replyToMessage->text), true);
             last_change_time = std::chrono::steady_clock::now(); 
     });
