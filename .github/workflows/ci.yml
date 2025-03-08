@@ -45,6 +45,7 @@ jobs:
       - name: Install gRPC
         run: |
           if [ ! -d "grpc/build" ]; then
+            rm -rf grpc
             git clone --depth 1 https://github.com/grpc/grpc.git
             cd grpc
             export GRPC_VERSION=1.66.1
