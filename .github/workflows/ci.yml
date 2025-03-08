@@ -2,12 +2,11 @@ name: TGBot Workflow
 on:
   push:
     branches:
-      - '**'
+      - CI
   pull_request:
     branches:
-      - '**'
+      - CI  # Запускать для пул-реквестов на ветку CI
     types:
-      - opened
       - synchronize  # Запускать при коммитах в существующие пул-реквесты
       - reopened     # Запускать при повторном открытии пул-реквеста
 jobs:
@@ -19,23 +18,61 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
           
-      # Шаг 2: Установка зависимостей (если они есть)
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get upgrade -y
-          sudo apt-get install -y build-essential g++ make cmake libcurl4-openssl-dev libssl-dev libjsoncpp-dev git zlib1g-dev
-          sudo apt-get install -y libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev
-          sudo apt-get install -y libgtest-dev
+      # Шаг 2: Кэширование Python-зависимостей
+      - name: Cache Python dependencies
+        id: pip-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
 
+      # Шаг 3: Установка Python-зависимостей
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install grpcio grpcio-tools transformers torch
+
+      # Шаг 4: Кэширование gRPC
+      - name: Cache gRPC build
+        id: grpc-cache
+        uses: actions/cache@v3
+        with:
+          path: grpc/build
+          key: grpc-${{ runner.os }}-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            grpc-${{ runner.os }}-
+
+      # Шаг 5: Установка gRPC
+      - name: Install gRPC
+        run: |
+          if [ ! -d "grpc/build" ]; then
+            git clone --depth 1 https://github.com/grpc/grpc.git
+            cd grpc
+            export GRPC_VERSION=1.66.1
+            git checkout v${GRPC_VERSION}
+            git submodule update --init --recursive
+            mkdir -p build
+            cd build
+            cmake -DgRPC_SSL_PROVIDER:STRING=package -DCMAKE_CXX_FLAGS="-w" ..
+            make -j$(nproc)
+            sudo make install
+            cd ../..  # Возвращаемся в основную директорию
+          fi
+
+      # Шаг 6: Установка tgbot-cpp
+      - name: Install tgbot-cpp
+        run: |
           git clone --depth 1 https://github.com/reo7sp/tgbot-cpp.git
           cd tgbot-cpp
-
           cmake . -DCMAKE_INSTALL_PREFIX=./
           make -j$(nproc)
           make install
+          cd ..  # Возвращаемся в основную директорию
 
-      # Шаг 3: Создаем директорию для сборки
+
+      # Шаг 7: Создаем директорию для сборки
       - name: Build project
         run: |
           mkdir -p build
@@ -43,8 +80,21 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./ -DTGBOT_CPP_INSTALL_PREFIX=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
           make -j$(nproc)
 
-      # Шаг 4: Запуск тестов (если они есть)
+      # Шаг 8: Запуск сервера в фоновом режиме
+      - name: Start Python server
+        run: |
+          python3 server.py &
+          echo $! > server.pid  # Сохраняем PID сервера
+          sleep 5  # Даем серверу время на запуск
+
+      # Шаг 9: Запуск тестов
       - name: Run tests
         run: |
           cd build
           ctest --verbose
+
+      # Шаг 10: Остановка сервера
+      - name: Stop Python server
+        run: |
+          kill $(cat server.pid)  # Останавливаем сервер по сохраненному PID
+          rm server.pid  # Удаляем файл с PID
