@@ -2,13 +2,10 @@ name: TGBot Workflow
 on:
   push:
     branches:
-      - CI
+      - '*'  # Запускать для всех веток
   pull_request:
     branches:
-      - CI  # Запускать для пул-реквестов на ветку CI
-    types:
-      - synchronize  # Запускать при коммитах в существующие пул-реквесты
-      - reopened     # Запускать при повторном открытии пул-реквеста
+      - '*'  # Запускать для всех веток
 jobs:
   build:
     runs-on: ubuntu-latest  # Для Ubuntu, но можно выбрать другие операционные системы
@@ -70,7 +67,7 @@ jobs:
           make -j$(nproc)
           make install
           cd ..  # Возвращаемся в основную директорию
-
+          echo "Текущая директория: $(pwd)"
 
       # Шаг 7: Создаем директорию для сборки
       - name: Build project
@@ -79,10 +76,17 @@ jobs:
           cd build
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./ -DTGBOT_CPP_INSTALL_PREFIX=/home/runner/work/CursedWordsTGBot/CursedWordsTGBot/tgbot-cpp
           make -j$(nproc)
+          cd ..
+          echo "Текущая директория: $(pwd)"
+
 
       # Шаг 8: Запуск сервера в фоновом режиме
       - name: Start Python server
         run: |
+
+          cd server_grpc
+          echo "Содержимое текущей директории:"
+          ls -la  # Выводим содержимое текущей директории
           python3 server.py &
           echo $! > server.pid  # Сохраняем PID сервера
           sleep 5  # Даем серверу время на запуск
@@ -90,7 +94,6 @@ jobs:
       # Шаг 9: Запуск тестов
       - name: Run tests
         run: |
-          cd build
           ctest --verbose
 
       # Шаг 10: Остановка сервера
