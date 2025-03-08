@@ -1,12 +1,19 @@
 FROM ubuntu:22.04
 
+ARG GRPC_VERSION=1.66.1
+
 # Обновляем систему и устанавливаем необходимые пакеты
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y build-essential g++ make cmake libcurl4-openssl-dev libssl-dev libjsoncpp-dev git zlib1g-dev
 
 RUN apt-get install -y libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev
 
-RUN apt-get install -y libgtest-dev
+RUN apt-get install -y libgtest-dev \
+  zip \
+  pkgconf \
+    protobuf-c-compiler \
+  libprotobuf-c-dev \
+  protobuf-compiler
 
 WORKDIR /
 
@@ -18,3 +25,19 @@ RUN cmake . && \
     make -j$(nproc) && \
     make install
 
+WORKDIR /usr/src
+RUN set -ex; \
+    git config --global http.postBuffer 1048576000 && \
+    git clone https://github.com/grpc/grpc.git;
+WORKDIR /usr/src/grpc
+RUN set -ex; \
+    git config --global http.postBuffer 1048576000 && \
+    git checkout v${GRPC_VERSION}; \
+    git submodule update --init --recursive; \
+    mkdir build;
+WORKDIR /usr/src/grpc
+RUN set -ex; \
+    cd /usr/src/grpc/build; \
+    cmake -DgRPC_SSL_PROVIDER:STRING=packagec -DCMAKE_CXX_FLAGS="-w" ..; \
+    make -j4; \
+    make install;
