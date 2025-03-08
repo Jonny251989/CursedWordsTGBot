@@ -48,6 +48,9 @@ jobs:
             rm -rf grpc
             git clone --depth 1 https://github.com/grpc/grpc.git
             cd grpc
+            # Проверяем доступные теги
+            echo "Доступные теги:"
+            git tag -l | grep v1.66.1
             export GRPC_VERSION=1.66.1
             git checkout v${GRPC_VERSION}
             git submodule update --init --recursive
