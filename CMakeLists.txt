@@ -15,7 +15,7 @@ find_package(CURL REQUIRED)
 include(cmake/TgBot.cmake)
 enable_testing()
 
+add_subdirectory(grpcClientLibrary)
 add_subdirectory(CursedWordsTGBot)
 add_subdirectory(Modules)
 add_subdirectory(Tests)
-add_subdirectory(grpcClientLibrary)

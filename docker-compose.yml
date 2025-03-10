@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  grpc_server:
+    build:
+      context: .  # Контекст сборки — главная директория проекта
+      dockerfile: ./common_images_python/Dockerfile.python  # Путь к Dockerfile
+    volumes:
+      - ./server_grpc:/app/server_grpc  # Монтируем server_grpc в контейнер
+    working_dir: /app/server_grpc  # Указываем рабочую директорию
+    ports:
+      - "50051:50051"  # Порт gRPC
+
+  cursedwords_bot:
+    image: cwbot:${TARGET_IMAGES_VERSION:-1.0}
+    environment:
+      - command_line_arguments=-token 7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo
+    depends_on:
+      - grpc_server
