@@ -4,5 +4,9 @@ token.txt
 /build/
 /bins/
 update-tgbot-version.patch
+docker-compose.yml
+/common_images_python/
+/common_images/
+/target_images/
 #/Tests/FunctionalTests/Reactor_Tests/messages.txt
 

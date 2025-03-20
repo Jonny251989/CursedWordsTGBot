@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  grpc_server:
+    image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION:-1.0}  # Образ из Docker Hub
+    mem_limit: 4g
+    mem_reservation: 2g
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./server_grpc:/app/server_grpc
+    networks:
+      - app_network
+
+  cursedwords_bot:
+    image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION:-1.0}  # Образ из Docker Hub
+    environment:
+      - GRPC_SERVER_ADDRESS=grpc_server:50051
+    depends_on:
+      - grpc_server
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
