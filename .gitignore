@@ -8,5 +8,6 @@ docker-compose.yml
 /common_images_python/
 /common_images/
 /target_images/
+/server_grpc/hf_cache/
 #/Tests/FunctionalTests/Reactor_Tests/messages.txt
 
