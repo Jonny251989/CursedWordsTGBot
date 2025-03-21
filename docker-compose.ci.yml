@@ -23,8 +23,8 @@ services:
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - command_line_arguments=-token 7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo
     depends_on:
-      grpc_server:
-        condition: service_healthy
+      - grpc_server
+
     networks:
       - app_network
     restart: unless-stopped

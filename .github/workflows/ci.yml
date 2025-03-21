@@ -37,24 +37,36 @@ jobs:
       # Шаг 6: Запуск сервисов
       - name: Start services
         run: |
+          # Запуск сервисов с выводом логов в файл
           docker-compose -f docker-compose.ci.yml up -d
+          docker-compose logs -f grpc_server > server.log 2>&1 &
           
-          echo "Waiting for model loading (up to 10 minutes)..."
-          timeout 10m docker logs -f cursedwordstgbot-grpc_server-1 | grep -q "Model loaded" || {
-            echo "Model loading timeout"; exit 1
+          # Ожидание загрузки модели с таймаутом 40 минут
+          echo "Ожидание загрузки модели..."
+          timeout 40m bash -c 'while ! grep -q "Model loaded successfully" server.log; do sleep 10; done' || {
+            echo "Таймаут загрузки модели!"
+            cat server.log
+            exit 1
           }
+          
+          # Проверка порта
+          docker run --network container:cursedwordstgbot-grpc_server-1 appropriate/curl \
+            sh -c 'while ! nc -z localhost 50051; do sleep 10; done'
+    
+      - name: Show logs
+        run: cat server.log
 
       - name: Verify services
         run: |
-          # Проверка, что контейнеры запущены
-          docker ps --format "table {{.Names}}\t{{.Status}}"
-          
-          # Простая проверка порта gRPC
-          echo "Checking gRPC port..."
-          timeout 60 sh -c 'until nc -z $DOCKER_HOST 50051; do sleep 5; done' || {
-            echo "gRPC port not available"
-            exit 1
-          }
+            # Проверка, что контейнеры запущены
+            docker ps --format "table {{.Names}}\t{{.Status}}"
+            
+            # Простая проверка порта gRPC
+            echo "Checking gRPC port..."
+            timeout 60 sh -c 'until nc -z $DOCKER_HOST 50051; do sleep 5; done' || {
+              echo "gRPC port not available"
+              exit 1
+            }
 
       - name: Check bot container
         run: |
