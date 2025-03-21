@@ -1,4 +1,5 @@
 name: CI with Docker Compose
+
 on:
   push:
     branches:
@@ -10,8 +11,8 @@ on:
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  COMMON_IMAGES_VERSION: 1.0
-  TARGET_IMAGES_VERSION: 1.0
+  COMMON_IMAGES_VERSION: 1.0  # Исправлено
+  TARGET_IMAGES_VERSION: 1.0  # Исправлено
 
 jobs:
   build-and-push:
@@ -30,26 +31,39 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Pull images before running containers
+        run: |
+          docker pull $DOCKER_USERNAME/grpc_server:${{ env.COMMON_IMAGES_VERSION }}
+          docker pull $DOCKER_USERNAME/cwbot:${{ env.TARGET_IMAGES_VERSION }}
 
       - name: Create .env file
         run: |
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
-          echo "DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}" >> .env
-          echo "COMMON_IMAGES_VERSION=1.0" >> .env
-          echo "TARGET_IMAGES_VERSION=1.0" >> .env
+          echo "COMMON_IMAGES_VERSION=${{ env.COMMON_IMAGES_VERSION }}" >> .env
+          echo "TARGET_IMAGES_VERSION=${{ env.TARGET_IMAGES_VERSION }}" >> .env
 
-      # Используйте docker-compose.ci.yml
+      # Используем исправленный docker-compose.ci.yml
       - name: Start containers with Docker Compose
         run: |
           docker-compose -f docker-compose.ci.yml up -d
 
-      - name: Check if containers are running
+      - name: Wait for gRPC server to be healthy
         run: |
-          docker ps
+          for i in {1..10}; do
+            if docker inspect --format='{{.State.Health.Status}}' $(docker ps -q -f "name=grpc_server") | grep -q "healthy"; then
+              echo "gRPC server is healthy"
+              exit 0
+            fi
+            echo "Waiting for gRPC server..."
+            sleep 5
+          done
+          echo "gRPC server failed to start"
+          exit 1
+
+      - name: Check running containers
+        run: docker ps
 
       - name: View container logs
         run: |
