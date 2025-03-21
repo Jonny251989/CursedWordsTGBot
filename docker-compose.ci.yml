@@ -11,7 +11,7 @@ services:
       - app_network
     healthcheck:
       test: ["CMD-SHELL", "sleep 30"]  # Временное решение для долгой инициализации
-      start_period: 10m               # Увеличили до 10 минут
+      start_period: 40m               # Увеличили до 10 минут
       interval: 10s
       timeout: 5s
       retries: 3
