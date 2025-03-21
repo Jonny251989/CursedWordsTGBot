@@ -48,8 +48,8 @@ jobs:
       - name: Create .env file
         run: |
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
-          echo "COMMON_IMAGES_VERSION=${{ env.COMMON_IMAGES_VERSION }}" >> .env
-          echo "TARGET_IMAGES_VERSION=${{ env.TARGET_IMAGES_VERSION }}" >> .env
+          echo "COMMON_IMAGES_VERSION=1.0" >> .env
+          echo "TARGET_IMAGES_VERSION=1.0" >> .env
 
       # Используем исправленный docker-compose.ci.yml
       - name: Start containers with Docker Compose
