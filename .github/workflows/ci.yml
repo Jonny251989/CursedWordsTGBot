@@ -37,7 +37,8 @@ jobs:
 
       - name: Check test directory
         run: |
-            ls -l cwbot/bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_tests
+            ls -l ./
+            ls -l ./bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_tests
       # Шаг 6: Запуск сервисов
       - name: Start services
         run: |
