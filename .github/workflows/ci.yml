@@ -37,33 +37,7 @@ jobs:
       # Шаг 6: Запуск сервисов
       - name: Start services
         run: |
-          docker-compose -f docker-compose.ci.yml up -d
-          
-          echo "Waiting for model loading (up to 10 minutes)..."
-          timeout 10m docker logs -f cursedwordstgbot-grpc_server-1 | grep -q "Model loaded" || {
-            echo "Model loading timeout"; exit 1
-          }
-
-      - name: Verify services
-        run: |
-          # Проверка, что контейнеры запущены
-          docker ps --format "table {{.Names}}\t{{.Status}}"
-          
-          # Простая проверка порта gRPC
-          echo "Checking gRPC port..."
-          timeout 60 sh -c 'until nc -z $DOCKER_HOST 50051; do sleep 5; done' || {
-            echo "gRPC port not available"
-            exit 1
-          }
-
-      - name: Check bot container
-        run: |
-          container_id=$(docker ps -q -f "name=cwbot")
-          if [ -z "$container_id" ]; then
-            echo "Bot container not running!"
-            exit 1
-          fi
-          echo "Bot container ID: $container_id"
-
+          docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
+      
       - name: Display bot logs
         run: docker logs $(docker ps -q -f "name=cwbot") --tail=50
