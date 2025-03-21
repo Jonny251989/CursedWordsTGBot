@@ -20,15 +20,13 @@ services:
   cursedwords_bot:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
     environment:
-      - GRPC_SERVER_ADDRESS=grpc_server:50051o
-
+      - GRPC_SERVER_ADDRESS=grpc_server:50051
     volumes:
       - ./bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_Tests:/tests  # Монтируем директорию с тестами
+    entrypoint: []  # Отключаем ENTRYPOINT из Dockerfile
     command: /tests/reactor_tests  # Запуск тестов
-    
     depends_on:
       - grpc_server
-
     networks:
       - app_network
     restart: unless-stopped
