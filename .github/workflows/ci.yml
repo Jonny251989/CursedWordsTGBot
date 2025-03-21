@@ -42,8 +42,8 @@ jobs:
       # Скачиваем образы перед запуском
       - name: Pull images before running containers
         run: |
-          docker pull $DOCKER_USERNAME/grpc_server:${{ env.COMMON_IMAGES_VERSION }}
-          docker pull $DOCKER_USERNAME/cwbot:${{ env.TARGET_IMAGES_VERSION }}
+          docker pull $DOCKER_USERNAME/grpc_server:1.0
+          docker pull $DOCKER_USERNAME/cwbot:1.0
 
       - name: Create .env file
         run: |
