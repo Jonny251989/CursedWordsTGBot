@@ -24,8 +24,9 @@ services:
       - command_line_arguments=-token 7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo
 
     volumes:
-      - ./bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_Tests/reactor_tests 
-
+      - ./bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_Tests:/tests  # Монтируем директорию с тестами
+    command: /tests/reactor_tests  # Запуск тестов
+    
     depends_on:
       - grpc_server
 
