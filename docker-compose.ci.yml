@@ -24,8 +24,7 @@ services:
       - command_line_arguments=-token 7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo
 
     volumes:
-      - ./:/cwbot  # Монтируем текущую директорию (репозиторий) в контейнер
-    command: /cwbot/bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_Tests/reactor_tests 
+      - ./bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_Tests/reactor_tests 
 
     depends_on:
       - grpc_server
