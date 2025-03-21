@@ -12,8 +12,6 @@ std::string SimpleClassificator::check() {
     float probability = ptr_client_->ClassifyMessage(message_);
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
-    // std::cout << "Time taken: " << duration.count() << " seconds" << std::endl;
-    // std::cout << "Message: " << message_ << " Toxicity Probability: " << probability << std::endl;
     if(probability > 0.5) return "мат!"; 
     else return "не мат";
 }
