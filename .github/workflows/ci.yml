@@ -32,7 +32,11 @@ jobs:
         run: |
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
           echo "COMMON_IMAGES_VERSION=1.0" >> .env
-          echo "TARGET_IMAGES_VERSION=1.0" >> .env
+          echo "TARGET_IMAGES_VERSION=1.0" >> .
+          
+      - name: Check test directory
+        run: |
+          ls -l bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_tests
 
       # Шаг 6: Запуск сервисов
       - name: Start services
