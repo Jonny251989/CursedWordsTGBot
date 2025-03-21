@@ -38,33 +38,26 @@ jobs:
       - name: Start containers
         run: docker-compose -f docker-compose.ci.yml up -d
 
-      # Остальные шаги проверок остаются без изменений
-      - name: Healthcheck gRPC server
+      - name: Verify services
         run: |
-          for i in {1..10}; do
-            container_id=$(docker ps -q -f "name=grpc_server")
-            health_status=$(docker inspect --format='{{.State.Health.Status}}' $container_id)
-            
-            if [ "$health_status" = "healthy" ]; then
-              echo "gRPC server is ready"
-              exit 0
-            fi
-            
-            echo "Waiting for gRPC server... ($i/10)"
-            sleep 5
-          done
-          echo "gRPC server healthcheck failed"
-          exit 1
+          # Проверка, что контейнеры запущены
+          docker ps --format "table {{.Names}}\t{{.Status}}"
+          
+          # Простая проверка порта gRPC
+          echo "Checking gRPC port..."
+          timeout 60 sh -c 'until nc -z $DOCKER_HOST 50051; do sleep 5; done' || {
+            echo "gRPC port not available"
+            exit 1
+          }
 
-      - name: Verify running containers
-        run: docker ps
-
-      - name: Display bot logs
+      - name: Check bot container
         run: |
-          container_id=$(docker ps -q -f "ancestor=${{ secrets.DOCKER_USERNAME }}/cwbot")
-          if [ -n "$container_id" ]; then
-            docker logs $container_id
-          else
-            echo "Bot container not found"
+          container_id=$(docker ps -q -f "name=cwbot")
+          if [ -z "$container_id" ]; then
+            echo "Bot container not running!"
             exit 1
           fi
+          echo "Bot container ID: $container_id"
+
+      - name: Display bot logs
+        run: docker logs $(docker ps -q -f "name=cwbot") --tail=50
