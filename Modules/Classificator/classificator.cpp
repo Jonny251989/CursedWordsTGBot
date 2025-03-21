@@ -2,7 +2,12 @@
 
 SimpleClassificator::SimpleClassificator(const std::string& message): message_(message){
     
-       ptr_client_ = std::make_unique<ToxicityClassifierClient>(grpc::CreateChannel("127.0.0.1:50051", grpc::InsecureChannelCredentials()));
+    const char* server_address = std::getenv("GRPC_SERVER_ADDRESS");
+    if (!server_address) {
+        server_address = "127.0.0.1:50051"; // Значение по умолчанию
+    }
+    ptr_client_ = std::make_unique<ToxicityClassifierClient>(
+        grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials()));
 }
 
 std::string SimpleClassificator::check() {
