@@ -13,33 +13,29 @@ logger = logging.getLogger(__name__)
 class ToxicityClassifierServicer(toxicity_classifier_pb2_grpc.ToxicityClassifierServicer):
     def __init__(self):
         self.model_name = 's-nlp/russian_toxicity_classifier'
-        self.cache_dir = os.path.join(os.path.dirname(__file__), 'hf_cache')
-        
         try:
-            logger.info(f"Loading model from cache: {self.cache_dir}")
-            
+            # Загрузка токенизатора
             self.tokenizer = AutoTokenizer.from_pretrained(
                 self.model_name,
-                cache_dir=self.cache_dir,
-                local_files_only=True
+                local_files_only=False  # Разрешить загрузку из интернета, если нет в кэше
             )
             
+            # Загрузка модели
             self.model = AutoModelForSequenceClassification.from_pretrained(
                 self.model_name,
-                cache_dir=self.cache_dir,
-                local_files_only=True
-                #device_map="auto"
+                local_files_only=False  # Разрешить загрузку из интернета, если нет в кэше
             )
             
             logger.info("Model and tokenizer loaded successfully")
             
         except Exception as e:
-            logger.error(f"Error loading model: {e}")
+            logger.error(f"Error loading model or tokenizer: {e}")
             raise
 
     def ClassifyMessage(self, request, context):
         logger.info(f"Received message: {request.message}")
         try:
+            # Токенизация сообщения
             inputs = self.tokenizer(
                 request.message,
                 return_tensors="pt",
@@ -48,14 +44,18 @@ class ToxicityClassifierServicer(toxicity_classifier_pb2_grpc.ToxicityClassifier
                 max_length=512
             )
             
+            # Получение предсказания
             with torch.no_grad():
                 logits = self.model(**inputs).logits
                 
+            # Вычисление вероятности токсичности
             probs = torch.sigmoid(logits).squeeze().numpy()
-            logger.info(f"Toxicity probability: {probs[1]}")
+            toxicity_prob = probs[1]  # Предполагаем, что индекс 1 соответствует токсичности
+            logger.info(f"Toxicity probability: {toxicity_prob}")
             
+            # Возврат результата
             return toxicity_classifier_pb2.MessageResponse(
-                toxicity_probability=probs[1]
+                toxicity_probability=toxicity_prob
             )
             
         except Exception as e:

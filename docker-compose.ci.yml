@@ -22,6 +22,11 @@ services:
     environment:
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - command_line_arguments=-token 7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo
+
+    volumes:
+      - ./:/cwbot  # Монтируем текущую директорию (репозиторий) в контейнер
+    command: /cwbot/bins/CursedWordsTGBot/Tests/FunctionalTests/Reactor_Tests/reactor_tests 
+
     depends_on:
       - grpc_server
 
