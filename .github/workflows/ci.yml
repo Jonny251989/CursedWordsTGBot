@@ -38,7 +38,8 @@ jobs:
       - name: Check test directory
         run: |
             ls -l ./
-            ls -l ./Tests/FunctionalTests/Reactor_tests
+            ls -l ./Tests/
+            ls -l ./Tests/FunctionalTests/
       # Шаг 6: Запуск сервисов
       - name: Start services
         run: |
