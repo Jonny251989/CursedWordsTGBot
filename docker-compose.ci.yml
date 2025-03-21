@@ -2,31 +2,32 @@ version: '3.8'
 
 services:
   grpc_server:
-    image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION}
+    build:
+      context: .
+      dockerfile: ./common_images_python/Dockerfile.python
     mem_limit: 4g
     mem_reservation: 2g
     ports:
       - "50051:50051"
-    networks:
-      - app_network
+    volumes:
+      - ./server_grpc:/app/server_grpc
+      - hf_cache:/root/.cache/huggingface/hub  # Используем именованный том
     healthcheck:
-      test: ["CMD-SHELL", "sleep 30"]  # Временное решение для долгой инициализации
-      start_period: 40m               # Увеличили до 10 минут
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: unless-stopped
-
-  cursedwords_bot:
-    image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
-    environment:
-      - GRPC_SERVER_ADDRESS=grpc_server:50051
-    depends_on:
-      grpc_server:
-        condition: service_healthy
+      test: ["CMD-SHELL", "exit 0"] # Всегда возвращает успех
+      interval: 30s
+      timeout: 30s
+      start_period: 40m  # Увеличенный период ожидания
+      retries: 10
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - app_network
-    restart: unless-stopped
+
+volumes:
+  hf_cache:  # Именованный том для кэша
 
 networks:
   app_network:
