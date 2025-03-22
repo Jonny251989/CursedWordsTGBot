@@ -22,7 +22,7 @@ services:
     environment:
       - GRPC_SERVER_ADDRESS=grpc_server:50051
     volumes:
-      - ./cwbot/bins/Tests/FunctionalTests/Reactor_Tests: /tests  # Монтируем директорию с тестами
+      - ./cwbot/bins/Tests/FunctionalTests/Reactor_Tests:/tests  # Монтируем директорию с тестами
     entrypoint: []  # Отключаем ENTRYPOINT из Dockerfile
 
     command: >
