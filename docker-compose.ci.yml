@@ -31,6 +31,12 @@ services:
       ls -l /tests;
       echo 'Содержимое /cwbot/bins:';
       ls -l /cwbot/bins;
+      echo 'Содержимое /cwbot/bins/Tests:';
+      ls -l /cwbot/bins/Tests;
+      echo 'Содержимое /cwbot/bins/Tests/FunctionalTests:';
+      ls -l /cwbot/bins/Tests/FunctionalTests;
+      echo 'Содержимое /cwbot/bins/Tests/FunctionalTests/Reactor_Tests:';
+      ls -l /cwbot/bins/Tests/FunctionalTests/Reactor_Tests;
       /tests/reactor_tests
       "
     depends_on:
