@@ -14,6 +14,7 @@ void ReactorResultTest::SetUp() {
 void ReactorResultTest::generator(){
     std::ifstream inputFile("./Tests/FunctionalTests/Reactor_Tests/messages.txt");
     //std::ifstream inputFile("./messages.txt");
+    
     if (!inputFile) {
         std::cerr << "Не удалось открыть файл!" << std::endl;
     }
