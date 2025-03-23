@@ -20,9 +20,10 @@ services:
   cursedwords_bot:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
     environment:
-      - GRPC_SERVER_ADDRESS=grpc_server:50051
+      - GRPC_SERVER_ADDRESS=grpc_server:
+      
     volumes:
-      - ./Tests/FunctionalTests/Reactor_Tests:/cwbot/bins/Tests/FunctionalTests/Reactor_Tests
+      - ./Tests/FunctionalTests/Reactor_Tests/messages.txt:/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
       
     entrypoint: []  # Отключаем ENTRYPOINT из Dockerfile
 
