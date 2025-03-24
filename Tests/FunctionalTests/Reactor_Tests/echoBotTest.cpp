@@ -12,8 +12,12 @@ void ReactorResultTest::SetUp() {
 }
 
 void ReactorResultTest::generator(){
-    std::ifstream inputFile("./Tests/FunctionalTests/Reactor_Tests/messages.txt");
-    //std::ifstream inputFile("./messages.txt");
+    
+    const char* filePath = std::getenv("MESSAGES_FILE_PATH");
+    if (!filePath) {
+        filePath = "./Tests/FunctionalTests/Reactor_Tests/messages.txt";  // По умолчанию для локальной машины
+    }
+    std::ifstream inputFile(filePath);
     
     if (!inputFile) {
         std::cerr << "Не удалось открыть файл!" << std::endl;

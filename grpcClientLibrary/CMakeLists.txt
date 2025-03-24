@@ -22,7 +22,8 @@ set(GRPC_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/toxicity_classifier.grpc.pb.h)
 # Создаем статическую библиотеку
 add_library(${target} STATIC client.cpp ${PROTO_SRCS} ${GRPC_SRCS})
 
-# Линкуем зависимости
+target_include_directories(${target} PUBLIC .)
+
 target_link_libraries(${target}
     PUBLIC
     absl::cord

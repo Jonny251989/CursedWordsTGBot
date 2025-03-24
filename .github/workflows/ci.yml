@@ -46,5 +46,3 @@ jobs:
         run: |
           docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
       
-      - name: Display bot logs
-        run: docker logs $(docker ps -q -f "name=cwbot") --tail=50

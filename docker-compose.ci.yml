@@ -21,7 +21,7 @@ services:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
     environment:
       - GRPC_SERVER_ADDRESS=grpc_server
-      
+      - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt    
     volumes:
       - ./Tests/FunctionalTests/Reactor_Tests/messages.txt:/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
       
