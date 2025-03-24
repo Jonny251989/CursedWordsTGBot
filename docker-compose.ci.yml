@@ -27,7 +27,7 @@ services:
 
     command: >
       sh -c "
-       /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
+       find /cwbot/bins/Tests/UnitTests -name '*_tests' -type f -executable -exec {} \\;
       "
     depends_on:
       - grpc_server
