@@ -38,6 +38,7 @@ jobs:
       - name: Start services
         run: |
 
-          docker-compose -f docker-compose.ci.yml up --abort-on-container-exit unit_tests
+          docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
+
           #docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
       
