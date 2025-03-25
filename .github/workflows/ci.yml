@@ -6,40 +6,45 @@ on:
   pull_request:
     branches: ["**"]
 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # Шаг 1: Получение кода
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Шаг 2: Установка docker-compose
       - name: Install docker-compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
+      # Шаг 3: Подтягивание образов
       - name: Pull images
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/grpc_server:1.0
           docker pull ${{ secrets.DOCKER_USERNAME }}/cwbot:1.0
 
+      # Шаг 4: Подготовка окружения
       - name: Create environment file
         run: |
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
           echo "COMMON_IMAGES_VERSION=1.0" >> .env
           echo "TARGET_IMAGES_VERSION=1.0" >> .env
 
+
       - name: Start services
         run: |
-            # Запускаем grpc_server в фоновом режиме
-            docker-compose -f docker-compose.ci.yml up -d grpc_server
-            
-            # Ждем 20 секунд
-            echo "Waiting 20 seconds for server initialization..."
-            sleep 20
-            
-            # Запускаем бота с принудительным таймаутом
-            docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
-            
-            # Останавливаем все сервисы
-            docker-compose -f docker-compose.ci.yml down
+
+          docker-compose -f docker-compose.ci.yml up -d grpc_server
+          
+          # Ждем 20 секунд
+          echo "Waiting 20 seconds for server initialization..."
+          sleep 10
+
+          docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
+
+          #docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
+      
