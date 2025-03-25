@@ -11,16 +11,16 @@ services:
       - app_network
     healthcheck:
       test: ["CMD-SHELL", "nc -z localhost 50051 || exit 1"]
-      start_period: 2m
+      start_period: 3m
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 15
     restart: unless-stopped
 
   cursedwords_bot:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
     environment:
-      - GRPC_SERVER_ADDRESS=grpc_server
+      - GRPC_SERVER_ADDRESS=grpc_server:50051  # Явное указание порта
       - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
     depends_on:
       grpc_server:
@@ -29,14 +29,13 @@ services:
     command: >
       sh -c "
       echo 'Waiting for grpc_server...';
-      while ! nc -z grpc_server 50051; do sleep 1; done;
-      echo 'Starting tests...';
-      /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
+      timeout 120 sh -c 'while ! nc -z grpc_server 50051; do 
+        echo "Waiting..."; 
+        sleep 2; 
+      done' || exit 1;
+      echo 'Server ready! Starting tests...';
+      /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests --gtest_color=yes
       "
     networks:
       - app_network
-    restart: unless-stopped
-
-networks:
-  app_network:
-    driver: bridge
+    restart: on-failure
