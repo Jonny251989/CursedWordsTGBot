@@ -34,6 +34,5 @@ jobs:
       - name: Start services
         run: |
           docker-compose -f docker-compose.ci.yml up -d grpc_server
-          # Ждём явного подтверждения готовности сервера
-          docker-compose -f docker-compose.ci.yml exec -T grpc_server sh -c 'while ! nc -z localhost 50051; do sleep 1; done; echo "Server is ready"'
+
           docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
