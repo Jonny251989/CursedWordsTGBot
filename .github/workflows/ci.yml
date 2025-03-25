@@ -31,4 +31,15 @@ jobs:
 
       - name: Start services
         run: |
-          docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
+            # Запускаем grpc_server в фоновом режиме
+            docker-compose -f docker-compose.ci.yml up -d grpc_server
+            
+            # Ждем 20 секунд
+            echo "Waiting 20 seconds for server initialization..."
+            sleep 20
+            
+            # Запускаем бота с принудительным таймаутом
+            docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
+            
+            # Останавливаем все сервисы
+            docker-compose -f docker-compose.ci.yml down
