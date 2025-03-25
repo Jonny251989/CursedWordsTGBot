@@ -30,16 +30,15 @@ jobs:
       # Шаг 4: Подготовка окружения
       - name: Create environment file
         run: |
-          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
           echo "COMMON_IMAGES_VERSION=1.0" >> .env
           echo "TARGET_IMAGES_VERSION=1.0" >> .env
+          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .e
 
 
       - name: Start services
         run: |
-              docker-compose -f docker-compose.ci.yml up -d grpc_server
-              sleep 20
-
-              docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
-      
+            docker-compose -f docker-compose.ci.yml --env-file .env up -d grpc_server
+            sleep 30
+            docker-compose -f docker-compose.ci.yml --env-file .env up --abort-on-container-exit cursedwords_bot
+            
