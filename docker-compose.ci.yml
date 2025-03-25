@@ -10,28 +10,29 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: ["CMD-SHELL", "exit 0"]  # Временное решение для долгой инициализации
-      start_period: 10m               # Увеличили до 10 минут
-      interval: 10s
+      test: ["CMD-SHELL", "nc -z localhost 50051 || exit 1"]
+      start_period: 2m
+      interval: 5s
       timeout: 5s
-      retries: 3
+      retries: 10
     restart: unless-stopped
 
   cursedwords_bot:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
     environment:
       - GRPC_SERVER_ADDRESS=grpc_server
-      - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt    
-      
-    entrypoint: []  # Отключаем ENTRYPOINT из Dockerfile
-
+      - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
+    depends_on:
+      grpc_server:
+        condition: service_healthy
+    entrypoint: []
     command: >
       sh -c "
-       find /cwbot/bins/Tests -name '*_tests' -type f -executable -print0 | xargs -0 -n1 sh -c
-
+      echo 'Waiting for grpc_server...';
+      while ! nc -z grpc_server 50051; do sleep 1; done;
+      echo 'Starting tests...';
+      /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
       "
-    depends_on:
-      - grpc_server
     networks:
       - app_network
     restart: unless-stopped
