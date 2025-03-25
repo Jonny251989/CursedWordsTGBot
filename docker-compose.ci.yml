@@ -28,7 +28,6 @@ services:
 
     command: >
       sh -c "
-      - "-token"
       - "${TELEGRAM_BOT_TOKEN}"  
 
        find /cwbot/bins/Tests -name '*_tests' -type f -executable -print0 | xargs -0 -n1 sh -c
