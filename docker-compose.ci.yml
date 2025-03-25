@@ -28,7 +28,6 @@ services:
 
     command: >
       sh -c "
-
       - "-token"
       - "${TELEGRAM_BOT_TOKEN}"  
 
