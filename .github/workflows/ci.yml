@@ -38,12 +38,6 @@ jobs:
       - name: Start services
         run: |
 
-          docker-compose -f docker-compose.ci.yml up -d grpc_server
-          
-          # Ждем 20 секунд
-          echo "Waiting 20 seconds for server initialization..."
-          sleep 10
-
           docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
 
           #docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
