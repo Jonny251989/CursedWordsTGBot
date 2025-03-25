@@ -33,4 +33,6 @@ jobs:
 
       - name: Start services
         run: |
-          docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
+          docker-compose -f docker-compose.ci.yml up -d grpc_server
+
+          docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
