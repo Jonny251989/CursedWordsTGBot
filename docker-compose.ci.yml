@@ -26,7 +26,6 @@ services:
     entrypoint: []
     command: >
       sh -c "
-      echo 'Waiting for grpc_server to be ready...';
 
       echo 'Starting tests...';
       /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
