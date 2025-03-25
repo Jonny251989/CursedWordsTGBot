@@ -28,12 +28,7 @@ services:
 
     command: >
       sh -c "
-      - "${TELEGRAM_BOT_TOKEN}"  
-
-      echo 'Waiting for server...';
-      timeout 120 sh -c 'while ! nc -z grpc_server:50051; do sleep 2; done' && 
       /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
-
       "
     depends_on:
       - grpc_server
