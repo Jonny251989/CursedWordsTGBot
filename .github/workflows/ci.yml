@@ -37,8 +37,13 @@ jobs:
 
       - name: Start services
         run: |
+              docker-compose -f docker-compose.ci.yml up -d grpc_server
+              sleep 20
+              timeout 20 docker logs -f cursedwordstgbot-grpc_server-1
+            
 
-          docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
+              docker exec cursedwordstgbot-grpc_server-1 nc -zv localhost 50051 || exit 1
+              docker-compose -f docker-compose.ci.yml up --abort-on-container-exit cursedwords_bot
 
           #docker-compose -f docker-compose.ci.yml up --abort-on-container-exit
       
