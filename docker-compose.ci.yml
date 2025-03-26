@@ -6,14 +6,13 @@ services:
     container_name: grpc_server
     command: >
       sh -c "
-      echo '=== DEBUG ===' &&
-      echo 'Current dir: ' && pwd &&
-      echo 'Contents: ' && ls -la &&
-      python3 server.py
-       "
+      echo '=== Current dir ===' && pwd &&
+      echo '=== Contents ===' && ls -la &&
+      python3 /app/server_grpc/server.py  # Явный абсолютный путь
+      "
     volumes:
-      - ./server_grpc:/app/server_grpc  # Теперь соответствует WORKDIR образа
-    working_dir: /app/server_grpc       # То же что и в Dockerfile
+      - ./server_grpc:/app/server_grpc
+    working_dir: /app/server_grpc  # Должно совпадать с VOLUME
     environment:
       - PYTHONUNBUFFERED=1
     ports:
