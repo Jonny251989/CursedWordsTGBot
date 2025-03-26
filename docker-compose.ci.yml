@@ -5,13 +5,15 @@ services:
     image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION:-1.0}
     container_name: grpc_server
     volumes:
-      - ./server_grpc:/server_files:ro  # Монтируем в другую директорию
+      - ./server_grpc:/server_files:ro
     command: >
       sh -c "
-      echo '=== Проверка файлов ===' && 
-      ls -la /app/server_grpc &&
-      cd /app/server_grpc &&
-      python3 -c \"import os; print(f'Файл существует: {os.path.isfile(\"server.py\")}')\" &&
+      echo '=== DEBUG ===' &&
+      echo 'Содержимое /server_files:' && ls -la /server_files &&
+      echo 'Проверка файла:' && [ -f /server_files/server.py ] && echo 'Файл существует' || echo 'Файл отсутствует' &&
+      echo 'Запуск сервера...' &&
+      cd /server_files && 
+      python3 -c \"import os; print(f'Рабочая директория: {os.getcwd()}')\" &&
       python3 server.py
       "
     ports:
