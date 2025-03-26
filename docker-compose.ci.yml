@@ -4,19 +4,15 @@ services:
   grpc_server:
     image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION:-1.0}
     container_name: grpc_server
+    volumes:
+      - ./server_grpc:/server_files:ro  # Монтирование с явным путем и режимом 'read-only'
     command: >
       sh -c "
-      echo '=== DEBUG: Current dir ===' && pwd &&
-      echo '=== DEBUG: Contents before mount ===' && ls -la /app/server_grpc &&
-      echo '=== DEBUG: Mount point ===' && mount | grep server_grpc &&
-      echo '=== DEBUG: Contents after mount ===' && ls -la /app/server_grpc &&
-      python3 /app/server_grpc/server.py
+      echo '=== DEBUG ===' &&
+      echo 'Содержимое /server_files:' && ls -la /server_files &&
+      echo 'Запуск сервера...' &&
+      python3 /server_files/server.py  # Явный абсолютный путь
       "
-    volumes:
-      - ./server_grpc:/app/server_grpc
-    working_dir: /app/server_grpc  # Должно совпадать с VOLUME
-    environment:
-      - PYTHONUNBUFFERED=1
     ports:
       - "50051:50051"
     networks:
