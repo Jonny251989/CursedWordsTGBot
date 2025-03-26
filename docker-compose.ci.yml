@@ -5,14 +5,14 @@ services:
     image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION:-1.0}
     container_name: grpc_server
     volumes:
-      - ./server_grpc:/app/server_grpc:ro,uid=0,gid=0  # Критичное исправление
+      - ./server_grpc:/server_files:ro  # Монтируем в другую директорию
     command: >
       sh -c "
-      echo '=== Проверка файлов ===' &&
-      ls -la /app/server_grpc &&
-      python3 /app/server_grpc/server.py
+      echo '=== DEBUG ===' &&
+      echo 'Содержимое /server_files:' && ls -la /server_files &&
+      echo 'Запуск сервера...' &&
+      cd /server_files && python3 server.py
       "
-    working_dir: /app/server_grpc
     ports:
       - "50051:50051"
     networks:
