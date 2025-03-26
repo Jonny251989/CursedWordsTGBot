@@ -1,27 +1,20 @@
-# Используем официальный образ Python
 FROM python:3.9-slim
 
-# Устанавливаем системные зависимости
 RUN apt-get update && apt-get install -y \
     procps \
     net-tools \
     telnet \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем рабочую директорию
-WORKDIR /app
-
-# Копируем requirements.txt
-COPY ./common_images_python/requirements.txt .
-
-# Устанавливаем зависимости Python
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Копируем server_grpc из хоста в контейнер
-COPY ./server_grpc /app/server_grpc
-
-# Устанавливаем рабочую директорию для сервера
+# Создаем директорию для монтирования
+RUN mkdir -p /app/server_grpc
 WORKDIR /app/server_grpc
 
-# Команда для запуска сервера
+COPY ./common_images_python/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Точка монтирования будет перезаписывать эту директорию
+# Поэтому копируем только если файлы не монтируются
+# COPY ./server_grpc /app/server_grpc
+
 CMD ["python3", "server.py"]
