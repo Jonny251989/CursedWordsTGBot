@@ -8,9 +8,8 @@ services:
       sh -c "ls -la /app/server_grpc &&
       python3 server.py"  # Запуск относительно WORKDIR
     volumes:
-      - ./server_grpc:/app/server_grpc  # Синхронизация с локальной папкой
-      - grpc_hf_cache:/root/.cache/huggingface/hub
-    working_dir: /app/server_grpc  # Основная рабочая директория
+      - ./server_grpc:/app/server_grpc  # Теперь соответствует WORKDIR образа
+    working_dir: /app/server_grpc       # То же что и в Dockerfile
     environment:
       - PYTHONUNBUFFERED=1
     ports:
