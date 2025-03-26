@@ -6,9 +6,11 @@ services:
     container_name: grpc_server
     command: >
       sh -c "
-      echo '=== Current dir ===' && pwd &&
-      echo '=== Contents ===' && ls -la &&
-      python3 /app/server_grpc/server.py  # Явный абсолютный путь
+      echo '=== DEBUG: Current dir ===' && pwd &&
+      echo '=== DEBUG: Contents before mount ===' && ls -la /app/server_grpc &&
+      echo '=== DEBUG: Mount point ===' && mount | grep server_grpc &&
+      echo '=== DEBUG: Contents after mount ===' && ls -la /app/server_grpc &&
+      python3 /app/server_grpc/server.py
       "
     volumes:
       - ./server_grpc:/app/server_grpc
