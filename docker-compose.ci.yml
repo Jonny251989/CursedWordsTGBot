@@ -5,8 +5,11 @@ services:
     image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION:-1.0}
     container_name: grpc_server
     command: >
-      sh -c "ls -la /app/server_grpc &&
-      python3 server.py"  # Запуск относительно WORKDIR
+      sh -c "
+      echo '=== DEBUG ===' &&
+      echo 'Current dir: ' && pwd &&
+      echo 'Contents: ' && ls -la &&
+      python3 server.py
     volumes:
       - ./server_grpc:/app/server_grpc  # Теперь соответствует WORKDIR образа
     working_dir: /app/server_grpc       # То же что и в Dockerfile
