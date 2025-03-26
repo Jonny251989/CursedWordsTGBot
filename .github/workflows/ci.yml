@@ -45,7 +45,6 @@ jobs:
             /usr/bin/docker --version && \
             /usr/local/bin/docker-compose --version
           "
-
       - name: Execute Docker Compose
         run: |
           docker exec cwbot_runner sh -c "
@@ -53,7 +52,6 @@ jobs:
             /usr/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && \
             /usr/local/bin/docker-compose -f docker-compose.ci.yml up -d
           "
-
       - name: Check services
         run: |
           docker exec cwbot_runner /usr/local/bin/docker-compose -f docker-compose.ci.yml ps
