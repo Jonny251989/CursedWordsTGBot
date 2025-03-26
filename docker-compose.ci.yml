@@ -3,40 +3,109 @@ version: '3.8'
 services:
   grpc_server:
     image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION:-1.0}
+    container_name: grpc_server
     command: >
-      sh -c "ls -la /server_files &&
+      sh -c "python3 -m pip install -r /server_files/requirements.txt &&
       python3 /server_files/server.py"
     volumes:
-      - ./server_grpc:/server_files
+      - ./server_grpc:/server_files  # Монтирование локальной папки
       - grpc_hf_cache:/root/.cache/huggingface/hub
     working_dir: /server_files
-    mem_limit: 4g
-    mem_reservation: 2g
+    environment:
+      - PYTHONUNBUFFERED=1  # Для реального времени логов
+      - GRPC_VERBOSITY=DEBUG  # Подробные логи gRPC
     ports:
-      - "50051:50051"
+      - "50051:50051"  # Проброс порта gRPC
     healthcheck:
-      test: ["CMD", "python3", "-c", "YOUR_GRPC_HEALTHCHECK_SCRIPT"]
+      test: ["CMD", "python3", "-c", "import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:50051')).result(timeout=5)"]
       interval: 10s
-      timeout: 10s
-      retries: 10
-      start_period: 30s
-    networks:
-      - app_network
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+        reservations:
+          memory: 2g
 
   cursedwords_bot:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION:-1.0}
+    container_name: cursedwords_bot
+    depends_on:
+      grpc_server:
+        condition: service_healthy  # Ждем успешного healthcheck
     environment:
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
-    depends_on:
-      grpc_server:
-        condition: service_healthy
-    networks:
-      - app_network
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./bot_data:/bot_data  # Персистентные данные бота
+    restart: unless-stopped
 
 volumes:
-  grpc_hf_cache:
+  grpc_hf_cache:  # Для кэша моделей HuggingFace
+    driver: local
+  bot_data:
+    driver: local
 
 networks:
-  app_network:
+  default:
+    name: app_network
     driver: bridge
+    attachable: trueversion: '3.8'
+
+services:
+  grpc_server:
+    image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION:-1.0}
+    container_name: grpc_server
+    command: >
+      sh -c "python3 -m pip install -r /server_files/requirements.txt &&
+      python3 /server_files/server.py"
+    volumes:
+      - ./server_grpc:/server_files  # Монтирование локальной папки
+      - grpc_hf_cache:/root/.cache/huggingface/hub
+    working_dir: /server_files
+    environment:
+      - PYTHONUNBUFFERED=1  # Для реального времени логов
+      - GRPC_VERBOSITY=DEBUG  # Подробные логи gRPC
+    ports:
+      - "50051:50051"  # Проброс порта gRPC
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:50051')).result(timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g
+        reservations:
+          memory: 2g
+
+  cursedwords_bot:
+    image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION:-1.0}
+    container_name: cursedwords_bot
+    depends_on:
+      grpc_server:
+        condition: service_healthy  # Ждем успешного healthcheck
+    environment:
+      - GRPC_SERVER_ADDRESS=grpc_server:50051
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./bot_data:/bot_data  # Персистентные данные бота
+    restart: unless-stopped
+
+volumes:
+  grpc_hf_cache:  # Для кэша моделей HuggingFace
+    driver: local
+  bot_data:
+    driver: local
+
+networks:
+  default:
+    name: app_network
+    driver: bridge
+    attachable: true
