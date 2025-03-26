@@ -8,10 +8,11 @@ services:
       - ./server_grpc:/server_files:ro  # Монтируем в другую директорию
     command: >
       sh -c "
-      echo '=== DEBUG ===' &&
-      echo 'Содержимое /server_files:' && ls -la /server_files &&
-      echo 'Запуск сервера...' &&
-      cd /server_files && python3 server.py
+      echo '=== Проверка файлов ===' && 
+      ls -la /app/server_grpc &&
+      cd /app/server_grpc &&
+      python3 -c \"import os; print(f'Файл существует: {os.path.isfile(\"server.py\")}')\" &&
+      python3 server.py
       "
     ports:
       - "50051:50051"
