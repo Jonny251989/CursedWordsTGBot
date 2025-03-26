@@ -38,20 +38,15 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/cwbot_base:1.0 \
             tail -f /dev/null
 
-      - name: Verify Docker tools
-        run: |
-          docker exec cwbot_runner sh -c "
-            ls -l /usr/bin/docker /usr/local/bin/docker-compose && \
-            /usr/bin/docker --version && \
-            /usr/local/bin/docker-compose --version
-          "
       - name: Execute Docker Compose
         run: |
           docker exec cwbot_runner sh -c "
-            export PATH='/usr/local/bin:/usr/bin:/bin:$PATH' && \
-            /usr/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && \
-            /usr/local/bin/docker-compose -f docker-compose.ci.yml up -d
+            export PATH='/usr/local/bin:/usr/bin:/bin:$PATH'
+            echo '${{ secrets.DOCKER_PASSWORD }}' | \
+            docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
+            docker-compose -f docker-compose.ci.yml up -d
           "
+
       - name: Check services
         run: |
-          docker exec cwbot_runner /usr/local/bin/docker-compose -f docker-compose.ci.yml ps
+          docker exec cwbot_runner docker-compose -f docker-compose.ci.yml ps
