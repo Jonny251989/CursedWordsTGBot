@@ -1,5 +1,14 @@
 name: CursedWords Bot CI
 
+on:
+  push:               # Запуск при любом push в любую ветку
+    branches: 
+      - '**'          # Спецсимвол для всех веток
+  pull_request:       # Запуск при любом pull request
+    branches: 
+      - '**'
+
+
 env:
   COMMON_IMAGES_VERSION: 1.0
   TARGET_IMAGES_VERSION: 1.0
