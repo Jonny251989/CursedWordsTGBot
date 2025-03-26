@@ -10,6 +10,7 @@ services:
       echo 'Current dir: ' && pwd &&
       echo 'Contents: ' && ls -la &&
       python3 server.py
+       "
     volumes:
       - ./server_grpc:/app/server_grpc  # Теперь соответствует WORKDIR образа
     working_dir: /app/server_grpc       # То же что и в Dockerfile
