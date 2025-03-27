@@ -14,8 +14,9 @@ COPY common_images_python/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем файлы сервера
-COPY server_grpc/server.py .
 COPY server_grpc/toxicity_classifier_pb2.py .
 COPY server_grpc/toxicity_classifier_pb2_grpc.py .
+COPY server_grpc/server.py .
+
 
 CMD ["python3", "server.py"]

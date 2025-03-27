@@ -1,5 +1,6 @@
-grpcio
-grpcio-tools
+grpcio==1.62.1
+grpcio-tools==1.62.1
 torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu
-transformers
-numpy<2
+transformers==4.35.2  # Критично! Последняя версия, работающая с PyTorch 2.0.1
+numpy==1.26.4  # Стабильная версия для этой комбинации
+protobuf==3.20.3  # Фиксируем из-за совместимости с grpcio
