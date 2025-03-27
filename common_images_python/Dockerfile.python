@@ -6,15 +6,16 @@ RUN apt-get update && apt-get install -y \
     telnet \
     && rm -rf /var/lib/apt/lists/*
 
-# Создаем директорию для монтирования
-RUN mkdir -p /app/server_grpc
-WORKDIR /app/server_grpc
+WORKDIR /app
 
-COPY ./common_images_python/requirements.txt .
+# Копируем requirements.txt из поддиректории
+COPY common_images_python/requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Точка монтирования будет перезаписывать эту директорию
-# Поэтому копируем только если файлы не монтируются
-# COPY ./server_grpc /app/server_grpc
+# Копируем файлы сервера
+COPY server_grpc/server.py .
+COPY server_grpc/toxicity_classifier_pb2.py .
+COPY server_grpc/toxicity_classifier_pb2_grpc.py .
 
 CMD ["python3", "server.py"]
