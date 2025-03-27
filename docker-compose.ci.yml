@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   grpc_server:
     image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION:-1.0}
