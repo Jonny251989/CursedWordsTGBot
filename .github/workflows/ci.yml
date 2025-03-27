@@ -35,10 +35,9 @@ jobs:
             -w /workspace \
             -e DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}" \
             -e DOCKER_PASSWORD="${{ secrets.DOCKER_PASSWORD }}" \
-            -e TELEGRAM_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+            -e TELEGRAM_TOKEN="'${{ secrets.TELEGRAM_TOKEN }}'" \  # Добавлены кавычки
             ${{ secrets.DOCKER_USERNAME }}/cwbot_base:1.0 \
             tail -f /dev/null
-
       - name: Validate compose file
         run: |
           docker exec cwbot_runner sh -c "
