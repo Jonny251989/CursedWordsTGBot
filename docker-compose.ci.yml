@@ -22,7 +22,7 @@ services:
         condition: service_started  # Ждем запуска сервера
     networks:
       - app_network
-    restart: on-failure  # Автоперезапуск при ошибках
+    restart: on-failure  # Автоперезапуск при ошибк
 
 volumes:
   grpc_hf_cache:  # Для кэша моделей (если используется)
