@@ -35,9 +35,10 @@ jobs:
             -w /workspace \
             -e DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}" \
             -e DOCKER_PASSWORD="${{ secrets.DOCKER_PASSWORD }}" \
-            -e TELEGRAM_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \  # Добавлены кавычки
+            -e TELEGRAM_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
             ${{ secrets.DOCKER_USERNAME }}/cwbot_base:1.0 \
             tail -f /dev/null
+
       - name: Validate compose file
         run: |
           docker exec cwbot_runner sh -c "
@@ -47,14 +48,13 @@ jobs:
       - name: Launch services with live logs
         run: |
           docker exec cwbot_runner sh -c "
-            # Запускаем сервисы в foreground-режиме (без -d)
-            docker-compose -f /workspace/docker-compose.ci.yml up --build 2>&1 | tee /workspace/compose.log
+            docker-compose -f /workspace/docker-compose.ci.yml up --build
           "
 
       - name: Verify services
         timeout-minutes: 5
         run: |
           docker exec cwbot_runner sh -c "
-            docker-compose -f /workspace/docker-compose.ci.yml ps
-            docker-compose -f /workspace/docker-compose.ci.yml logs --tail=50 grpc_server
+            docker-compose -f /workspace/docker-compose.ci.yml ps -a
+            docker-compose -f /workspace/docker-compose.ci.yml logs --tail=100
           "
