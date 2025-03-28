@@ -34,6 +34,8 @@ jobs:
             -v "$(pwd)":/workspace \
             -w /workspace \
             -e DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}" \
+            -e DOCKER_PASSWORD="${{ secrets.DOCKER_PASSWORD }}" \
+            -e TELEGRAM_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
             ${{ secrets.DOCKER_USERNAME }}/cwbot_base:1.0 \
             tail -f /dev/null
 
