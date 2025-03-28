@@ -24,8 +24,7 @@ services:
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
     depends_on:
-      grpc_server:
-        condition: service_healthy
+      - grpc_server
     networks:
       - app_network
     restart: on-failure
