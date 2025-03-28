@@ -34,10 +34,13 @@ jobs:
             -v "$(pwd)":/workspace \
             -w /workspace \
             -e DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}" \
-            -e DOCKER_PASSWORD="${{ secrets.DOCKER_PASSWORD }}" \
             -e TELEGRAM_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
             ${{ secrets.DOCKER_USERNAME }}/cwbot_base:1.0 \
             tail -f /dev/null
+
+      - name: Debug environment
+        run: |
+          docker exec cwbot_runner sh -c "echo 'TELEGRAM_TOKEN='\$TELEGRAM_TOKEN"
 
       - name: Build and push services
         run: |
@@ -50,7 +53,8 @@ jobs:
       - name: Run services
         run: |
           docker exec cwbot_runner sh -c "
-            docker-compose -f /workspace/docker-compose.ci.yml up
+            docker-compose -f /workspace/docker-compose.ci.yml up \
+              --env TELEGRAM_TOKEN=\"$TELEGRAM_TOKEN\"
           "
 
       - name: Verify deployment
