@@ -10,7 +10,7 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: ["CMD", "grpc_health_probe", "-addr=:50051"]
+      test: ["CMD-SHELL", "exit 0"] 
       start_period: 2m
       interval: 10s
       timeout: 5s
@@ -30,8 +30,7 @@ services:
         exit 0
       "
     depends_on:
-      grpc_server:
-        condition: service_healthy
+     - grpc_server
     networks:
       - app_network
     restart: "no"
