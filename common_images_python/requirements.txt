@@ -1,6 +1,6 @@
-grpcio==1.62.1
-grpcio-tools==1.62.1
-torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu
-transformers==4.35.2
+grpcio==1.70.0
+grpcio-tools==1.70.0  # обычно совпадает с grpcio
+torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+transformers==4.48.3
 numpy==1.26.4
-protobuf==4.21.12  # Версия, совместимая с grpcio-tools 1.62.1
+huggingface-hub==0.28.1

@@ -17,7 +17,7 @@ services:
     container_name: cursedwords_bot
     environment:
       - GRPC_SERVER_ADDRESS=grpc_server:50051
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}  # Берётся из окружения runner-контейнера
+      - command_line_arguments=${TELEGRAM_TOKEN}  # Берётся из окружения runner-контейнера
     depends_on:
       grpc_server:
         condition: service_healthy

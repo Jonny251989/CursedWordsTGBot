@@ -1,22 +1,36 @@
 FROM python:3.9-slim
 
+# Установка зависимостей
 RUN apt-get update && apt-get install -y \
     procps \
     net-tools \
     telnet \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Копируем requirements.txt из поддиректории
+# Создаем директорию для кеша моделей
+RUN mkdir -p /cache/huggingface
+
+# Устанавливаем переменные окружения для кеширования
+ENV HF_HOME=/cache/huggingface
+
+# Копируем requirements.txt
 COPY common_images_python/requirements.txt .
 
+# Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Загружаем модель и токенизатор на этапе сборки
+RUN python -c "\
+from transformers import AutoTokenizer, AutoModelForSequenceClassification; \
+AutoTokenizer.from_pretrained('s-nlp/russian_toxicity_classifier'); \
+AutoModelForSequenceClassification.from_pretrained('s-nlp/russian_toxicity_classifier');"
 
 # Копируем файлы сервера
 COPY server_grpc/toxicity_classifier_pb2.py .
 COPY server_grpc/toxicity_classifier_pb2_grpc.py .
 COPY server_grpc/server.py .
 
-
-CMD ["python3", "server.py"]
+CMD ["python3", "-u", "server.py"]

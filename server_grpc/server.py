@@ -5,37 +5,44 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import toxicity_classifier_pb2
 import toxicity_classifier_pb2_grpc
 import logging
-import os
+import sys
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
 logger = logging.getLogger(__name__)
 
 class ToxicityClassifierServicer(toxicity_classifier_pb2_grpc.ToxicityClassifierServicer):
     def __init__(self):
         self.model_name = 's-nlp/russian_toxicity_classifier'
         try:
-            # Загрузка токенизатора
+            logger.info("Initializing model...")
             self.tokenizer = AutoTokenizer.from_pretrained(
                 self.model_name,
-                local_files_only=False  # Разрешить загрузку из интернета, если нет в кэше
+                local_files_only=False
             )
-            
-            # Загрузка модели
             self.model = AutoModelForSequenceClassification.from_pretrained(
                 self.model_name,
-                local_files_only=False  # Разрешить загрузку из интернета, если нет в кэше
+                local_files_only=False
             )
+            logger.info("Model ready")
             
-            logger.info("Model and tokenizer loaded successfully")
-            
+            # Проверка размерности выходов
+            test_input = self.tokenizer("test", return_tensors="pt")
+            with torch.no_grad():
+                test_output = self.model(**test_input).logits
+            self.num_labels = test_output.shape[-1]
+            logger.info(f"Model outputs: {self.num_labels} logits")
+
         except Exception as e:
-            logger.error(f"Error loading model or tokenizer: {e}")
+            logger.critical(f"Initialization failed: {e}")
             raise
 
     def ClassifyMessage(self, request, context):
-        logger.info(f"Received message: {request.message}")
         try:
-            # Токенизация сообщения
+            # Токенизация
             inputs = self.tokenizer(
                 request.message,
                 return_tensors="pt",
@@ -44,24 +51,28 @@ class ToxicityClassifierServicer(toxicity_classifier_pb2_grpc.ToxicityClassifier
                 max_length=512
             )
             
-            # Получение предсказания
+            # Предсказание
             with torch.no_grad():
                 logits = self.model(**inputs).logits
-                
-            # Вычисление вероятности токсичности
-            probs = torch.sigmoid(logits).squeeze().numpy()
-            toxicity_prob = probs[1]  # Предполагаем, что индекс 1 соответствует токсичности
-            logger.info(f"Toxicity probability: {toxicity_prob}")
+
+            # Обработка выходов модели
+            if self.num_labels == 1:  # Бинарная классификация
+                prob = torch.sigmoid(logits).item()
+            elif self.num_labels == 2:  # Два класса
+                prob = torch.softmax(logits, dim=1)[0][1].item()
+            else:
+                raise ValueError("Unsupported model output format")
+
+            logger.info(f"Processed: '{request.message}' | Prob: {prob:.4f}")
             
-            # Возврат результата
             return toxicity_classifier_pb2.MessageResponse(
-                toxicity_probability=toxicity_prob
+                toxicity_probability=prob
             )
-            
+
         except Exception as e:
-            logger.error(f"Error processing message: {e}")
+            logger.error(f"Error: {str(e)}")
             context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details(str(e))
+            context.set_details(f"Processing error: {str(e)}")
             return toxicity_classifier_pb2.MessageResponse()
 
 def serve():
@@ -70,9 +81,8 @@ def serve():
         ToxicityClassifierServicer(), server
     )
     server.add_insecure_port('[::]:50051')
-    logger.info("Server starting on [::]:50051")
+    logger.info("Starting server on port 50051")
     server.start()
-    logger.info("Server started. Waiting for termination...")
     server.wait_for_termination()
 
 if __name__ == '__main__':
