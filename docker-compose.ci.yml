@@ -19,8 +19,7 @@ services:
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - command_line_arguments=${TELEGRAM_TOKEN}  # Берётся из окружения runner-контейнера
     depends_on:
-      grpc_server:
-        condition: service_healthy
+      - grpc_server
     networks:
       - app_network
     restart: on-failure
