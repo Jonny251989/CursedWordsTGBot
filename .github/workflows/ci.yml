@@ -62,7 +62,9 @@ jobs:
       - name: Run services
         run: |
           docker exec cwbot_runner sh -c "
-            docker-compose -f /workspace/docker-compose.ci.yml --env-file /workspace/.env up
+            docker-compose -f /workspace/docker-compose.ci.yml up 
+              --exit-code-from cursedwords_bot 
+              --abort-on-container-exit
           "
 
       - name: Verify deployment

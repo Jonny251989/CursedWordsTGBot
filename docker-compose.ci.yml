@@ -26,8 +26,10 @@ services:
     entrypoint: []
     command: >
       sh -c "
-        find /cwbot/bins/Tests -name '*_tests' -type f -executable -print0 | xargs -0 -P 0 -n1 sh -c 'echo \"Running: \$0\" && \$0 || exit 1'
-        exit 0
+        echo 'Запуск функциональных тестов...' &&
+        find /cwbot/bins/Tests/FunctionalTests -name '*_tests' -type f -executable -print0 |
+        xargs -0 -P 0 -n1 sh -c 'echo \"Running: \$0\" && \$0 || exit 1' &&
+        docker-compose -f /workspace/docker-compose.ci.yml stop grpc_server
       "
     depends_on:
      - grpc_server
