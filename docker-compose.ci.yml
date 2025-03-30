@@ -21,7 +21,7 @@ services:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
     environment:
       - command_line_arguments=${TELEGRAM_BOT_TOKEN}
-      - GRPC_SERVER_ADDRESS=grpc_server:50051  # Добавлен порт
+      - GRPC_SERVER_ADDRESS=grpc_server:50051
       - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
     entrypoint: []
     command: >
@@ -34,6 +34,7 @@ services:
       - app_network
     restart: unless-stopped
 
-  networks:
-    app_network:
-      driver: bridge  # Исправлена опечатка (было bridgeа)
+# Сети должны быть объявлены НА УРОВНЕ ВСЕГО ФАЙЛА, а не внутри сервисов
+networks:
+  app_network:
+    driver: bridge
