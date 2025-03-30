@@ -24,16 +24,16 @@ services:
       - GRPC_SERVER_ADDRESS=grpc_server:50051  # Добавлен порт
       - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
     entrypoint: []
-  command: >
-    sh -c "
-      find /cwbot/bins/Tests -name '*_tests' -type f -executable -print0 | xargs -0 -P 0 -n1 sh -c 'echo \"Running: \$0\" && \$0 || exit 1'
-    "
-  depends_on:
-    - grpc_server
-  networks:
-    - app_network
-  restart: unless-stopped
+    command: >
+      sh -c "
+        find /cwbot/bins/Tests -name '*_tests' -type f -executable -print0 | xargs -0 -P 0 -n1 sh -c 'echo \"Running: \$0\" && \$0 || exit 1'
+      "
+    depends_on:
+      - grpc_server
+    networks:
+      - app_network
+    restart: unless-stopped
 
-networks:
-  app_network:
-    driver: bridge  # Исправлена опечатка (было bridgeа)
+  networks:
+    app_network:
+      driver: bridge  # Исправлена опечатка (было bridgeа)
