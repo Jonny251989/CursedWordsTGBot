@@ -27,7 +27,7 @@ services:
     command: >
         sh -c "
           echo 'Запуск функциональных тестов...' &&
-          find /cwbot/bins/Tests/FunctionalTests -name '*_tests' -executable -exec {} \;
+          find /cwbot/bins/Tests/FunctionalTests -name '*_tests' -type f -executable -exec {} \;
         "
     depends_on:
      - grpc_server
