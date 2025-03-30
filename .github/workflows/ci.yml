@@ -53,8 +53,7 @@ jobs:
       - name: Run services
         run: |
           docker exec cwbot_runner sh -c "
-            docker-compose -f /workspace/docker-compose.ci.yml up \
-              --env TELEGRAM_TOKEN=\"$TELEGRAM_TOKEN\"
+            docker-compose -f /workspace/docker-compose.ci.yml up
           "
 
       - name: Verify deployment
