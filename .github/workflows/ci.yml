@@ -58,7 +58,6 @@ jobs:
             echo '${{ secrets.DOCKER_PASSWORD }}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
             docker-compose -f /workspace/docker-compose.ci.yml push
           "
-
       - name: Run services
         run: |
           docker exec cwbot_runner sh -c "
