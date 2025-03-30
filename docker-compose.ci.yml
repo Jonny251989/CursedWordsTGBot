@@ -26,8 +26,8 @@ services:
     entrypoint: []
     command: >
         sh -c "
-          echo 'Запуск функциональных тестов...' &&
-          find /cwbot/bins/Tests/FunctionalTests/Reactor_Tests -name '*_tests' -type f -executable -exec {} \;
+        echo 'Запуск функциональных тестов...' &&
+        /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
         "
     depends_on:
      - grpc_server
