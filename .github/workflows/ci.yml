@@ -38,7 +38,7 @@ jobs:
         run: |
           docker run -d --name cwbot_runner \
             -v /var/run/docker.sock:/var/run/docker.sock \
-            -v "$(pwd)":/workspace \
+            -v "${{ github.workspace }}":/workspace \
             -w /workspace \
             -e DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}" \
             -e TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
@@ -65,12 +65,4 @@ jobs:
             docker-compose -f /workspace/docker-compose.ci.yml up 
               --exit-code-from cursedwords_bot 
               --abort-on-container-exit
-          "
-
-      - name: Verify deployment
-        if: always()
-        run: |
-          docker exec cwbot_runner sh -c "
-            docker ps -a
-            docker-compose -f /workspace/docker-compose.ci.yml logs --tail=100
           "
