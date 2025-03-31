@@ -49,14 +49,14 @@ jobs:
 
       - name: Debug environment
         run: |
-          docker exec cwbot_runner sh -c "echo 'TELEGRAM_TOKEN='\$TELEGRAM_TOKEN"
+          docker exec cwbot_runner sh -c "echo 'TELEGRAM_BOT_TOKEN='\$TELEGRAM_BOT_TOKEN"
 
       - name: Build and push services
         run: |
           docker exec cwbot_runner sh -c "
             docker-compose -f /workspace/docker-compose.ci.yml build
             echo '${{ secrets.DOCKER_PASSWORD }}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
-            docker-compose -f /workspace/docker-compose.ci.yml push
+            docker-compose -f /workspace/docker-compose.local.yml push
           "
       - name: Run services
         run: |
