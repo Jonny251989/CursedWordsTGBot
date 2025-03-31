@@ -63,5 +63,8 @@ jobs:
           docker exec cwbot_runner sh -c "
             docker-compose -f /workspace/docker-compose.local.yml up 
               --abort-on-container-exit 
-              --exit-code-from cursedwords_bot
+              --exit-code-from test_runner
           "
+      - name: Stop services
+        run: |
+          docker exec cwbot_runner sh -c "docker-compose -f /workspace/docker-compose.local.yml down"
