@@ -7,7 +7,7 @@ on:
     branches: ["**"]
 
 env:
-  COMPOSE_FILE: docker-compose.ci.yml
+  COMPOSE_FILE: docker-compose.local.yml
   COMMON_IMAGES_VERSION: 1.0
   TARGET_IMAGES_VERSION: 1.0
 
@@ -61,7 +61,7 @@ jobs:
       - name: Run services
         run: |
           docker exec cwbot_runner sh -c "
-            docker-compose -f /workspace/docker-compose.ci.yml up 
-              --exit-code-from cursedwords_bot 
-              --abort-on-container-exit
+            docker-compose -f /workspace/docker-compose.local.yml up 
+              --abort-on-container-exit 
+              --exit-code-from cursedwords_bot
           "
