@@ -42,8 +42,8 @@ jobs:
             -w /repo \
             -e DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}" \
             -e TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
-            ${{ secrets.DOCKER_USERNAME }}/cwbot_base:${{ env.COMMON_IMAGES_VERSION }} \  # Теперь здесь 1.0
-            tail -f /dev/null
+            ${{ secrets.DOCKER_USERNAME }}/cwbot_base:${{ env.COMMON_IMAGES_VERSION }} \
+            sh -c "tail -f /dev/null"
 
       - name: Run services
         run: |
