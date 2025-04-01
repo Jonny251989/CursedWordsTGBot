@@ -2,9 +2,9 @@ name: CursedWords Bot CI/CD
 
 on:
   push:
-    branches: ["main"]
+    branches: ["**"]
   pull_request:
-    branches: ["main"]
+    branches: ["**"]
 
 env:
   COMPOSE_FILE: docker-compose.ci.yml  # Основной compose-файл
