@@ -3,34 +3,30 @@ version: '3.8'
 services:
   grpc_server:
     image: ${DOCKER_USERNAME}/grpc_server:${COMMON_IMAGES_VERSION}
-    mem_limit: 4g
-    mem_reservation: 2g
     ports:
       - "50051:50051"
     networks:
       - app_network
-    healthcheck:
-      test: ["CMD-SHELL", "exit 0"] 
-      start_period: 2m
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: unless-stopped
 
-  cursedwords_bot:
+  test_runner:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Добавьте это
     entrypoint: []
     command: >
-        sh -c "
-        echo 'Запуск функциональных тестов...' &&
-        /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
-        "
+      sh -c "
+      sleep 10 &&
+      echo 'Запуск тестов...' &&
+      /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests;
+      exit_code=$$?;
+      exit $$exit_code
+      "
     depends_on:
-     - grpc_server
+      - grpc_server
     networks:
       - app_network
     restart: "no"
