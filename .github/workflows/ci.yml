@@ -8,8 +8,8 @@ on:
 
 env:
   COMPOSE_FILE: docker-compose.ci.yml  # Основной compose-файл
-  COMMON_IMAGES_VERSION: 1.0          # Версия базового образа
-  TARGET_IMAGES_VERSION: 1.0          # Версия целевых образов
+  COMMON_IMAGES_VERSION: "1.0"
+  TARGET_IMAGES_VERSION: "1.0"
 
 jobs:
   deploy:
