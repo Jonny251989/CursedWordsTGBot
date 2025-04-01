@@ -31,7 +31,8 @@ jobs:
         run: |
           echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" > .env
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
-          # Убраны дублирующиеся переменные версий, если не используются в контейнере
+          echo "COMMON_IMAGES_VERSION=1.0" >> .env
+          echo "TARGET_IMAGES_VERSION=1.0" >> .env
 
       - name: Prepare base container
         run: |
