@@ -70,8 +70,6 @@ jobs:
       - name: Run functional tests
         run: |
           docker exec cwbot_runner /bin/sh -c \
-            "GRPC_SERVER_ADDRESS=grpc_server:50051 \
-             MESSAGES_FILE_PATH=${{ env.BIN_PATH }}/Tests/FunctionalTests/Reactor_Tests/messages.txt \
              ${{ env.BIN_PATH }}/Tests/FunctionalTests/Reactor_Tests/reactor_tests --gtest_output=xml:${{ env.BIN_PATH }}/reactor_test_results.xml"
 
       - name: Upload test results
