@@ -8,4 +8,4 @@ target_link_libraries(${target} PUBLIC gtest queue server_bot task parser worker
 
 configure_file(${PROJECT_SOURCE_DIR}/Tests/FunctionalTests/Reactor_Tests/messages.txt ${CMAKE_BINARY_DIR}/Tests/FunctionalTests/Reactor_Tests/messages.txt COPYONLY)
 
-#add_test(NAME queue_test COMMAND ${target}) 
+#add_test(NAME reactor_tests COMMAND ${target}) 

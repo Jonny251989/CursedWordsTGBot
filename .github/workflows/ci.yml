@@ -42,10 +42,10 @@ jobs:
           cd /repo/build
           ctest --output-on-failure --verbose;
 
-      - name: Run functional tests
+      - name: Start infrastructure and run functional tests
         run: |
-          docker compose -f ${{ env.COMPOSE_FILE }} up -d grpc_server
-          docker compose -f ${{ env.COMPOSE_FILE }} run --rm test_runner
+          ./docker-compose-up.sh
+          ./docker-compose-run-tests.sh
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
