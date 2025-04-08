@@ -34,7 +34,8 @@ jobs:
 
       - name: Build project
         run: |
-          cd /repo && chmod +x build-local.sh && ./build-local.sh
+          cd /repo
+          ./build-local.sh
 
       - name: Run all unit tests
         run: |
