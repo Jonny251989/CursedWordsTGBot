@@ -3,10 +3,10 @@
 # Проверка параметра
 if [ "$1" == "up" ]; then
   echo "Starting the infrastructure..."
-  docker-compose -f $COMPOSE_FILE up -d grpc_server
+  docker-compose up -d grpc_server
 elif [ "$1" == "down" ]; then
   echo "Shutting down the infrastructure..."
-  docker-compose -f $COMPOSE_FILE down
+  docker-compose  down
 else
   echo "Usage: $0 {up|down}"
   exit 1
