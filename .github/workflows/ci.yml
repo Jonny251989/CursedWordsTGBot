@@ -51,32 +51,24 @@ jobs:
           docker exec cwbot_runner /bin/sh -c \
             "cd /repo && chmod +x build-local.sh && ./build-local.sh"
 
-      - name: Verify binaries existence
-        run: |
-          docker exec cwbot_runner /bin/sh -c \
-            "ls -la ${{ env.BIN_PATH }}/Tests/UnitTests/*/*_tests"
-
       - name: Run all unit tests
         run: |
           docker exec cwbot_runner /bin/sh -c "\
-            ls ${{ env.UNIT_TESTS_PATH }}/*/*_tests && \
-            find ${{ env.UNIT_TESTS_PATH }} -name '*_tests' -exec {} --gtest_output=xml:{}.xml \;"
+            ls ${{ env.BIN_PATH }}/Tests/UnitTests/*/*_tests && \
+            find ${{ env.BIN_PATH }}/Tests/UnitTests -name '*_tests' \
+              -exec {} --gtest_output=xml:{}.xml \;"
 
-            
       - name: Start infrastructure
         run: |
           docker compose -f docker-compose.ci.yml up -d grpc_server
-
 
       - name: Run functional tests
         run: |
           docker compose -f docker-compose.ci.yml run --rm test_runner
 
-
       - name: Upload test results
-        uses: actions/upload-artifact@v4  # Исправленная версия
+        uses: actions/upload-artifact@v4
         with:
           name: test-reports
           path: |
-            ${{ github.workspace }}/bins/*_results.xml
-            ${{ github.workspace }}/bins/Tests/**/*_results.xml
+            ${{ github.workspace }}/bins/Tests/**/*.xml
