@@ -44,11 +44,6 @@ jobs:
 
       - name: Start infrastructure and run functional tests
         run: |
-          ./docker-compose-up.sh
+          ./functional_tests_environment.sh up
           ./docker-compose-run-tests.sh
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports
-          path: ${{ github.workspace }}/bins/Tests/**/*.xml
+          ./functional_tests_environment.sh down
