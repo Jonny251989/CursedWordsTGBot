@@ -10,48 +10,52 @@ env:
   COMPOSE_FILE: docker-compose.ci.yml
   COMMON_IMAGES_VERSION: "1.0"
   TARGET_IMAGES_VERSION: "1.0"
-  BIN_PATH: "/repo/bins"
+  BIN_PATH: "/github/workspace/bins"
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: docker:dind  # Базовый образ с Docker
+      image: ${{ secrets.DOCKER_USERNAME }}/cwbot_base:${{ env.COMMON_IMAGES_VERSION }}
       volumes:
-        - ${{ github.workspace }}:/repo
-      options: --privileged
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ${{ github.workspace }}:/github/workspace
+      options: --network host
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          path: /repo
+          path: /github/workspace
 
-      - name: Login to Docker Hub
+      - name: Build project
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login \
-            -u ${{ secrets.DOCKER_USERNAME }} \
-            --password-stdin
+          cd /github/workspace
+          chmod +x build-local.sh
+          ./build-local.sh
 
-      - name: Pull base image
-        run: docker pull ${{ secrets.DOCKER_USERNAME }}/cwbot_base:${{ env.COMMON_IMAGES_VERSION }}
-
-      - name: Build and test
+      - name: Verify binaries existence
         run: |
-          docker run --rm \
-            -v /repo:/repo \
-            -w /repo \
-            -e TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }} \
-            ${{ secrets.DOCKER_USERNAME }}/cwbot_base:${{ env.COMMON_IMAGES_VERSION }} \
-            sh -c "
-              chmod +x build-local.sh && \
-              ./build-local.sh && \
-              find /repo/bins/Tests/UnitTests -name '*_tests' \
-                -exec {} --gtest_output=xml:{}.xml \;
-            "
+          ls -la ${{ env.BIN_PATH }}/Tests/UnitTests/*/*_tests
+
+      - name: Run unit tests
+        run: |
+          ${{ env.BIN_PATH }}/Tests/UnitTests/Parser_Tests/parser_tests --gtest_output=xml:${{ env.BIN_PATH }}/parser_results.xml
+          ${{ env.BIN_PATH }}/Tests/UnitTests/Queue_Tests/queue_tests --gtest_output=xml:${{ env.BIN_PATH }}/queue_results.xml
+          ${{ env.BIN_PATH }}/Tests/UnitTests/SignalHandler_Tests/signalhandler_tests --gtest_output=xml:${{ env.BIN_PATH }}/signalhandler_results.xml
+
+      - name: Start infrastructure
+        run: |
+          docker compose -f ${{ env.COMPOSE_FILE }} up -d grpc_server
+          sleep 10
+
+      - name: Run functional tests
+        run: |
+          docker compose -f ${{ env.COMPOSE_FILE }} run --rm test_runner
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: ${{ github.workspace }}/bins/**/*.xml
+          path: |
+            ${{ env.BIN_PATH }}/*_results.xml
