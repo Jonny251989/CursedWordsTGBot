@@ -42,6 +42,7 @@ jobs:
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v "${{ github.workspace }}":/repo \
             -w /repo \
+            --network container:grpc_server  # Подключаемся к сети grpc_server
             -e TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
             ${{ secrets.DOCKER_USERNAME }}/cwbot_base:${{ env.COMMON_IMAGES_VERSION }} \
             tail -f /dev/null
@@ -51,31 +52,17 @@ jobs:
           docker exec cwbot_runner /bin/sh -c \
             "cd /repo && chmod +x build-local.sh && ./build-local.sh"
 
-      - name: Verify binaries existence
-        run: |
-          docker exec cwbot_runner /bin/sh -c \
-            "ls -la ${{ env.BIN_PATH }}/Tests/UnitTests/*/*_tests"
-
-      - name: Run unit tests
-        run: |
-          docker exec cwbot_runner /bin/sh -c \
-            "${{ env.BIN_PATH }}/Tests/UnitTests/Parser_Tests/parser_tests --gtest_output=xml:${{ env.BIN_PATH }}/parser_test_results.xml && \
-             ${{ env.BIN_PATH }}/Tests/UnitTests/Queue_Tests/queue_tests --gtest_output=xml:${{ env.BIN_PATH }}/queue_test_results.xml && \
-             ${{ env.BIN_PATH }}/Tests/UnitTests/SignalHandler_Tests/signalhandler_tests --gtest_output=xml:${{ env.BIN_PATH }}/signalhandler_test_results.xml"
-
-      - name: Prepare for functional tests
+      - name: Start infrastructure
         run: |
           docker compose -f docker-compose.ci.yml up -d grpc_server
 
       - name: Run functional tests
         run: |
-          docker exec cwbot_runner /bin/sh -c \
-             ${{ env.BIN_PATH }}/Tests/FunctionalTests/Reactor_Tests/reactor_tests --gtest_output=xml:${{ env.BIN_PATH }}/reactor_test_results.xml"
+          docker compose -f docker-compose.ci.yml run --rm test_runner
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4  # Исправленная версия
+        uses: actions/upload-artifact@v4
         with:
           name: test-reports
           path: |
-            ${{ github.workspace }}/bins/*_results.xml
-            ${{ github.workspace }}/bins/Tests/**/*_results.xml
+            ${{ github.workspace }}/bins/**/*_results.xml
