@@ -36,11 +36,10 @@ jobs:
         run: |
           cd /repo && chmod +x build-local.sh && ./build-local.sh
 
-      - name: Run unit tests
+      - name: Run all unit tests
         run: |
-          ls ${{ env.BIN_PATH }}/Tests/UnitTests/*/*_tests && \
-          find ${{ env.BIN_PATH }}/Tests/UnitTests -name '*_tests' \
-            -exec {} --gtest_output=xml:{}.xml \;
+          cd /repo/build
+          ctest --output-on-failure --verbose;
 
       - name: Run functional tests
         run: |
