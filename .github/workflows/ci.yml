@@ -6,20 +6,13 @@ on:
   pull_request:
     branches: ["**"]
 
-env:
-  COMPOSE_FILE: docker-compose.ci.yml
-  BIN_PATH: "/repo/bins"
+
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
       image: docker.io/jonnyrembo/cwbot_base:1.0
-      env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        COMMON_IMAGES_VERSION: "1.0"
-        TARGET_IMAGES_VERSION: "1.0"
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
         - ${{ github.workspace }}:/repo
