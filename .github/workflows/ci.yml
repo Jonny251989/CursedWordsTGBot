@@ -10,7 +10,7 @@ env:
   COMPOSE_FILE: docker-compose.ci.yml
   COMMON_IMAGES_VERSION: "1.0"
   TARGET_IMAGES_VERSION: "1.0"
-  BIN_PATH: "/repo/bins"  # Основная директория с бинарниками
+  BIN_PATH: "/repo/bins"
 
 jobs:
   build-and-test:
@@ -39,7 +39,6 @@ jobs:
         run: |
           docker run -d \
             --name cwbot_runner \
-            --network=host \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v "${{ github.workspace }}":/repo \
             -w /repo \
@@ -60,9 +59,9 @@ jobs:
       - name: Run unit tests
         run: |
           docker exec cwbot_runner /bin/sh -c \
-            "${{ env.BIN_PATH }}/Tests/UnitTests/Parser_Tests/parser_tests --gtest_output=xml:parser_test_results.xml && \
-             ${{ env.BIN_PATH }}/Tests/UnitTests/Queue_Tests/queue_tests --gtest_output=xml:queue_test_results.xml && \
-             ${{ env.BIN_PATH }}/Tests/UnitTests/SignalHandler_Tests/signalhandler_tests --gtest_output=xml:signalhandler_test_results.xml"
+            "${{ env.BIN_PATH }}/Tests/UnitTests/Parser_Tests/parser_tests --gtest_output=xml:${{ env.BIN_PATH }}/parser_test_results.xml && \
+             ${{ env.BIN_PATH }}/Tests/UnitTests/Queue_Tests/queue_tests --gtest_output=xml:${{ env.BIN_PATH }}/queue_test_results.xml && \
+             ${{ env.BIN_PATH }}/Tests/UnitTests/SignalHandler_Tests/signalhandler_tests --gtest_output=xml:${{ env.BIN_PATH }}/signalhandler_test_results.xml"
 
       - name: Prepare for functional tests
         run: |
@@ -73,11 +72,12 @@ jobs:
           docker exec cwbot_runner /bin/sh -c \
             "GRPC_SERVER_ADDRESS=grpc_server:50051 \
              MESSAGES_FILE_PATH=${{ env.BIN_PATH }}/Tests/FunctionalTests/Reactor_Tests/messages.txt \
-             ${{ env.BIN_PATH }}/Tests/FunctionalTests/Reactor_Tests/reactor_tests --gtest_output=xml:reactor_test_results.xml"
+             ${{ env.BIN_PATH }}/Tests/FunctionalTests/Reactor_Tests/reactor_tests --gtest_output=xml:${{ env.BIN_PATH }}/reactor_test_results.xml"
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Исправленная версия
         with:
           name: test-reports
           path: |
-            ${{ github.workspace }}/bins/Tests/*/*/*_results.xml
+            ${{ github.workspace }}/bins/*_results.xml
+            ${{ github.workspace }}/bins/Tests/**/*_results.xml
