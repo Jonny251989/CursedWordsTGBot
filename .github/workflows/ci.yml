@@ -16,7 +16,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: ${{ secrets.DOCKER_USERNAME }}/cwbot_base:1.0
+      image: docker.io/jonnyrembo/cwbot_base:1.0
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
