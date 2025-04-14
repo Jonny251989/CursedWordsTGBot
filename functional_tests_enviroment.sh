@@ -4,7 +4,6 @@
 if [ "$1" == "up" ]; then
   echo "Starting the infrastructure..."
   docker-compose up -d grpc_server
-  docker compose wait grpc_server
 elif [ "$1" == "down" ]; then
   echo "Shutting down the infrastructure..."
   docker-compose  down
