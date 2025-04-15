@@ -3,6 +3,7 @@ tgbot_workspace.code-workspace
 token.txt
 commands_docker.txt
 /build/
+/docker_cache/
 /bins/
 update-tgbot-version.patch
 #/Tests/FunctionalTests/Reactor_Tests/messages.txt

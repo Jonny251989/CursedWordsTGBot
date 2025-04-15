@@ -18,10 +18,7 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.4.24 && \
     chmod +x /usr/local/bin/grpc_health_probe
 WORKDIR /app
 
-# Создаем директорию для кеша моделей
-RUN mkdir -p /cache/huggingface
-
-# Устанавливаем переменные окружения для кеширования
+COPY docker_cache/huggingface /cache/huggingface
 ENV HF_HOME=/cache/huggingface
 
 # Копируем requirements.txt
@@ -30,20 +27,16 @@ COPY common_images_python/requirements.txt .
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Загружаем модель и токенизатор на этапе сборки
-
+# Загружаем модель из локального кеша
 RUN python -c "\
 from transformers import AutoTokenizer, AutoModelForSequenceClassification; \
-import os; \
-os.environ['HF_HUB_DOWNLOAD_TIMEOUT'] = '600'; \
-AutoTokenizer.from_pretrained('s-nlp/russian_toxicity_classifier', local_files_only=False); \
-AutoModelForSequenceClassification.from_pretrained('s-nlp/russian_toxicity_classifier', local_files_only=False);"
+AutoTokenizer.from_pretrained('s-nlp/russian_toxicity_classifier', local_files_only=True); \
+AutoModelForSequenceClassification.from_pretrained('s-nlp/russian_toxicity_classifier', local_files_only=True);"
+
 # Копируем файлы сервера
 COPY server_grpc/toxicity_classifier_pb2.py .
 COPY server_grpc/toxicity_classifier_pb2_grpc.py .
 COPY server_grpc/server.py .
 
-# Дополнительная переменная для healthcheck (если нужно)
 ENV GRPC_HEALTH_CHECK_SERVICE=""
-
 CMD ["python3", "-u", "server.py"]
