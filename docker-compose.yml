@@ -19,6 +19,10 @@ services:
     entrypoint: []
     command: >
       sh -c "
+        echo 'Deleting webhook...';
+        curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteWebhook;
+
+        
         # Шаг 1: Ожидание готовности gRPC сервера
         until python3 -c \"import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.settimeout(1); exit(0 if s.connect_ex(('grpc_server', 50051)) == 0 else 1)\"; do
           echo 'Waiting for gRPC server...';
