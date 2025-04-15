@@ -1,13 +1,21 @@
 FROM python:3.9-slim
 
-# Установка зависимостей
+# Установка зависимостей (все в одной RUN инструкции)
 RUN apt-get update && apt-get install -y \
     procps \
     net-tools \
     telnet \
     git \
+    netcat-openbsd \
+    wget \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Устанавливаем grpc_health_probe (отдельная RUN инструкция)
+RUN GRPC_HEALTH_PROBE_VERSION=v0.4.24 && \
+    wget -qO /usr/local/bin/grpc_health_probe \
+    https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+    chmod +x /usr/local/bin/grpc_health_probe
 WORKDIR /app
 
 # Создаем директорию для кеша моделей
@@ -32,5 +40,8 @@ AutoModelForSequenceClassification.from_pretrained('s-nlp/russian_toxicity_class
 COPY server_grpc/toxicity_classifier_pb2.py .
 COPY server_grpc/toxicity_classifier_pb2_grpc.py .
 COPY server_grpc/server.py .
+
+# Дополнительная переменная для healthcheck (если нужно)
+ENV GRPC_HEALTH_CHECK_SERVICE=""
 
 CMD ["python3", "-u", "server.py"]
