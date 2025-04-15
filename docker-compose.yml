@@ -19,14 +19,17 @@ services:
     entrypoint: []
     command: >
       sh -c "
+        # Шаг 1: Ожидание готовности gRPC сервера
         until python3 -c \"import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.settimeout(1); exit(0 if s.connect_ex(('grpc_server', 50051)) == 0 else 1)\"; do
+          echo 'Waiting for gRPC server...';
           sleep 1;
         done;
-      sh -c "
-        curl -X POST \"https://api.telegram.org/bot$$TELEGRAM_BOT_TOKEN/deleteWebhook\" &&
+        
+        # Шаг 2: Удаление вебхука
+        curl -X POST \"https://api.telegram.org/bot$$TELEGRAM_BOT_TOKEN/deleteWebhook\" || true;
+        
+        # Шаг 3: Запуск тестов
         /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
-        exit_code=$$?
-        exit $$exit_code
       "
     depends_on:
       - grpc_server
