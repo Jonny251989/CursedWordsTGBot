@@ -20,7 +20,7 @@ services:
     command: >
       sh -c "
         until python3 -c \"import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.settimeout(1); exit(0 if s.connect_ex(('grpc_server', 50051)) == 0 else 1)\"; do
-          sleep 2;
+          sleep 1;
         done;
         /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
         exit_code=$$?
