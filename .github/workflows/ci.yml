@@ -41,6 +41,7 @@ jobs:
       - name: Start infrastructure and run functional tests
         run: |
           cd /repo
+          export TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
           ./functional_tests_enviroment.sh up
           ./docker-compose-run-tests.sh
           ./functional_tests_enviroment.sh down
