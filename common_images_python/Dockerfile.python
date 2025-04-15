@@ -31,11 +31,13 @@ COPY common_images_python/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Загружаем модель и токенизатор на этапе сборки
+
 RUN python -c "\
 from transformers import AutoTokenizer, AutoModelForSequenceClassification; \
-AutoTokenizer.from_pretrained('s-nlp/russian_toxicity_classifier'); \
-AutoModelForSequenceClassification.from_pretrained('s-nlp/russian_toxicity_classifier');"
-
+import os; \
+os.environ['HF_HUB_DOWNLOAD_TIMEOUT'] = '600'; \
+AutoTokenizer.from_pretrained('s-nlp/russian_toxicity_classifier', local_files_only=False); \
+AutoModelForSequenceClassification.from_pretrained('s-nlp/russian_toxicity_classifier', local_files_only=False);"
 # Копируем файлы сервера
 COPY server_grpc/toxicity_classifier_pb2.py .
 COPY server_grpc/toxicity_classifier_pb2_grpc.py .
