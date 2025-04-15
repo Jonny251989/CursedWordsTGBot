@@ -23,7 +23,7 @@ services:
           sleep 1;
         done;
       sh -c "
-        curl -X POST 'https://api.telegram.org/bot$$TELEGRAM_BOT_TOKEN/deleteWebhook' &&
+        curl -X POST \"https://api.telegram.org/bot$$TELEGRAM_BOT_TOKEN/deleteWebhook\";
         /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
         exit_code=$$?
         exit $$exit_code
