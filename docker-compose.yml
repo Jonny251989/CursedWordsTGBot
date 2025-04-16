@@ -7,6 +7,11 @@ services:
       - "50051:50051"
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "50051"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
 
   test_runner:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
@@ -14,26 +19,18 @@ services:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock 
+    depends_on:
+      grpc_server:
+        condition: service_healthy
     entrypoint: []
     command: >
       sh -c "
-        echo 'Deleting webhook...';
-        WEBHOOK_STATUS=$$(curl -s -w \"%{http_code}\" -X POST https://api.telegram.org/bot$${TELEGRAM_BOT_TOKEN}/deleteWebhook);
-        if [[ \"$$WEBHOOK_STATUS\" != *\"200\"* ]]; then
-          echo \"Failed to delete webhook. Status: $$WEBHOOK_STATUS\";
-          exit 1;
-        fi;
-        # Шаг 1: Ожидание готовности gRPC сервера
-        until python3 -c \"import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.settimeout(1); exit(0 if s.connect_ex(('grpc_server', 50051)) == 0 else 1)\"; do
-          echo 'Waiting for gRPC server...';
+        echo 'Waiting for gRPC server...';
+        until nc -z grpc_server 50051; do
           sleep 1;
         done;
         /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
       "
-    depends_on:
-      - grpc_server
     networks:
       - app_network
     restart: "no"

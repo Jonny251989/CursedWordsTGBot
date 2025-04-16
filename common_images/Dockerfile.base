@@ -4,7 +4,21 @@ ARG GRPC_VERSION=1.66.1
 
 # Обновляем систему и устанавливаем необходимые пакеты
 RUN apt-get update && apt-get install -y \
-    curl lsb-release build-essential g++ make cmake libcurl4-openssl-dev libssl-dev libjsoncpp-dev git zlib1g-dev
+    curl \
+    lsb-release \
+    build-essential \
+    g++ \
+    make \
+    cmake \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libjsoncpp-dev \
+    git \
+    zlib1g-dev \
+    netcat-openbsd \
+    wget \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*  # Очистка кэша
 
 # Устанавливаем Docker CLI
 RUN mkdir -p /etc/apt/keyrings && \
