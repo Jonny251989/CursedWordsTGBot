@@ -7,6 +7,9 @@ import toxicity_classifier_pb2_grpc
 import logging
 import sys
 
+# Импорт health-сервисов
+from grpc_health.v1 import health, health_pb2, health_pb2_grpc
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -77,9 +80,17 @@ class ToxicityClassifierServicer(toxicity_classifier_pb2_grpc.ToxicityClassifier
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    # Регистрируем основной сервис
     toxicity_classifier_pb2_grpc.add_ToxicityClassifierServicer_to_server(
         ToxicityClassifierServicer(), server
     )
+    
+    # Добавляем health check сервис
+    health_servicer = health.HealthServicer()
+    # Здесь пустая строка обозначает общий статус сервера; можно задать имя сервиса
+    health_servicer.set("", health_pb2.HealthCheckResponse.SERVING)
+    health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
+    
     server.add_insecure_port('[::]:50051')
     logger.info("Starting server on port 50051")
     server.start()

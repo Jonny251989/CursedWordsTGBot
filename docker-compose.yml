@@ -8,10 +8,11 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "50051"]
+      test: ["CMD-SHELL", "grpc_health_probe -addr=:50051 || exit 1"] # Более точная проверка
       interval: 2s
       timeout: 5s
       retries: 15
+      start_period: 5s  # Добавляем время на инициализацию
 
   test_runner:
     image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
