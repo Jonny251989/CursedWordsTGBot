@@ -28,6 +28,9 @@ jobs:
       - name: Setup Docker (inside container)
         uses: docker/setup-buildx-action@v2
 
+      - name: Check Docker Compose version
+        run: docker compose version
+
       - name: Build project
         run: |
           cd /repo
