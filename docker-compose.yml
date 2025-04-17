@@ -24,14 +24,8 @@ services:
       grpc_server:
         condition: service_healthy
     entrypoint: []
-    command: >
-      sh -c "
-        echo 'Waiting for gRPC server...';
-        until nc -z grpc_server 50051; do
-          sleep 1;
-        done;
-        /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
-      "
+    command: /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
+    
     networks:
       - app_network
     restart: "no"

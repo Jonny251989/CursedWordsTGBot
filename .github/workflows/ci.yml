@@ -42,5 +42,9 @@ jobs:
         run: |
           cd /repo
           ./functional_tests_enviroment.sh up
+          
+          # Ожидаем готовности grpc_server
+          timeout 300s bash -c "until docker compose ps --status healthy | grep grpc_server; do sleep 1; done"
+          
           ./docker-compose-run-tests.sh
           ./functional_tests_enviroment.sh down

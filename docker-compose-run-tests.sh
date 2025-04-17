@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Ждём готовности grpc_server (максимум 5 минут)
+docker compose wait --timeout 300 --condition=healthy grpc_server
 
-# Запуск тестов в контейнере test_runner
-docker-compose run --rm test_runner
+# Запускаем тесты
+docker compose run --rm test_runner
