@@ -10,7 +10,7 @@ void Worker::terminate(){
 
 void Worker::run(){
     std::unique_ptr<ITask> task_ptr;
-    while ((task_ptr = queue_ptr_->take()) || !shutdown_requested ){
+    while (!shutdown_requested ){
         if (task_ptr){
                 task_ptr->execute();
         }

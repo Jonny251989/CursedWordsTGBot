@@ -1,4 +1,4 @@
-#include "onethreaded_test.hpp"
+#include "test.hpp"
 
 void QueueTest::SetUp() {
 
@@ -25,10 +25,10 @@ TEST_F(QueueTest, LimitedSizeOfQueue) {
     ASSERT_EQ(pushCount, size_of_queue);
 }
 
-TEST_F(QueueTest, NewQueueFront) {
-    auto task = queue.take();
-    EXPECT_FALSE(task);
-}
+// TEST_F(QueueTest, NewQueueFront) {
+//     auto task = queue.take();
+//     EXPECT_FALSE(task);
+// }
 
 TEST_F(QueueTest, Front) {
     queue.push(std::make_unique<TestTask>("Hello", "Vlad"));

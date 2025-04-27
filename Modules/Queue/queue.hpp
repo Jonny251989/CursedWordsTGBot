@@ -19,6 +19,7 @@ private:
     const size_t limit_;
     std::deque<std::unique_ptr<Type>> deque;
     std::mutex mutex;
+    std::condition_variable cv_;
 };
 
 template <class Type>
@@ -31,6 +32,7 @@ bool Queue<Type>::push(std::unique_ptr<Type> task){
     std::lock_guard lock(mutex);         
     if(deque.size() < limit_){
         deque.push_back(std::move(task));
+        cv_.notify_one(); 
         return true;
     }
     return false;
@@ -39,13 +41,16 @@ bool Queue<Type>::push(std::unique_ptr<Type> task){
 template <class Type>
 std::unique_ptr<Type> Queue<Type>::take() {
     
-    std::lock_guard lock(mutex);
-    if(!deque.empty()){   
-        auto item = std::move(deque.front());
-        deque.pop_front();
-        return item;
+    std::unique_lock lock(mutex);
+    cv_.wait(lock, [this]() { return !deque.empty(); });
+    
+    if (deque.empty()) {
+        return nullptr;
     }
-    return nullptr;
+    
+    auto item = std::move(deque.front());
+    deque.pop_front();
+    return item;
 }
 
 template <class Type>
