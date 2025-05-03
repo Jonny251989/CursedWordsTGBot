@@ -31,5 +31,4 @@ class CursedWordDetectingTask: public CRTask{
 public:
     CursedWordDetectingTask(std::shared_ptr<IClassificator> classificator, std::shared_ptr<IReactor> react);
     ~CursedWordDetectingTask();
-
 };

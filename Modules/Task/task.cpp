@@ -6,7 +6,6 @@ CRTask::CRTask(std::shared_ptr<IClassificator> classificator, std::shared_ptr<IR
 
 void CRTask::execute(){
     reactor_->react(classificator_->check());
-
 }
 
 CRTask::~CRTask(){

@@ -1,1 +1,1 @@
-add_subdirectory(Reactor_Tests)
+add_subdirectory(EchoBotTest)
