@@ -5,8 +5,13 @@ void ReactorResultTest::TearDown() {
 }
 
 void ReactorResultTest::SetUp() {
-    std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
+    std::string token = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
     t_bot = std::make_shared<TgBot::Bot>(token);
+    if(t_bot){
+        std::cout<<"WORKED\n";
+    }
+    else
+        std::cout<<"NOT WORKED!\n";
     count_recieve_messages = 0;
     chat_id_ = -1002432345513;
 }
@@ -50,18 +55,24 @@ void ReactorResultTest::checker(){
             std::lock_guard lg{set_mutex};
             if(message->replyToMessage && message_container.count(message->replyToMessage->text)){
                 bool react_m;
-                message->text == "мат" ? react_m = true : react_m = false;
-                std::cout<< "message->text: "<<message->text<<", react_m: "<<react_m<<"\n";
+                if (message->text == "мат!") 
+                    react_m = true;
+                else
+                    react_m = false;
+                std::cout<<"message->replyToMessage: "<<message->replyToMessage->text<< ", message->text: "<<message->text<<", react_m: "<<react_m<<"\n";
                 ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
             }
-
-            last_change_time = std::chrono::steady_clock::now(); 
+            std::cout<<"last_change_time BEFORE: "<<elapsed_seconds.count()<<"\n";
+            last_change_time = std::chrono::steady_clock::now();
+            std::cout<<"last_change_time AFTER: "<<elapsed_seconds.count()<<"\n";
     });
     try {
         TgBot::TgLongPoll longPoll( *t_bot);
         while (count_recieve_messages <= limit_sent_messages_ && elapsed_seconds.count() < limit_time_in_sec) {
             longPoll.start();
+            std::cout<<"elapsed BEFORE: "<<elapsed_seconds.count()<<"\n";
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
+            std::cout<<"elapsed AFTER: "<<elapsed_seconds.count()<<"\n";
         }
     } catch (TgBot::TgException& e) {
         printf("error: %s\n", e.what());
@@ -71,7 +82,7 @@ void ReactorResultTest::checker(){
 TEST_F(ReactorResultTest, FirstTest) {
 
     std::jthread mainThread{[&](){
-        run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
+        run_bot("7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY");
     }};    
 
     generator();

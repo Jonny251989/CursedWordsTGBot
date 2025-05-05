@@ -28,12 +28,6 @@ void Server::start(){
             TgBot::TgLongPoll longPoll(*ptr_bot_);
 
             while (!shutdown_requested) {
-                bool webhookDeleted = ptr_bot_->getApi().deleteWebhook();
-        
-                if (!webhookDeleted) {
-                    Logger::getInstance().logInfo(Logger::Levels::Info, "Webhook deletion failed");
-                    return;
-                }
 
                 Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
                 longPoll.start();
