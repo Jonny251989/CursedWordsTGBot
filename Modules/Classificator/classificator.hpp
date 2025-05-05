@@ -21,13 +21,21 @@ public:
     virtual ~IClassificator() = default;
 };
 
-class SimpleClassificator: public IClassificator{
+class SimpleClassificator final: public IClassificator{
 public:
     SimpleClassificator(const std::string& message);
+    std::string check() final;
+    ~SimpleClassificator();
+private:
+    std::string message_;
+};
+
+
+class CursedWordsClassificator: public IClassificator{
+public:
+    CursedWordsClassificator(const std::string& message);
     virtual std::string check() override;
-    ~SimpleClassificator(); 
-
-
+    ~CursedWordsClassificator(); 
 private:
     std::string message_;
     std::unique_ptr<ToxicityClassifierClient> ptr_client_;

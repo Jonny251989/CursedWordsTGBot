@@ -1,4 +1,4 @@
-#include "echoBotTest.hpp"
+#include "cursedWordsTest.hpp"
 
 void ReactorResultTest::TearDown() {
 
@@ -12,9 +12,10 @@ void ReactorResultTest::SetUp() {
 }
 
 void ReactorResultTest::generator(){
+    
     const char* filePath = std::getenv("MESSAGES_FILE_PATH");
     if (!filePath) {
-        filePath = "./Tests/FunctionalTests/EchoBotTest/messages.txt";  // По умолчанию для локальной машины
+        filePath = "./Tests/FunctionalTests/CursedWordsTest/messages.txt";  // По умолчанию для локальной машины
     }
     std::ifstream inputFile(filePath);
     
@@ -23,9 +24,16 @@ void ReactorResultTest::generator(){
     }
     std::string line;
     while (std::getline(inputFile, line)) {
+        size_t last_space = line.find_last_of(' ');
+        if (last_space == std::string::npos) {
+            std::cerr << "Некорректный формат строки: " << line << std::endl;
+            continue;
+        }
+        std::string flag_str = line.substr(last_space + 1);
+        bool flag = (flag_str == "1");
         {
             std::lock_guard lg{set_mutex};
-            message_container.insert(line);
+            message_container[line] = flag;
         }
         t_bot->getApi().sendMessage(chat_id_, line);
     }
@@ -38,8 +46,15 @@ void ReactorResultTest::checker(){
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
             count_recieve_messages++;
+
             std::lock_guard lg{set_mutex};
-            ASSERT_EQ(message_container.count(message->replyToMessage->text), true);
+            if(message->replyToMessage && message_container.count(message->replyToMessage->text)){
+                bool react_m;
+                message->text == "мат" ? react_m = true : react_m = false;
+                std::cout<< "message->text: "<<message->text<<", react_m: "<<react_m<<"\n";
+                ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
+            }
+
             last_change_time = std::chrono::steady_clock::now(); 
     });
     try {

@@ -12,9 +12,8 @@ Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }
-
-        if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<SimpleClassificator>(message->text),
-            std::make_shared<EchoReactor>(ptr_bot_, message->text, message->chat->id, message->messageId)))){
+        if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<CursedWordsClassificator>(message->text),
+            std::make_shared<CursedWordsReactor>(ptr_bot_, message->text, message->chat->id, message->messageId)))){
 
             Logger::getInstance().logInfo(Logger::Levels::Critical, "Queue is full!"); 
             std::this_thread::sleep_for (std::chrono::milliseconds(100));
@@ -24,18 +23,18 @@ Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>
 
 void Server::start(){
     try {
-        // Удаляем вебхук (возвращает bool)
-        bool webhookDeleted = ptr_bot_->getApi().deleteWebhook();
-        
-        if (!webhookDeleted) {
-            Logger::getInstance().logInfo(Logger::Levels::Info, "Failed to delete webhook!");
-            return;
-        }
 
         Logger::getInstance().logInfo(Logger::Levels::Info, "Webhook deleted successfully");
             TgBot::TgLongPoll longPoll(*ptr_bot_);
 
             while (!shutdown_requested) {
+                bool webhookDeleted = ptr_bot_->getApi().deleteWebhook();
+        
+                if (!webhookDeleted) {
+                    Logger::getInstance().logInfo(Logger::Levels::Info, "Webhook deletion failed");
+                    return;
+                }
+
                 Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
                 longPoll.start();
             }
@@ -49,5 +48,5 @@ void Server::terminate(){
 }
 
 Server::~Server(){
-
+    
 }
