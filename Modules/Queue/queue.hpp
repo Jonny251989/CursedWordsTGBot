@@ -30,10 +30,10 @@ Queue<Type>::Queue(const size_t limit): limit_(limit){
 
 template <class Type>
 bool Queue<Type>::push(std::unique_ptr<Type> task){
-    std::unique_lock lock(mutex);         
+    std::unique_lock lock(mutex);
+    cv_full.wait(lock, [this]() { return deque.size() < limit_; });      
     deque.push_back(std::move(task));
-    cv_.notify_one();
-    cv_full.wait(lock, [this]() { return deque.size() < limit_; });  
+    cv_.notify_one();  
     return true;
 }
 

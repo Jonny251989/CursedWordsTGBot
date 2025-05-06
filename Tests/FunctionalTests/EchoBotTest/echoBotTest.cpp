@@ -56,7 +56,7 @@ void ReactorResultTest::checker(){
 TEST_F(ReactorResultTest, FirstTest) {
 
     std::jthread mainThread{[&](){
-        run_bot("7229787403:AAH0DVCx0wUQ-G9lkXYoIllHL0DhmdawEZo");
+        run_bot("7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs");
     }};    
 
     generator();

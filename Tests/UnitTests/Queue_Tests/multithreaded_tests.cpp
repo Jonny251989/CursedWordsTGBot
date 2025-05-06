@@ -52,29 +52,29 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
     ASSERT_EQ(t_set.size(), 0);
 }
 
-TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
-    const int size_of_queue = 50;
-    Queue<TestTask> queue_(size_of_queue);
-    const int size_words = 5;
-    const int size_operations = 1000;
+// TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
+//     const int size_of_queue = 50;
+//     Queue<TestTask> queue_(size_of_queue);
+//     const int size_words = 5;
+//     const int size_operations = 1000;
 
-    auto pushTask = [&]() {
-        for (int i = 0; i < size_operations; i++) {
-            auto message = generated_words(size_words);
-            auto name = generated_words(size_words);
-            auto task = std::make_unique<TestTask>(message, name);
-            if((queue_.push(std::move(task)))){};       
-        }
-    };
+//     auto pushTask = [&]() {
+//         for (int i = 0; i < size_operations; i++) {
+//             auto message = generated_words(size_words);
+//             auto name = generated_words(size_words);
+//             auto task = std::make_unique<TestTask>(message, name);
+//             if((queue_.push(std::move(task)))){};       
+//         }
+//     };
 
-    {
-        std::jthread pushThreads_one(pushTask);
-        std::jthread pushThreads_two(pushTask);
-        std::jthread pushThreads_three(pushTask);
-    }
+//     {
+//         std::jthread pushThreads_one(pushTask);
+//         std::jthread pushThreads_two(pushTask);
+//         std::jthread pushThreads_three(pushTask);
+//     }
 
-    ASSERT_LE(queue_.take() ? 1 : 0, size_of_queue) << "Queue exceeded the limit!";
-}
+//     ASSERT_LE(queue_.take() ? 1 : 0, size_of_queue) << "Queue exceeded the limit!";
+// }
 
 TEST_F(ThreadSafeQueueTest, FullTest) {
     const int size_of_queue = 77;

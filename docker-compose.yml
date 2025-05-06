@@ -11,21 +11,33 @@ services:
       timeout: 5s
       retries: 15
       start_period: 30s
+    deploy:  # <-- Добавьте это
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
 
   test_runner:
-    image: ${DOCKER_USERNAME}/cwbot:${TARGET_IMAGES_VERSION}
+    image: ${DOCKER_USERNAME}/cwbot_base:${TARGET_IMAGES_VERSION}
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
-      - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/Reactor_Tests/messages.txt
+      - MESSAGES_FILE_PATH=/cwbot/bins/Tests/FunctionalTests/CursedWordsTest/messages.txt
     depends_on:
       grpc_server:
         condition: service_healthy
     entrypoint: []
-    command: /cwbot/bins/Tests/FunctionalTests/Reactor_Tests/reactor_tests
+    command: 
+      - /bin/bash
+      - -c
+      - " cd /cwbot && ./build-local.sh && /bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest"
+    volumes:
+      - .:/cwbot  # Монтируем ВСЮ текущую директорию в /cwbot
+      - ./bins:/bins  # Монтируем локальную папку ./bin в /bins контейнера
     networks:
       - app_network
     restart: "no"
+
 
 networks:
   app_network:
