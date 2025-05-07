@@ -18,7 +18,7 @@ services:
           memory: 2G
 
   test_runner:
-    image: ${DOCKER_USERNAME}/cwbot_base:${TARGET_IMAGES_VERSION}
+    image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - GRPC_SERVER_ADDRESS=grpc_server:50051

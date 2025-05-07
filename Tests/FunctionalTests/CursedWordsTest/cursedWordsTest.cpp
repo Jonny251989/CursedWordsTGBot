@@ -45,33 +45,47 @@ void ReactorResultTest::generator(){
     inputFile.close();
 }
 
-void ReactorResultTest::checker(){
+void ReactorResultTest::checker() {
     auto last_change_time = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
+        std::cout << "Got message: " << message->text << "\n";
+        std::lock_guard lg{set_mutex};
 
-            std::lock_guard lg{set_mutex};
-            if(message->replyToMessage && message_container.count(message->replyToMessage->text)){
-                bool react_m;
-                count_recieve_messages++;
-                if (message->text == "мат!") 
-                    react_m = true;
-                else
-                    react_m = false;
-                last_change_time = std::chrono::steady_clock::now();
-                ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
-            }
+        // Считаем ТОЛЬКО если это ответ на сообщение из контейнера
+        if (message->replyToMessage && message_container.count(message->replyToMessage->text)) {
+            bool react_m = (message->text == "мат!");
+            std::cout << "reply to: [" << message->replyToMessage->text << "]\n";
+            std::cout << "reply is: [" << message->text << "]\n";
+            std::cout << "react_m : [" << react_m << "]\n";
+            std::cout << "message_container[message->replyToMessage->text] : [" << message_container[message->replyToMessage->text] << "]\n";
+            ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
+
+            count_recieve_messages++;
+            std::cout << "VALID reply count: " << count_recieve_messages << "\n";
+
+            last_change_time = std::chrono::steady_clock::now();
+        } else {
+            std::cout << "Ignored unrelated message: " << message->text << "\n";
+        }
     });
+
     try {
-        TgBot::TgLongPoll longPoll( *t_bot);
-        while (count_recieve_messages < limit_sent_messages_ && elapsed_seconds.count() < limit_time_in_sec) {
+        TgBot::TgLongPoll longPoll(*t_bot, 1);
+        while (count_recieve_messages < limit_sent_messages_ &&
+               elapsed_seconds.count() < limit_time_in_sec) {
             longPoll.start();
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
-            std::cout<<"elapsed AFTER 1: "<<elapsed_seconds.count()<<"\n";
+            std::cout << "elapsed: " << elapsed_seconds.count() << "\n";
+            if (count_recieve_messages >= limit_sent_messages_ || 
+                elapsed_seconds.count() >= limit_time_in_sec) {
+                    std::cout<<"BREAK!\n";
+                break;
+            }
         }
     } catch (TgBot::TgException& e) {
-        printf("error: %s\n", e.what());
+        std::cerr << "error: " << e.what() << "\n";
     }
 }
 
@@ -83,9 +97,9 @@ TEST_F(ReactorResultTest, FirstTest) {
 
     generator();
     std::this_thread::sleep_for(std::chrono::seconds(3));
-    
-    checker();
 
+    checker();
+    std::cout<<"RAISE_2(SIGINT 2)! \n";
     std::raise(SIGINT);
 
 }
