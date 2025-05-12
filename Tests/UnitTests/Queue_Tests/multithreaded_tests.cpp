@@ -20,38 +20,46 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
     std::unordered_set<TestTask> t_set;
     
     auto pushTask = [&]() {
-        for (int i = 0; i < size_operations;) {
+        for (int i = 0; i < size_operations; ++i) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
+            
             std::lock_guard<std::mutex> lck{set_mutex};
-            if((queue_.push(std::move(task)))){
-                i++; pushCount++;
-                t_set.insert({message, name});
-            }      
+            bool pushed = queue_.push(std::move(task));
+            if (!pushed) {
+                break; // Очередь закрыта, прекращаем добавление
+            }
+            pushCount++;
+            t_set.insert({message, name});
         }
+        queue_.shutdown(); // Сигнализируем о завершении
     };
+    
     auto takeTask = [&]() {
-        for (int i = 0; i < size_operations;) {
-            std::unique_ptr<TestTask> task_ptr;
-            while (!(task_ptr = queue_.take()));
-            takeCount++; ++i;
+        while (true) {
+            auto task_ptr = queue_.take();
+            if (!task_ptr) {
+                break; // Выход при shutdown
+            }
+            
             std::lock_guard<std::mutex> lck{set_mutex};
+            takeCount++;
             auto it = t_set.find(*task_ptr);
-            assert(it != t_set.end());              
-            t_set.erase(it);     
+            ASSERT_NE(it, t_set.end()) << "Task not found!";
+            t_set.erase(it);
         }
     };
-    std::thread pushThreads{pushTask};
-    std::thread takeThreads{takeTask};
+    
+    std::thread producer(pushTask);
+    std::thread consumer(takeTask);
 
-    pushThreads.join();
-    takeThreads.join();
+    producer.join();
+    consumer.join();
 
     ASSERT_EQ(pushCount, takeCount);
-    ASSERT_EQ(t_set.size(), 0);
+    ASSERT_TRUE(t_set.empty());
 }
-
 // TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
 //     const int size_of_queue = 50;
 //     Queue<TestTask> queue_(size_of_queue);

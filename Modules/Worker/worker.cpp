@@ -11,8 +11,12 @@ void Worker::terminate(){
 void Worker::run(){
     std::unique_ptr<ITask> task_ptr;
     while (!shutdown_requested){
-        if (task_ptr = queue_ptr_->take(); task_ptr){
-                task_ptr->execute();
+        task_ptr = queue_ptr_->take();
+        if (!task_ptr) {
+            break; // Очередь завершила работу
+        }
+        if (task_ptr) {
+            task_ptr->execute();
         }
     }
 }

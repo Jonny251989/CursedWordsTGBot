@@ -73,11 +73,14 @@ void ReactorResultTest::checker() {
 
     try {
         TgBot::TgLongPoll longPoll(*t_bot, 1);
-        while (count_recieve_messages < limit_sent_messages_ &&
-               elapsed_seconds.count() < limit_time_in_sec) {
+
+        while (count_recieve_messages < limit_sent_messages_ && elapsed_seconds.count() < limit_time_in_sec) {
+
             longPoll.start();
+
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
             std::cout << "elapsed: " << elapsed_seconds.count() << "\n";
+
             if (count_recieve_messages >= limit_sent_messages_ || 
                 elapsed_seconds.count() >= limit_time_in_sec) {
                     std::cout<<"BREAK!\n";
@@ -98,8 +101,8 @@ TEST_F(ReactorResultTest, FirstTest) {
     generator();
     std::this_thread::sleep_for(std::chrono::seconds(3));
 
-    checker();
-    std::cout<<"RAISE_2(SIGINT 2)! \n";
+    std::cout<<"RAISE_1(SIGINT 1)! \n";
     std::raise(SIGINT);
+    checker();
 
 }

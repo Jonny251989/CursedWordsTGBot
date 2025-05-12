@@ -33,10 +33,12 @@ void run_bot(std::string token){
                 static int count = 0;
                 if (!count++) {
                     server.terminate();
+                    ptr_queue->shutdown();
                     worker.terminate();
+
                     Logger::getInstance().logInfo(Logger::Levels::Critical, "Recieved shutdown signal. Stop polling!");
                 } else {
-                    Logger::getInstance().logInfo(Logger::Levels::Fatal, "Recieved second shutdown signal. Exiting!"); 
+                    Logger::getInstance().logInfo(Logger::Levels::Fatal, "Recieved second shutdown signal. Exiting!");
                     std::exit(EXIT_FAILURE);
                 }
             }
@@ -44,5 +46,7 @@ void run_bot(std::string token){
         std::thread worker_thread(&Worker::run, &worker);
         server.start();
         worker_thread.join();
+
+        std::cout<<"FINISH3\n";
 
 }
