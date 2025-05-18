@@ -25,29 +25,31 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
             
-            std::lock_guard<std::mutex> lck{set_mutex};
+            {
+                std::lock_guard<std::mutex> lck{set_mutex};
+                t_set.insert(TestTask(message, name));
+                pushCount++;
+                if(!pushCount%10) std::cout<<"pushTask: "<<pushCount<<"\n";
+            }
             bool pushed = queue_.push(std::move(task));
             if (!pushed) {
                 break; // Очередь закрыта, прекращаем добавление
             }
-            pushCount++;
-            t_set.insert({message, name});
         }
-        queue_.shutdown(); // Сигнализируем о завершении
+        queue_.shutdown(); // Сигнал потребителю
     };
     
     auto takeTask = [&]() {
         while (true) {
             auto task_ptr = queue_.take();
-            if (!task_ptr) {
-                break; // Выход при shutdown
-            }
+            if (!task_ptr) break; // Выход при shutdown
             
-            std::lock_guard<std::mutex> lck{set_mutex};
-            takeCount++;
-            auto it = t_set.find(*task_ptr);
-            ASSERT_NE(it, t_set.end()) << "Task not found!";
-            t_set.erase(it);
+            //std::unique_lock lock(set_mutex);
+            {
+                std::lock_guard<std::mutex> lck{set_mutex};
+                takeCount++;
+                ASSERT_TRUE(t_set.erase(*task_ptr));
+            }
         }
     };
     
@@ -58,8 +60,10 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
     consumer.join();
 
     ASSERT_EQ(pushCount, takeCount);
+
     ASSERT_TRUE(t_set.empty());
 }
+
 // TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
 //     const int size_of_queue = 50;
 //     Queue<TestTask> queue_(size_of_queue);
@@ -100,10 +104,11 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
             auto task = std::make_unique<TestTask>(message, name);
-            std::lock_guard<std::mutex> lock{set_mutex};
+            TestTask task_copy(message, name); 
             if((queue_.push(std::move(task)))){
+                std::lock_guard<std::mutex> lock{set_mutex};
+                t_set.insert(task_copy);
                 ++i; pushCount++;
-                t_set.insert({message, name});
             }       
         }
     };
@@ -111,23 +116,40 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
         for (int i = 0; i < size_operations;) {
             std::unique_ptr<TestTask> task_ptr;
             
-            while (!(task_ptr = queue_.take()));
+            if (!task_ptr) continue; // Пропускаем nullptr
             std::lock_guard<std::mutex> lock(set_mutex);
             takeCount++; i++;
+            std::cout<<"find before\n";
             auto it = t_set.find(*task_ptr);
-            assert(it != t_set.end());              
-            t_set.erase(it);   
+            std::cout<<"find after\n";
+            ASSERT_NE(it, t_set.end()) << "Task not found!";
+            std::cout<<"erase before\n";            
+            t_set.erase(it);
+            std::cout<<"erase after\n";  
         }
     };
     {
-        std::jthread pushThreads[numThreads];
-        std::jthread takeThreads[numThreads];
+        std::thread pushThreads[numThreads];
+        std::thread takeThreads[numThreads];
 
         for (int i = 0; i < numThreads; ++i) {
-            pushThreads[i] = std::jthread(pushTask);
-            takeThreads[i] = std::jthread(takeTask);
+            pushThreads[i] = std::thread(pushTask);
+            takeThreads[i] = std::thread(takeTask);
         }
+
+            for (auto& thread : pushThreads) {
+                thread.join();
+            }
+
+            // Закрываем очередь после завершения производителей
+            queue_.shutdown();
+
+            // Ждем завершения потребителей
+            for (auto& thread : takeThreads) {
+                thread.join();
+            }
     }
+
 
     ASSERT_EQ(pushCount, takeCount);
     ASSERT_EQ(t_set.size(), 0);
