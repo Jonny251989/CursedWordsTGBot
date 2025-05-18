@@ -103,51 +103,51 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
         for (int i = 0; i < size_operations;) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
-            auto task = std::make_unique<TestTask>(message, name);
-            TestTask task_copy(message, name); 
-            if((queue_.push(std::move(task)))){
+
+
+            TestTask task_copy(message, name);
+            {
                 std::lock_guard<std::mutex> lock{set_mutex};
-                t_set.insert(task_copy);
-                ++i; pushCount++;
+                t_set.insert(task_copy); // Вставляем ПЕРЕД отправкой в очередь
+            }
+
+            // 2. Затем отправляем задачу в очередь
+            auto task = std::make_unique<TestTask>(message, name);
+            if (queue_.push(std::move(task))) {
+                ++i;
+                pushCount++;
             }       
         }
     };
     auto takeTask = [&]() {
         for (int i = 0; i < size_operations;) {
-            std::unique_ptr<TestTask> task_ptr;
+            auto task_ptr = queue_.take();
             
             if (!task_ptr) continue; // Пропускаем nullptr
             std::lock_guard<std::mutex> lock(set_mutex);
-            takeCount++; i++;
+            takeCount++;
             std::cout<<"find before\n";
             auto it = t_set.find(*task_ptr);
             std::cout<<"find after\n";
-            ASSERT_NE(it, t_set.end()) << "Task not found!";
+            ASSERT_NE(it, t_set.end()) << "TASK NOT FOOOOOOOOUNDDDDD!";
             std::cout<<"erase before\n";            
             t_set.erase(it);
             std::cout<<"erase after\n";  
         }
     };
     {
-        std::thread pushThreads[numThreads];
-        std::thread takeThreads[numThreads];
+        std::jthread pushThreads[numThreads];
+        std::jthread takeThreads[numThreads];
 
         for (int i = 0; i < numThreads; ++i) {
-            pushThreads[i] = std::thread(pushTask);
-            takeThreads[i] = std::thread(takeTask);
+            pushThreads[i] = std::jthread(pushTask);
         }
 
-            for (auto& thread : pushThreads) {
-                thread.join();
-            }
+        queue_.shutdown();
 
-            // Закрываем очередь после завершения производителей
-            queue_.shutdown();
-
-            // Ждем завершения потребителей
-            for (auto& thread : takeThreads) {
-                thread.join();
-            }
+        for (int i = 0; i < numThreads; ++i) {
+            takeThreads[i] = std::jthread(takeTask);
+        }    
     }
 
 
