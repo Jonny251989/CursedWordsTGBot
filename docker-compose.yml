@@ -21,26 +21,27 @@ services:
 
   test_runner:
     image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
+    entrypoint: []  # Явный сброс entrypoint
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
-      - MESSAGES_FILE_PATH=/app/bins/Tests/FunctionalTests/CursedWordsTest/messages.txt
+      - MESSAGES_FILE_PATH=./bins/Tests/FunctionalTests/CursedWordsTest/messages.txt
     depends_on:
       grpc_server:
         condition: service_healthy
     volumes:
-      - ${PWD}:/app  # Жёсткое монтирование текущей директории
-      - ${PWD}/bins:/app/bins
+      - .:/app
+      - ./bins:/app/bins
     working_dir: /app
     command: 
       - /bin/bash
       - -c
       - |
         echo "### Проверка файлов ###" && 
-        ls -la /app && 
-        test -f /app/build-local.sh || (echo "build-local.sh не найден!"; exit 1) && 
-        chmod +x /app/build-local.sh && 
-        /app/build-local.sh && 
+        ls -la && 
+        test -f build-local.sh || (echo "build-local.sh не найден!"; exit 1) && 
+        chmod +x build-local.sh && 
+        ./build-local.sh && 
         ./bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
     networks:
       - app_network
