@@ -18,34 +18,29 @@ jobs:
         TARGET_IMAGES_VERSION: "1.0"
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-        - ${{ github.workspace }}:/cwbot  # Критическое изменение пути монтирования
       options: --privileged
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          path: /cwbot  # Явное указание пути
 
       - name: Verify build script
         run: |
-          ls -la /cwbot
-          test -f /cwbot/build-local.sh || exit 1
+          ls -la
+          test -f build-local.sh || (echo "build-local.sh not found"; exit 1)
+          chmod +x build-local.sh
 
       - name: Build project
         run: |
-          cd /cwbot
-          chmod +x build-local.sh  # Критическое добавление прав
           ./build-local.sh
 
       - name: Run all unit tests
         run: |
-          cd /cwbot/build
+          cd build
           ctest --output-on-failure --verbose
 
       - name: Start infrastructure and run functional tests
         run: |
-          cd /cwbot
-          ./functional_tests_enviroment.sh up
-          ./docker-compose-run-tests.sh
-          ./functional_tests_enviroment.sh down
+          docker-compose -f docker-compose.yml up -d
+          docker-compose -f docker-compose.yml run --rm test_runner
+          docker-compose -f docker-compose.yml down
