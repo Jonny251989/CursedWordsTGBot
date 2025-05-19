@@ -104,14 +104,11 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
             auto message = generated_words(size_words);
             auto name = generated_words(size_words);
 
-
-            TestTask task_copy(message, name);
             {
                 std::lock_guard<std::mutex> lock{set_mutex};
-                t_set.insert(task_copy); // Вставляем ПЕРЕД отправкой в очередь
+                t_set.insert({message, name});
             }
 
-            // 2. Затем отправляем задачу в очередь
             auto task = std::make_unique<TestTask>(message, name);
             if (queue_.push(std::move(task))) {
                 ++i;
@@ -121,18 +118,14 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
     };
     auto takeTask = [&]() {
         for (int i = 0; i < size_operations;) {
-            auto task_ptr = queue_.take();
-            
+            auto task_ptr = queue_.take(); 
             if (!task_ptr) continue; // Пропускаем nullptr
             std::lock_guard<std::mutex> lock(set_mutex);
-            takeCount++;
-            std::cout<<"find before\n";
+            takeCount++; i++;
             auto it = t_set.find(*task_ptr);
-            std::cout<<"find after\n";
-            ASSERT_NE(it, t_set.end()) << "TASK NOT FOOOOOOOOUNDDDDD!";
-            std::cout<<"erase before\n";            
+            ASSERT_NE(it, t_set.end()) << "Task not found!";
+     
             t_set.erase(it);
-            std::cout<<"erase after\n";  
         }
     };
     {
@@ -143,7 +136,7 @@ TEST_F(ThreadSafeQueueTest, FullTest) {
             pushThreads[i] = std::jthread(pushTask);
         }
 
-        queue_.shutdown();
+        //queue_.shutdown();
 
         for (int i = 0; i < numThreads; ++i) {
             takeThreads[i] = std::jthread(takeTask);
