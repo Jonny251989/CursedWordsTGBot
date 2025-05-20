@@ -24,6 +24,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Debug files
+        run: |
+          echo "### Files in workspace ###"
+          ls -la
+          echo "### Files in container ###"
+          docker-compose run --rm test_runner ls -la /app
+
       - name: Verify build script
         run: |
           ls -la
