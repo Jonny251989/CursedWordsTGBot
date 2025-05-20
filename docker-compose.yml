@@ -30,17 +30,14 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - .:/app
-      - ./bins:/app/bins
+      - ${GITHUB_WORKSPACE}:/app  # Явное монтирование рабочей директории CI
     working_dir: /app
     command: 
       - /bin/bash
       - -c
       - |
-        echo "### Содержимое /app ###" && 
-        ls -laR /app &&  # Рекурсивный вывод структуры
-        test -f /app/build-local.sh || (echo "Файл не найден!"; exit 1) && 
-        chmod +x build-local.sh && 
+        echo "### Проверка файлов в контейнере ###" && 
+        ls -la && 
         ./build-local.sh && 
         ./bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
     networks:
