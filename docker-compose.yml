@@ -30,7 +30,7 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - ${SOURCE_DIR:}:/app  # ключевая строка
+      - ${SOURCE_DIR}:/app
     working_dir: /app
     command:
     - /bin/bash
