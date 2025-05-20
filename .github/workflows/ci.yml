@@ -43,17 +43,18 @@ jobs:
 
       - name: Prepare .env for docker-compose
         run: |
-          echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
-          echo "COMMON_IMAGES_VERSION=${COMMON_IMAGES_VERSION}" >> .env
-          echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> .env
-          echo "SOURCE_DIR=${GITHUB_WORKSPACE}" >> .env
-          cat .env
-
+            cd "$GITHUB_WORKSPACE"
+            echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
+            echo "COMMON_IMAGES_VERSION=${COMMON_IMAGES_VERSION}" >> .env
+            echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> .env
+            echo "SOURCE_DIR=$(pwd)" >> .env  # <-- исправлено: абсолютный путь для volume
+            cat .env
+  
       - name: Start infrastructure and run functional tests
         run: |
-          ls -la $SOURCE_DIR
-          ls -la ${GITHUB_WORKSPACE}
-          export SOURCE_DIR=$GITHUB_WORKSPACE
-          docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" up -d
-          docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" run --rm test_runner
-          docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" down
+            cd "$GITHUB_WORKSPACE"
+            echo "### Содержимое SOURCE_DIR ###"
+            grep SOURCE_DIR .env
+            docker-compose up -d
+            docker-compose run --rm test_runner
+            docker-compose down
