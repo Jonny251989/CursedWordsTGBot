@@ -30,7 +30,7 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - ${GITHUB_WORKSPACE:-.}:/app  # Поддержка и CI, и локального запуска
+      - ${SOURCE_DIR:-.}:/app  # ключевая строка
     working_dir: /app
     command:
       - /bin/bash

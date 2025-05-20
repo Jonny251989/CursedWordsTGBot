@@ -16,9 +16,9 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         COMMON_IMAGES_VERSION: "1.0"
         TARGET_IMAGES_VERSION: "1.0"
-        GITHUB_WORKSPACE: ${{ github.workspace }}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+        - ${{ github.workspace }}:${{ github.workspace }}
       options: --privileged
 
     steps:
@@ -27,22 +27,30 @@ jobs:
 
       - name: Verify build script presence
         run: |
-          echo "GITHUB_WORKSPACE is $GITHUB_WORKSPACE"
+          echo "Checking in $GITHUB_WORKSPACE"
           ls -la $GITHUB_WORKSPACE
-          test -f $GITHUB_WORKSPACE/build-local.sh || (echo "build-local.sh not found"; exit 1)
-          chmod +x $GITHUB_WORKSPACE/build-local.sh
+          test -f "$GITHUB_WORKSPACE/build-local.sh" || (echo "build-local.sh not found"; exit 1)
+          chmod +x "$GITHUB_WORKSPACE/build-local.sh"
 
       - name: Build project
         run: |
-          $GITHUB_WORKSPACE/build-local.sh
+          "$GITHUB_WORKSPACE/build-local.sh"
 
       - name: Run all unit tests
         run: |
-          cd $GITHUB_WORKSPACE/build
+          cd "$GITHUB_WORKSPACE/build"
           ctest --output-on-failure --verbose
+
+      - name: Prepare .env for docker-compose
+        run: |
+          echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
+          echo "COMMON_IMAGES_VERSION=${COMMON_IMAGES_VERSION}" >> .env
+          echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> .env
+          echo "SOURCE_DIR=${GITHUB_WORKSPACE}" >> .env
+          cat .env
 
       - name: Start infrastructure and run functional tests
         run: |
-          docker-compose -f $GITHUB_WORKSPACE/docker-compose.yml up -d
-          docker-compose -f $GITHUB_WORKSPACE/docker-compose.yml run --rm test_runner
-          docker-compose -f $GITHUB_WORKSPACE/docker-compose.yml down
+          docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" up -d
+          docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" run --rm test_runner
+          docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" down
