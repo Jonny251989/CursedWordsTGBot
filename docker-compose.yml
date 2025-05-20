@@ -30,17 +30,17 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - ${GITHUB_WORKSPACE}:/app  # Явное монтирование из CI
+      - /github/workspace:/app  # Абсолютный путь к рабочей директории CI
     working_dir: /app
     command: 
       - /bin/bash
       - -c
       - |
-        echo "### Files in /app ###" && 
+        echo "### Проверка файлов ###" && 
         ls -la && 
+        chmod +x build-local.sh && 
         ./build-local.sh && 
         ./bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
-    networks:
       - app_network
     restart: "no"
 

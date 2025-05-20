@@ -42,13 +42,13 @@ jobs:
 
       - name: Start infrastructure and run functional tests
         run: |
-          echo "### Files in workspace ###"
-          ls -la
-          
-          echo "### Files in container ###"
-          docker-compose -f docker-compose.yml run --rm \
-            -v ${GITHUB_WORKSPACE}:/app \
-            test_runner ls -la /app
+            # Явно указываем рабочий каталог CI
+            export COMPOSE_FILE="$GITHUB_WORKSPACE/docker-compose.yml"
+            
+            # Запускаем с принудительным монтированием
+            docker-compose -f $COMPOSE_FILE run --rm \
+              -v /github/workspace:/app \
+              test_runner
 
       # - name: Start infrastructure and run functional tests
       #   run: |
