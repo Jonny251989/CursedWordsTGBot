@@ -53,7 +53,7 @@ jobs:
         run: |
           ls -la $SOURCE_DIR
           ls -la ${GITHUB_WORKSPACE}
-          echo "SOURCE_DIR=$GITHUB_WORKSPACE" >> .env
+          export SOURCE_DIR=$GITHUB_WORKSPACE
           docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" up -d
           docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" run --rm test_runner
           docker-compose -f "$GITHUB_WORKSPACE/docker-compose.yml" down

@@ -33,14 +33,15 @@ services:
       - ${SOURCE_DIR}:/app
     working_dir: /app
     command:
-    - /bin/bash
-    - -c
-    - |
-      echo "### Содержимое /app внутри контейнера ###"
-      ls -la /app
-      chmod +x /app/build-local.sh && 
-        /app/build-local.sh && 
-        /app/bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
+      - /bin/bash
+      - -c
+      - |
+        echo "### /app должен содержать исходники ###"
+        ls -la /app
+        echo "SOURCE_DIR=${SOURCE_DIR}"
+        chmod +x /app/build-local.sh && 
+          /app/build-local.sh && 
+          /app/bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
     networks:
       - app_network
 
