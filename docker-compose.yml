@@ -30,17 +30,17 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - ${SOURCE_DIR:-.}:/app  # ключевая строка
+      - ${SOURCE_DIR:}:/app  # ключевая строка
     working_dir: /app
     command:
-      - /bin/bash
-      - -c
-      - |
-        echo "### Проверка файлов в контейнере ###" && 
-        ls -la && 
-        chmod +x build-local.sh && 
-        ./build-local.sh && 
-        ./bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
+    - /bin/bash
+    - -c
+    - |
+      echo "### Содержимое /app внутри контейнера ###"
+      ls -la /app
+      # Потом можно выполнить другие команды, например:
+      # chmod +x ./build-local.sh
+      # ./build-local.sh
     networks:
       - app_network
 
