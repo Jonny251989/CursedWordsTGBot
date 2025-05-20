@@ -30,13 +30,13 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - $PWD:/app  # Монтирует текущую директорию CI (аналог ${GITHUB_WORKSPACE})
+      - ${GITHUB_WORKSPACE}:/app  # Явное монтирование из CI
     working_dir: /app
     command: 
       - /bin/bash
       - -c
       - |
-        echo "### Проверка файлов в контейнере ###" && 
+        echo "### Files in /app ###" && 
         ls -la && 
         ./build-local.sh && 
         ./bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest

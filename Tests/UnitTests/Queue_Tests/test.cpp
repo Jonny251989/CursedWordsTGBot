@@ -40,12 +40,6 @@ TEST_F(QueueTest, PushBlocksWhenQueueIsFullAndUnblocksAfterTake) {
   EXPECT_TRUE(push_finished.load()) << "Push должен завершиться после освобождения места";
 }
 
-
-// TEST_F(QueueTest, NewQueueFront) {
-//     auto task = queue.take();
-//     EXPECT_FALSE(task);
-// }
-
 TEST_F(QueueTest, Front) {
     queue.push(std::make_unique<TestTask>("Hello", "Vlad"));
     auto task_ptr = queue.take();
