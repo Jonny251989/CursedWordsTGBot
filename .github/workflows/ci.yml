@@ -16,6 +16,7 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         COMMON_IMAGES_VERSION: "1.0"
         TARGET_IMAGES_VERSION: "1.0"
+        GITHUB_WORKSPACE: ${{ github.workspace }}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
       options: --privileged
@@ -24,35 +25,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-
-      - name: Verify build script
+      - name: Verify build script presence
         run: |
-          ls -la
-          test -f build-local.sh || (echo "build-local.sh not found"; exit 1)
-          chmod +x build-local.sh
+          echo "GITHUB_WORKSPACE is $GITHUB_WORKSPACE"
+          ls -la $GITHUB_WORKSPACE
+          test -f $GITHUB_WORKSPACE/build-local.sh || (echo "build-local.sh not found"; exit 1)
+          chmod +x $GITHUB_WORKSPACE/build-local.sh
 
       - name: Build project
         run: |
-          ./build-local.sh
+          $GITHUB_WORKSPACE/build-local.sh
 
       - name: Run all unit tests
         run: |
-          cd build
+          cd $GITHUB_WORKSPACE/build
           ctest --output-on-failure --verbose
 
       - name: Start infrastructure and run functional tests
         run: |
-            # Перейти в рабочую директорию CI
-            cd $GITHUB_WORKSPACE
-            
-            # Запускаем с принудительным монтированием
-            docker-compose -f docker-compose.yml run \
-              --rm \
-              -v /github/workspace:/app \
-              test_runner
-
-      # - name: Start infrastructure and run functional tests
-      #   run: |
-      #     docker-compose -f docker-compose.yml up -d
-      #     docker-compose -f docker-compose.yml run --rm test_runner
-      #     docker-compose -f docker-compose.yml down
+          docker-compose -f $GITHUB_WORKSPACE/docker-compose.yml up -d
+          docker-compose -f $GITHUB_WORKSPACE/docker-compose.yml run --rm test_runner
+          docker-compose -f $GITHUB_WORKSPACE/docker-compose.yml down

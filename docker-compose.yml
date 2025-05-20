@@ -30,20 +30,17 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - /github/workspace:/app  # Абсолютный путь к рабочей директории CI
+      - ${GITHUB_WORKSPACE:-.}:/app  # Поддержка и CI, и локального запуска
     working_dir: /app
-    command: 
+    command:
       - /bin/bash
       - -c
       - |
-        echo "### Проверка файлов в /app ###" && 
-        ls -la /app &&  # Показывает содержимое /app
-        echo "### Проверка файлов в ${GITHUB_WORKSPACE} ###" && 
-        ls -la ${GITHUB_WORKSPACE} &&  # Показывает содержимое исходной директории (для отладки)
-        chmod +x /app/build-local.sh && 
-        /app/build-local.sh && 
-        /app/bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
-
+        echo "### Проверка файлов в контейнере ###" && 
+        ls -la && 
+        chmod +x build-local.sh && 
+        ./build-local.sh && 
+        ./bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
     networks:
       - app_network
 
