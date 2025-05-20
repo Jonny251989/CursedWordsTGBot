@@ -36,13 +36,16 @@ services:
       - /bin/bash
       - -c
       - |
-        echo "### Проверка файлов ###" && 
-        ls -la && 
-        chmod +x build-local.sh && 
-        ./build-local.sh && 
-        ./bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
+        echo "### Проверка файлов в /app ###" && 
+        ls -la /app &&  # Показывает содержимое /app
+        echo "### Проверка файлов в ${GITHUB_WORKSPACE} ###" && 
+        ls -la ${GITHUB_WORKSPACE} &&  # Показывает содержимое исходной директории (для отладки)
+        chmod +x /app/build-local.sh && 
+        /app/build-local.sh && 
+        /app/bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
+
+    networks:
       - app_network
-    restart: "no"
 
 networks:
   app_network:
