@@ -31,6 +31,13 @@ jobs:
           echo "### Files in container ###"
           docker-compose run --rm test_runner ls -la /app
 
+      - name: Start infrastructure and run functional tests
+        run: |
+          # Укажите явный путь к рабочей директории CI
+          docker-compose -f docker-compose.yml run --rm test_runner \
+            -e GITHUB_WORKSPACE=/github/workspace \
+            -v ${GITHUB_WORKSPACE}:/app
+
       - name: Verify build script
         run: |
           ls -la
