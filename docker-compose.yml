@@ -38,9 +38,9 @@ services:
     - |
       echo "### Содержимое /app внутри контейнера ###"
       ls -la /app
-      # Потом можно выполнить другие команды, например:
-      # chmod +x ./build-local.sh
-      # ./build-local.sh
+      chmod +x /app/build-local.sh && 
+        /app/build-local.sh && 
+        /app/bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
     networks:
       - app_network
 
