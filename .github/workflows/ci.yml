@@ -18,41 +18,32 @@ jobs:
         TARGET_IMAGES_VERSION: "1.0"
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+        - ${{ github.workspace }}:/github/workspace  # Монтируем в стандартный путь
       options: --privileged
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Verify build script presence
+      - name: Verify build script
         run: |
-          echo "Checking in PWD
-          ls -la $GITHUB_WORKSPACE
-          test -f "./build-local.sh" || (echo "build-local.sh not found"; exit 1)
-          chmod +x "./build-local.sh"
+          ls -la
+          test -f build-local.sh || (echo "build-local.sh not found"; exit 1)
+          chmod +x build-local.sh
 
       - name: Build project
         run: |
-          "./build-local.sh"
+          ./build-local.sh
 
       - name: Run all unit tests
         run: |
-          cd build"
+          cd build
           ctest --output-on-failure --verbose
 
-      - name: Prepare .env for docker-compose
-        run: |
-
-            echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
-            echo "COMMON_IMAGES_VERSION=${COMMON_IMAGES_VERSION}" >> .env
-            echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> .env
-            echo "SOURCE_DIR=$(pwd)" >> .env  # <-- исправлено: абсолютный путь для volume
-            cat .env
-  
       - name: Start infrastructure and run functional tests
         run: |
-            export SOURCE_DIR=$(pwd)
-
-            docker-compose up -d
-            docker-compose run --rm test_runner
-            docker-compose down
+          
+          echo "SOURCE_DIR=${{ github.workspace }}" >> .env
+          docker-compose -f docker-compose.yml up -d
+          docker-compose -f docker-compose.yml run --rm test_runner
+          docker-compose -f docker-compose.yml down
