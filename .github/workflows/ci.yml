@@ -54,7 +54,5 @@ jobs:
             export SOURCE_DIR=$(pwd)
 
             docker-compose up -d
-            docker-compose -f docker-compose.yml run --rm \
-                -v /github/workspace: \
-                test_runner
+            docker-compose run --rm test_runner
             docker-compose down
