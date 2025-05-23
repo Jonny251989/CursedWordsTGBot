@@ -26,6 +26,7 @@ services:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - MESSAGES_FILE_PATH=./bins/Tests/FunctionalTests/CursedWordsTest/messages.txt
+      - SOURCE_DIR=${SOURCE_DIR}
     depends_on:
       grpc_server:
         condition: service_healthy
@@ -36,7 +37,7 @@ services:
       - /bin/bash
       - -c
       - |
-        echo "### /app должен содержать исходники ###"
+        echo "### СОДЕРЖАНИЕ ls -la /app ###"
         ls -la /app
         echo "SOURCE_DIR=${SOURCE_DIR}"
         chmod +x /app/build-local.sh && 
