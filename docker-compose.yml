@@ -37,13 +37,15 @@ services:
     - /bin/bash
     - -c
     - |
-      echo "### DEBUG: CONTENTS OF /app ###"
-      ls -la /app
-      echo "### CHECK BUILD SCRIPT ###"
-      test -f /app/build-local.sh || (echo "build-local.sh missing!"; exit 1)
-      chmod +x /app/build-local.sh && 
-      /app/build-local.sh && 
-      /app/bins/Tests/.../cursedWordsTest
+      echo "### CLEANING OLD BUILD ###"
+      rm -rf /app/build
+      
+      echo "### RUNNING BUILD SCRIPT ###"
+      cd /app
+      ./build-local.sh
+      
+      echo "### RUNNING TESTS ###"
+      /app/bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
     networks:
       - app_network
 
