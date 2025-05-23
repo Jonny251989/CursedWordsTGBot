@@ -40,9 +40,19 @@ jobs:
           cd build
           ctest --output-on-failure --verbose
 
+
+      - name: Start infrastructure...
+        run: |
+            echo "SOURCE_DIR=${{ github.workspace }}" >> .env
+            echo "### CONTENTS OF .env ###"
+            cat .env
+            echo "### CURRENT DIRECTORY ###"
+            pwd
+            ls -la
+
       - name: Start infrastructure and run functional tests
         run: |
-          
+
           echo "SOURCE_DIR=${{ github.workspace }}" >> .env
           docker-compose -f docker-compose.yml up -d
           docker-compose -f docker-compose.yml run --rm test_runner

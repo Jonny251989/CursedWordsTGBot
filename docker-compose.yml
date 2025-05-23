@@ -31,18 +31,19 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - ${SOURCE_DIR}:/  # Монтируем в корень вместо /app
-    working_dir: /   
+    - ${SOURCE_DIR}:/app:cached  # Явно указываем режим монтирования
+    working_dir: /app
     command:
-      - /bin/bash
-      - -c
-      - |
-        echo "### СОДЕРЖАНИЕ ls -la /###"
-        ls -la /
-        echo "SOURCE_DIR=${SOURCE_DIR}"
-        chmod +x /build-local.sh && 
-          /build-local.sh && 
-          /bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
+    - /bin/bash
+    - -c
+    - |
+      echo "### DEBUG: CONTENTS OF /app ###"
+      ls -la /app
+      echo "### CHECK BUILD SCRIPT ###"
+      test -f /app/build-local.sh || (echo "build-local.sh missing!"; exit 1)
+      chmod +x /app/build-local.sh && 
+      /app/build-local.sh && 
+      /app/bins/Tests/.../cursedWordsTest
     networks:
       - app_network
 
