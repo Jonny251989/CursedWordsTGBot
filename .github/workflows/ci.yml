@@ -28,21 +28,21 @@ jobs:
         run: |
           echo "Checking in PWD
           ls -la $GITHUB_WORKSPACE
-          test -f "$GITHUB_WORKSPACE/build-local.sh" || (echo "build-local.sh not found"; exit 1)
-          chmod +x "$GITHUB_WORKSPACE/build-local.sh"
+          test -f "./build-local.sh" || (echo "build-local.sh not found"; exit 1)
+          chmod +x "./build-local.sh"
 
       - name: Build project
         run: |
-          "$GITHUB_WORKSPACE/build-local.sh"
+          "./build-local.sh"
 
       - name: Run all unit tests
         run: |
-          cd "$GITHUB_WORKSPACE/build"
+          cd build"
           ctest --output-on-failure --verbose
 
       - name: Prepare .env for docker-compose
         run: |
-            cd "$GITHUB_WORKSPACE"
+
             echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
             echo "COMMON_IMAGES_VERSION=${COMMON_IMAGES_VERSION}" >> .env
             echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> .env
