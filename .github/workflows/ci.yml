@@ -26,7 +26,7 @@ jobs:
 
       - name: Verify build script presence
         run: |
-          echo "Checking in $GITHUB_WORKSPACE"
+          echo "Checking in PWD
           ls -la $GITHUB_WORKSPACE
           test -f "$GITHUB_WORKSPACE/build-local.sh" || (echo "build-local.sh not found"; exit 1)
           chmod +x "$GITHUB_WORKSPACE/build-local.sh"
@@ -54,5 +54,7 @@ jobs:
             export SOURCE_DIR=$(pwd)
 
             docker-compose up -d
-            docker-compose run --rm test_runner
+            docker-compose -f docker-compose.yml run --rm \
+                -v /github/workspace:/app \
+                test_runner
             docker-compose down
