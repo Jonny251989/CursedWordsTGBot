@@ -26,12 +26,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Verify build script
-        run: |
-          ls -la
-          test -f build-local.sh || (echo "build-local.sh not found"; exit 1)
-          chmod +x build-local.sh
-
       - name: Build project
         run: |
           ./build-local.sh
