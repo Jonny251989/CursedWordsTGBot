@@ -31,7 +31,7 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-      - .:/app:cached # Монтирование всего репозитория
+    - ${SOURCE_DIR}:/app:cached  # Явно указываем режим монтирования
     working_dir: /app
     command:
     - /bin/bash
