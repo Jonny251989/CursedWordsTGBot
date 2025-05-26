@@ -64,29 +64,45 @@ TEST_F(ThreadSafeQueueTest, SingleThreadedPushTakeTest) {
     ASSERT_TRUE(t_set.empty());
 }
 
-// TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
-//     const int size_of_queue = 50;
-//     Queue<TestTask> queue_(size_of_queue);
-//     const int size_words = 5;
-//     const int size_operations = 1000;
+TEST_F(ThreadSafeQueueTest, LimitedSizeOfQueue) {
+    const int size_of_queue = 50;
+    Queue<TestTask> queue_(size_of_queue);
+    const int size_words = 5;
+    const int size_operations = 1000;
 
-//     auto pushTask = [&]() {
-//         for (int i = 0; i < size_operations; i++) {
-//             auto message = generated_words(size_words);
-//             auto name = generated_words(size_words);
-//             auto task = std::make_unique<TestTask>(message, name);
-//             if((queue_.push(std::move(task)))){};       
-//         }
-//     };
+    auto pushTask = [&]() {
+        for (int i = 0; i < size_operations; i++) {
+            auto message = generated_words(size_words);
+            auto name = generated_words(size_words);
+            auto task = std::make_unique<TestTask>(message, name);
+            
+            // Пытаемся добавить задачу. Если очередь закрыта, выходим.
+            if (!queue_.push(std::move(task))) {
+                break;
+            }
+        }
+    };
 
-//     {
-//         std::jthread pushThreads_one(pushTask);
-//         std::jthread pushThreads_two(pushTask);
-//         std::jthread pushThreads_three(pushTask);
-//     }
+    // Запускаем три потока-производителя
+    std::jthread pushThreads_one(pushTask);
+    std::jthread pushThreads_two(pushTask);
+    std::jthread pushThreads_three(pushTask);
+    
+    // Потоки автоматически останавливаются при разрушении jthread
 
-//     ASSERT_LE(queue_.take() ? 1 : 0, size_of_queue) << "Queue exceeded the limit!";
-// }
+
+    // Закрываем очередь, чтобы take() не блокировался
+    queue_.shutdown();
+
+    // Подсчитываем оставшиеся задачи в очереди
+    int count = 0;
+    while (auto task = queue_.take()) {
+        ++count;
+    }
+
+    // Проверяем, что количество не превысило лимит
+    ASSERT_LE(count, size_of_queue) << "Queue exceeded the limit!";
+}
 
 TEST_F(ThreadSafeQueueTest, FullTest) {
     const int size_of_queue = 77;

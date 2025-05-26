@@ -46,7 +46,4 @@ void run_bot(std::string token){
         std::thread worker_thread(&Worker::run, &worker);
         server.start();
         worker_thread.join();
-
-        std::cout<<"FINISH3\n";
-
 }

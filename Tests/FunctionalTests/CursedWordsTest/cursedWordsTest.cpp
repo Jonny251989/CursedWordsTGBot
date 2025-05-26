@@ -7,11 +7,6 @@ void ReactorResultTest::TearDown() {
 void ReactorResultTest::SetUp() {
     std::string token = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
     t_bot = std::make_shared<TgBot::Bot>(token);
-    if(t_bot){
-        std::cout<<"WORKED\n";
-    }
-    else
-        std::cout<<"NOT WORKED!\n";
     count_recieve_messages = 0;
     chat_id_ = -1002432345513;
 }
@@ -81,9 +76,7 @@ void ReactorResultTest::checker() {
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
             std::cout << "elapsed: " << elapsed_seconds.count() << "\n";
 
-            if (count_recieve_messages >= limit_sent_messages_ || 
-                elapsed_seconds.count() >= limit_time_in_sec) {
-                    std::cout<<"BREAK!\n";
+            if (count_recieve_messages >= limit_sent_messages_ ||  elapsed_seconds.count() >= limit_time_in_sec) {
                 break;
             }
         }
@@ -101,8 +94,6 @@ TEST_F(ReactorResultTest, FirstTest) {
     generator();
     std::this_thread::sleep_for(std::chrono::seconds(3));
 
-    std::cout<<"RAISE_1(SIGINT 1)! \n";
     std::raise(SIGINT);
     checker();
-
 }
