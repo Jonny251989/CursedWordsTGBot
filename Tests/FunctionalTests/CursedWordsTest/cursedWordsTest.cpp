@@ -31,10 +31,9 @@ void ReactorResultTest::generator(){
         }
         std::string flag_str = line.substr(last_space + 1);
         bool flag = (flag_str == "1");
-        {
-            std::lock_guard lg{set_mutex};
-            message_container[line] = flag;
-        }
+
+        message_container[line] = flag;
+        
         t_bot->getApi().sendMessage(chat_id_, line);
     }
     inputFile.close();
@@ -46,7 +45,6 @@ void ReactorResultTest::checker() {
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
         std::cout << "Got message: " << message->text << "\n";
-        std::lock_guard lg{set_mutex};
 
         // Считаем ТОЛЬКО если это ответ на сообщение из контейнера
         if (message->replyToMessage && message_container.count(message->replyToMessage->text)) {
