@@ -5,7 +5,7 @@ void ReactorResultTest::TearDown() {
 }
 
 void ReactorResultTest::SetUp() {
-    std::string token = "7389966079:AAHXCquKT0JaQUqHRzac8MMsXMCUUd5uvXQ";
+    std::string token = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
     t_bot = std::make_shared<TgBot::Bot>(token);
     count_recieve_messages = 0;
     chat_id_ = -1002432345513;

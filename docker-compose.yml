@@ -37,14 +37,6 @@ services:
     - /bin/bash
     - -c
     - |
-      echo "CLEANING OLD BUILD"
-      rm -rf /app/build
-      
-      echo "UNNING BUILD SCRIPT"
-      cd /app
-      ./build-local.sh
-      
-      echo "RUNNING TESTS"
       /app/bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
     networks:
       - app_network
