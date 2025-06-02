@@ -90,8 +90,6 @@ TEST_F(ReactorResultTest, FirstTest) {
     }};    
 
     generator();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
 
-    std::raise(SIGINT);
     checker();
 }
