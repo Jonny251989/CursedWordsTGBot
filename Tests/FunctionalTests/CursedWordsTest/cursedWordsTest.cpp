@@ -33,7 +33,7 @@ void ReactorResultTest::generator(){
         bool flag = (flag_str == "1");
 
         message_container[line] = flag;
-        
+        Logger::getInstance().logInfo(Logger::Levels::Info, line);
         t_bot->getApi().sendMessage(chat_id_, line);
     }
     inputFile.close();
@@ -44,8 +44,8 @@ void ReactorResultTest::checker() {
     std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-        std::cout << "Got message: " <<message->replyToMessage->text  << "\n";
-
+        std::cout << "get message: \n";
+        Logger::getInstance().logInfo(Logger::Levels::Info, message->replyToMessage->text);
         // Считаем ТОЛЬКО если это ответ на сообщение из контейнера
         if (message->replyToMessage && message_container.count(message->replyToMessage->text)) {
             bool react_m = (message->text == "мат!");

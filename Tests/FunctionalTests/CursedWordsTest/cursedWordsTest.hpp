@@ -13,6 +13,7 @@
 #include <experimental/random>
 #include "task.hpp"
 #include "queue.hpp"
+#include "logger.hpp"
 #include <tgbot/tgbot.h>
 #include "run_bot.hpp"
 #include <chrono>
