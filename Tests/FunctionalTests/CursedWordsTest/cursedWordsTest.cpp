@@ -23,7 +23,7 @@ void ReactorResultTest::generator(){
     std::ifstream inputFile(filePath);
     
     if (!inputFile) {
-        std::cerr << "Не удалось открыть файл!" << std::endl;
+        Logger::getInstance().logInfo(Logger::Levels::Critical, "Не удалось открыть файл!\n");
     }
     std::string line;
     while (std::getline(inputFile, line)) {
@@ -44,15 +44,13 @@ void ReactorResultTest::checker() {
     std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-        std::cout << "get message: \n";
 
         bool react_m = (message->text == "мат!");
-        std::cout << "reply to: [" << message->replyToMessage->text << "]\n";
         
         ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
 
         count_recieve_messages++;
-        std::cout << "count_recieve_messages: " << count_recieve_messages << "\n";
+        Logger::getInstance().logInfo(Logger::Levels::Info, "count_recieve_messages: " + std::to_string(count_recieve_messages) + "\n");
 
         last_change_time = std::chrono::steady_clock::now();
     });
@@ -65,11 +63,11 @@ void ReactorResultTest::checker() {
             longPoll.start();
 
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
-            std::cout << "elapsed: " << elapsed_seconds.count() << "\n";
+            Logger::getInstance().logInfo(Logger::Levels::Info, "elapsed: " + std::to_string(elapsed_seconds.count()) + "\n");
         }
 
     } catch (TgBot::TgException& e) {
-        std::cerr << "error: " << e.what() << "\n";
+        Logger::getInstance().logInfo(Logger::Levels::Critical, std::string("Error") + e.what());
     }
 }
 
