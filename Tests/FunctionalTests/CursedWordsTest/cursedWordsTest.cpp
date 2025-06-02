@@ -8,8 +8,6 @@ void ReactorResultTest::SetUp() {
     std::string token = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
     t_bot = std::make_shared<TgBot::Bot>(token);
     count_recieve_messages = 0;
-    Logger::getInstance().setName(t_bot->getApi().getMe()->username);
-    Logger::getInstance().setLevel(Logger::Levels::Debug);
     chat_id_ = -1002432345513;
 }
 
@@ -27,15 +25,11 @@ void ReactorResultTest::generator(){
     std::string line;
     while (std::getline(inputFile, line)) {
         size_t last_space = line.find_last_of(' ');
-        if (last_space == std::string::npos) {
-            std::cerr << "Некорректный формат строки: " << line << std::endl;
-            continue;
-        }
         std::string flag_str = line.substr(last_space + 1);
         bool flag = (flag_str == "1");
 
         message_container[line] = flag;
-        Logger::getInstance().logInfo(Logger::Levels::Info, line);
+
         t_bot->getApi().sendMessage(chat_id_, line);
     }
     inputFile.close();
@@ -47,9 +41,8 @@ void ReactorResultTest::checker() {
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
         std::cout << "get message: \n";
-        Logger::getInstance().logInfo(Logger::Levels::Info, message->replyToMessage->text);
         // Считаем ТОЛЬКО если это ответ на сообщение из контейнера
-        if (message->replyToMessage && message_container.count(message->replyToMessage->text)) {
+
             bool react_m = (message->text == "мат!");
             // std::cout << "reply to: [" << message->replyToMessage->text << "]\n";
             // std::cout << "reply is: [" << message->text << "]\n"
@@ -57,12 +50,9 @@ void ReactorResultTest::checker() {
             ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
 
             count_recieve_messages++;
-            std::cout << "VALID reply count: " << count_recieve_messages << "\n";
+            std::cout << "count_recieve_messages: " << count_recieve_messages << "\n";
 
             last_change_time = std::chrono::steady_clock::now();
-        } else {
-            std::cout << "Ignored unrelated message: " << message->text << "\n";
-        }
     });
 
     try {
@@ -74,10 +64,6 @@ void ReactorResultTest::checker() {
 
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
             std::cout << "elapsed: " << elapsed_seconds.count() << "\n";
-
-            if (count_recieve_messages >= limit_sent_messages_ ||  elapsed_seconds.count() >= limit_time_in_sec) {
-                break;
-            }
         }
     } catch (TgBot::TgException& e) {
         std::cerr << "error: " << e.what() << "\n";
