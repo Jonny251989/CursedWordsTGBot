@@ -45,18 +45,16 @@ void ReactorResultTest::checker() {
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
         std::cout << "get message: \n";
-        // Считаем ТОЛЬКО если это ответ на сообщение из контейнера
 
-            bool react_m = (message->text == "мат!");
-            std::cout << "reply to: [" << message->replyToMessage->text << "]\n";
-            // std::cout << "reply is: [" << message->text << "]\n"
-            // std::cout << "message_container[message->replyToMessage->text] : [" << message_container[message->replyToMessage->text] << "]\n";
-            ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
+        bool react_m = (message->text == "мат!");
+        std::cout << "reply to: [" << message->replyToMessage->text << "]\n";
+        
+        ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
 
-            count_recieve_messages++;
-            std::cout << "count_recieve_messages: " << count_recieve_messages << "\n";
+        count_recieve_messages++;
+        std::cout << "count_recieve_messages: " << count_recieve_messages << "\n";
 
-            last_change_time = std::chrono::steady_clock::now();
+        last_change_time = std::chrono::steady_clock::now();
     });
 
     try {
@@ -69,6 +67,7 @@ void ReactorResultTest::checker() {
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
             std::cout << "elapsed: " << elapsed_seconds.count() << "\n";
         }
+
     } catch (TgBot::TgException& e) {
         std::cerr << "error: " << e.what() << "\n";
     }
