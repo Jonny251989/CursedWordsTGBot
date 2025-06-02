@@ -64,7 +64,7 @@ void ReactorResultTest::checker() {
     });
 
     try {
-        TgBot::TgLongPoll longPoll(*t_bot, 1);
+        TgBot::TgLongPoll longPoll(*t_bot);
 
         while (count_recieve_messages < limit_sent_messages_ && elapsed_seconds.count() < limit_time_in_sec) {
 
@@ -89,6 +89,9 @@ TEST_F(ReactorResultTest, FirstTest) {
     }};    
 
     generator();
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    std::raise(SIGINT);
 
     checker();
 }
