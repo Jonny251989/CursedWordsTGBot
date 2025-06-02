@@ -1,5 +1,8 @@
 #include "cursedWordsTest.hpp"
 
+std::mutex g_log_mutex;
+
+
 void ReactorResultTest::TearDown() {
 
 }
@@ -27,10 +30,11 @@ void ReactorResultTest::generator(){
         size_t last_space = line.find_last_of(' ');
         std::string flag_str = line.substr(last_space + 1);
         bool flag = (flag_str == "1");
+        std::string clean_line = line.substr(0, last_space);
+        message_container[clean_line] = flag;
+        t_bot->getApi().sendMessage(chat_id_, clean_line);
 
-        message_container[line] = flag;
-
-        t_bot->getApi().sendMessage(chat_id_, line);
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     inputFile.close();
 }
@@ -44,7 +48,7 @@ void ReactorResultTest::checker() {
         // Считаем ТОЛЬКО если это ответ на сообщение из контейнера
 
             bool react_m = (message->text == "мат!");
-            // std::cout << "reply to: [" << message->replyToMessage->text << "]\n";
+            std::cout << "reply to: [" << message->replyToMessage->text << "]\n";
             // std::cout << "reply is: [" << message->text << "]\n"
             // std::cout << "message_container[message->replyToMessage->text] : [" << message_container[message->replyToMessage->text] << "]\n";
             ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
