@@ -35,7 +35,6 @@ jobs:
           cd build
           ctest --output-on-failure --verbose
 
-
       - name: Start infrastructure and run functional tests
         run: |
           docker-compose -f docker-compose.yml up -d
