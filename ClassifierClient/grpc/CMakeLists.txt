@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 project(toxicity_classifier)
 
+include_directories(
+    ${CMAKE_SOURCE_DIR}
+)
+
 set(target toxicity_classifier)
 
 # Настройка путей для Protobuf и gRPC
