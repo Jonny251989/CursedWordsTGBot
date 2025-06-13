@@ -9,7 +9,6 @@ on:
 
 # Выносим переменные на верхний уровень
 env:
-  BASE_IMAGE: docker.io/jonnyrembo/cwbot_base
   DOCKER_USERNAME: "jonnyrembo"
   COMMON_IMAGES_VERSION: "1.0"
 
@@ -18,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       # Используем переменные напрямую без env контекста
-      image: ${{ env.BASE_IMAGE }}:${{ env.COMMON_IMAGES_VERSION }}
+      image: docker.io/jonnyrembo/cwbot_base:${{ env.COMMON_IMAGES_VERSION }}
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         DOCKER_USERNAME: ${{ env.DOCKER_USERNAME }}
