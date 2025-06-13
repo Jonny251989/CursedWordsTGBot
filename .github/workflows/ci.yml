@@ -5,27 +5,23 @@ on:
     branches: ["**"]
   pull_request:
     branches: ["**"]
-    types: [opened, synchronize, reopened]
 
-# Выносим переменные на верхний уровень
 env:
-  DOCKER_USERNAME: "jonnyrembo"
   COMMON_IMAGES_VERSION: "1.0"
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      # Используем переменные напрямую без env контекста
       image: docker.io/jonnyrembo/cwbot_base:${{ env.COMMON_IMAGES_VERSION }}
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        DOCKER_USERNAME: ${{ env.DOCKER_USERNAME }}
-        COMMON_IMAGES_VERSION: ${{ env.COMMON_IMAGES_VERSION }}
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        COMMON_IMAGES_VERSION: "1.0"
         SOURCE_DIR: ${{ github.workspace }}
-      volumes:  
+      volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-        - ${{ github.workspace }}:/github/workspace 
+        - ${{ github.workspace }}:/github/workspace  # Монтируем в стандартный путь
       options: --privileged
 
     steps:
