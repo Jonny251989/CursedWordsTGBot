@@ -1,14 +1,15 @@
 #include "cursedWordsTest.hpp"
 
 const char* ReactorResultTest::filePath = "./bins/Tests/FunctionalTests/CursedWordsTest/messages.txt";
+std::string ReactorResultTest::token_one = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
+std::string token_two = "7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY";
 
 void ReactorResultTest::TearDown() {
 
 }
 
 void ReactorResultTest::SetUp() {
-    std::string token = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
-    t_bot = std::make_shared<TgBot::Bot>(token);
+    t_bot = std::make_shared<TgBot::Bot>(token_one);
     count_recieve_messages = 0;
     chat_id_ = -1002432345513;
 }
@@ -40,7 +41,7 @@ void ReactorResultTest::checker() {
 
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
 
-        bool react_m = (message->text == "мат!");
+        bool react_m = (message->text == "мат");
         
         ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
 
@@ -69,7 +70,7 @@ void ReactorResultTest::checker() {
 TEST_F(ReactorResultTest, FirstTest) {
 
     std::jthread mainThread{[&](){
-        run_bot("7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY");
+        run_bot(token_two);
     }};    
 
     generator();

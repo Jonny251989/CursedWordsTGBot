@@ -19,7 +19,6 @@
 #include <grpcpp/grpcpp.h>
 
 void run_bot(std::string token){
-        grpc_init();
         std::unique_ptr<TgBot   ::Bot> ptr_bot = std::make_unique<TgBot::Bot>(token);
 
         Logger::getInstance().setName(ptr_bot->getApi().getMe()->username);

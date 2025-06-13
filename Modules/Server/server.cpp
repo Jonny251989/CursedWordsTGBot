@@ -25,13 +25,14 @@ void Server::start(){
     try {
 
         Logger::getInstance().logInfo(Logger::Levels::Info, "Webhook deleted successfully");
-            TgBot::TgLongPoll longPoll(*ptr_bot_);
+        TgBot::TgLongPoll longPoll(*ptr_bot_);
 
-            while (!shutdown_requested) {
+        while (!shutdown_requested) {
 
-                Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
-                longPoll.start();
-            }
+            Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
+            longPoll.start();
+        }
+        
         } catch (TgBot::TgException& e) {
             Logger::getInstance().logInfo(Logger::Levels::Fatal, e.what());
         }

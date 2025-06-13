@@ -9,10 +9,10 @@ services:
       - app_network
     healthcheck:
       test: ["CMD-SHELL", "grpc_health_probe -addr=:50051 || exit 1"]
-      interval: 10s
+      interval: 5s
       timeout: 10s
       retries: 15
-      start_period: 30s
+      start_period: 60s
     deploy:
       resources:
         limits:

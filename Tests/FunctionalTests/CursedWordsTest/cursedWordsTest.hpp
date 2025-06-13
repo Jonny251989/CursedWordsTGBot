@@ -46,4 +46,6 @@ private:
     std::mutex set_mutex;
 
     static const char* filePath;
+    static std::string token_one;
+
 };
