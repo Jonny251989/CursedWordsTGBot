@@ -6,14 +6,14 @@ on:
   pull_request:
     branches: ["**"]
 
-vars:
-  COMMON_IMAGES_VERSION: "1.0"
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image_version: ["1.0"]  # Версия указывается здесь
     container:
-      image: docker.io/jonnyrembo/cwbot_base:${{ vars.COMMON_IMAGES_VERSION }}
+      image: docker.io/jonnyrembo/cwbot_base:${{ matrix.image_version }}
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
