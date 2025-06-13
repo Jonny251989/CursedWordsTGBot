@@ -9,7 +9,6 @@ on:
 
 env:  # Выносим общие переменные на уровень всего workflow
   BASE_IMAGE: docker.io/jonnyrembo/cwbot_base
-  BASE_IMAGE_VERSION: "1.0"
   DOCKER_USERNAME: "jonnyrembo"
   COMMON_IMAGES_VERSION: "1.0"
 
@@ -17,7 +16,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.BASE_IMAGE }}:${{ env.BASE_IMAGE_VERSION }}  # Используем переменные для версии
+      image: ${{ env.BASE_IMAGE }}:${{ env.COMMON_IMAGES_VERSION }}  # Используем переменные для версии
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}  # Только токен без флага
         DOCKER_USERNAME: ${{ env.DOCKER_USERNAME }}
