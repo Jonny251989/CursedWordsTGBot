@@ -5,9 +5,10 @@ on:
     branches: ["**"]
   pull_request:
     branches: ["**"]
-    types: [opened, synchronize, reopened]  # Запускать только для указанных событий
+    types: [opened, synchronize, reopened]
 
-env:  # Выносим общие переменные на уровень всего workflow
+# Выносим переменные на верхний уровень
+env:
   BASE_IMAGE: docker.io/jonnyrembo/cwbot_base
   DOCKER_USERNAME: "jonnyrembo"
   COMMON_IMAGES_VERSION: "1.0"
@@ -16,9 +17,10 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.BASE_IMAGE }}:${{ env.COMMON_IMAGES_VERSION }}  # Используем переменные для версии
+      # Используем переменные напрямую без env контекста
+      image: ${{ env.BASE_IMAGE }}:${{ env.COMMON_IMAGES_VERSION }}
       env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}  # Только токен без флага
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         DOCKER_USERNAME: ${{ env.DOCKER_USERNAME }}
         COMMON_IMAGES_VERSION: ${{ env.COMMON_IMAGES_VERSION }}
         SOURCE_DIR: ${{ github.workspace }}
