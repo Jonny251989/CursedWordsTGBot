@@ -1,8 +1,5 @@
 #include "cursedWordsTest.hpp"
 
-std::mutex g_log_mutex;
-
-
 void ReactorResultTest::TearDown() {
 
 }

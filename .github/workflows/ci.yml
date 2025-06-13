@@ -5,21 +5,27 @@ on:
     branches: ["**"]
   pull_request:
     branches: ["**"]
+    types: [opened, synchronize, reopened]  # Запускать только для указанных событий
+
+env:  # Выносим общие переменные на уровень всего workflow
+  BASE_IMAGE: docker.io/jonnyrembo/cwbot_base
+  BASE_IMAGE_VERSION: "1.0"
+  DOCKER_USERNAME: "jonnyrembo"
+  COMMON_IMAGES_VERSION: "1.0"
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/jonnyrembo/cwbot_base:1.0
+      image: ${{ env.BASE_IMAGE }}:${{ env.BASE_IMAGE_VERSION }}  # Используем переменные для версии
       env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        COMMON_IMAGES_VERSION: "1.0"
-        TARGET_IMAGES_VERSION: "1.0"
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}  # Только токен без флага
+        DOCKER_USERNAME: ${{ env.DOCKER_USERNAME }}
+        COMMON_IMAGES_VERSION: ${{ env.COMMON_IMAGES_VERSION }}
         SOURCE_DIR: ${{ github.workspace }}
-      volumes:
+      volumes:  
         - /var/run/docker.sock:/var/run/docker.sock
-        - ${{ github.workspace }}:/github/workspace  # Монтируем в стандартный путь
+        - ${{ github.workspace }}:/github/workspace 
       options: --privileged
 
     steps:
