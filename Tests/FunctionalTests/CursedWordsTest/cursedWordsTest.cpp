@@ -1,5 +1,7 @@
 #include "cursedWordsTest.hpp"
 
+const char* ReactorResultTest::filePath = "./bins/Tests/FunctionalTests/CursedWordsTest/messages.txt";
+
 void ReactorResultTest::TearDown() {
 
 }
@@ -13,10 +15,6 @@ void ReactorResultTest::SetUp() {
 
 void ReactorResultTest::generator(){
     
-    const char* filePath = std::getenv("MESSAGES_FILE_PATH");
-    if (!filePath) {
-        filePath = "./Tests/FunctionalTests/CursedWordsTest/messages.txt";  // По умолчанию для локальной машины
-    }
     std::ifstream inputFile(filePath);
     
     if (!inputFile) {

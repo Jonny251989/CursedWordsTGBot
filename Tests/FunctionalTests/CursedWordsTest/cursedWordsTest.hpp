@@ -44,4 +44,6 @@ private:
     const size_t limit_time_in_sec = 8;
     std::map<std::string, bool> message_container;
     std::mutex set_mutex;
+
+    static const char* filePath;
 };

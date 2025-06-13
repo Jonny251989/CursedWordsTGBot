@@ -4,7 +4,7 @@ SimpleClassificator::SimpleClassificator(const std::string& message): message_(m
 
 }
 
-std::string SimpleClassificator::check(){
+bool SimpleClassificator::check(){
     return "Мат!";
 }
 
@@ -22,13 +22,13 @@ CursedWordsClassificator::CursedWordsClassificator(const std::string& message): 
         grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials()));
 }
 
-std::string CursedWordsClassificator::check() {
+bool CursedWordsClassificator::check() {
     auto start_time = std::chrono::high_resolution_clock::now();
     float probability = ptr_client_->ClassifyMessage(message_);
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
-    if(probability > 0.5) return "мат!"; 
-    else return "не мат";
+    if(probability > 0.5) return true; 
+    else return false;
 }
 
 CursedWordsClassificator::~CursedWordsClassificator(){ }

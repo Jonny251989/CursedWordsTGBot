@@ -5,7 +5,7 @@ ptr_bot_(std::move(ptr_bot)), message_(std::move(message)), chat_id_(chat_id), m
     
 }
 
-void EchoReactor::react(std::string classification_result){
+void EchoReactor::react(bool classification_result){
 
     ptr_bot_->getApi().sendMessage(chat_id_, message_, nullptr, std::make_shared<TgBot::ReplyParameters>(messageId_, chat_id_));
     Logger::getInstance().logInfo(Logger::Levels::Info, message_);
@@ -20,10 +20,10 @@ ptr_bot_(std::move(ptr_bot)), message_(std::move(message)), chat_id_(chat_id), m
 
 }
 
-void CursedWordsReactor::react(std::string classification_result){
+void CursedWordsReactor::react(bool classification_result){
     
-    ptr_bot_->getApi().sendMessage(chat_id_, classification_result, nullptr, std::make_shared<TgBot::ReplyParameters>(messageId_, chat_id_));
-    Logger::getInstance().logInfo(Logger::Levels::Info, message_ + " " + classification_result);
+    ptr_bot_->getApi().sendMessage(chat_id_, std::to_string(classification_result), nullptr, std::make_shared<TgBot::ReplyParameters>(messageId_, chat_id_));
+    Logger::getInstance().logInfo(Logger::Levels::Info, message_ + " " + std::to_string(classification_result));
 }
 
 CursedWordsReactor::~CursedWordsReactor(){
