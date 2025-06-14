@@ -69,16 +69,7 @@ protected:
 
         t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
             bool react_m = (message->text == "мат");
-            bool expected = false;
-            
-            {
-                std::lock_guard<std::mutex> lock(set_mutex);
-                if (message->replyToMessage && message_container.count(message->replyToMessage->text)) {
-                    expected = message_container[message->replyToMessage->text];
-                }
-            }
-            
-            ASSERT_EQ(expected, react_m);
+            ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
             count_recieve_messages++;
             last_change_time = std::chrono::steady_clock::now();
         });
