@@ -39,6 +39,6 @@ public:
 private:
     std::string message_;
     std::unique_ptr<IClassifierClient> ptr_client_;
-    static size_t cursedwords;
+    static int cursedwords;
 };
 
