@@ -108,6 +108,9 @@ private:
     static std::string token_one;
 };
 
+const char* ReactorResultTest::filePath = "./bins/Tests/FunctionalTests/messages.txt";
+std::string ReactorResultTest::token_one = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
+inline std::string token_two = "7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY";
 
 TEST_F(ReactorResultTest, FirstTest) {
     std::jthread mainThread([&]() {
@@ -119,8 +122,3 @@ TEST_F(ReactorResultTest, FirstTest) {
     std::raise(SIGINT);
     checker();
 }
-
-// Инициализация статических членов
-const char* ReactorResultTest::filePath = "./bins/Tests/FunctionalTests/messages.txt";
-std::string ReactorResultTest::token_one = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
-inline std::string token_two = "7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY";
