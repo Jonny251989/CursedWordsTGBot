@@ -1,7 +1,8 @@
 #include "server.hpp"
 
 
-Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>> queue): ptr_bot_(std::move(ptr_bot)), queue_(queue){
+Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>> queue, std::unique_ptr<IClassifierFactory> ptr_factory):
+ ptr_bot_(std::move(ptr_bot)), queue_(queue), ptr_factory_(std::move(ptr_factory)){
 
     ptr_bot_->getEvents().onCommand("start", [&](TgBot::Message::Ptr message) {
         ptr_bot_->getApi().sendMessage(message->chat->id, "Hi!");
@@ -12,7 +13,9 @@ Server::Server(std::unique_ptr<TgBot::Bot> ptr_bot, std::shared_ptr<Queue<ITask>
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }
-        if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<CursedWordsClassificator>(message->text),
+
+        auto toxicity_client = ptr_factory_->Create();
+        if (!queue_->push(std::make_unique<CursedWordDetectingTask>(std::make_shared<CursedWordsClassificator>(std::move(toxicity_client), message->text),
             std::make_shared<CursedWordsReactor>(ptr_bot_, message->text, message->chat->id, message->messageId)))){
 
             Logger::getInstance().logInfo(Logger::Levels::Critical, "Queue is full!"); 

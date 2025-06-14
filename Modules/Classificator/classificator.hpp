@@ -33,10 +33,12 @@ private:
 
 class CursedWordsClassificator: public IClassificator{
 public:
-    CursedWordsClassificator(const std::string& message);
+    CursedWordsClassificator( std::unique_ptr<IClassifierClient> ptr_client, const std::string& message);
     virtual bool check() override;
     ~CursedWordsClassificator(); 
 private:
     std::string message_;
-    std::unique_ptr<ToxicityClassifierClient> ptr_client_;
+    std::unique_ptr<IClassifierClient> ptr_client_;
+    static size_t cursedwords;
 };
+

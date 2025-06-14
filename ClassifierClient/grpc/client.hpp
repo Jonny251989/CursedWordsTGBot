@@ -30,5 +30,7 @@ private:
 
 
 class ToxicityClassifierClientFactory final: public IClassifierFactory{
+public:
+    ToxicityClassifierClientFactory();
     std::unique_ptr<IClassifierClient> Create() override;
 };

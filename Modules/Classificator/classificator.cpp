@@ -12,19 +12,20 @@ SimpleClassificator::~SimpleClassificator(){
 
 }
 
-CursedWordsClassificator::CursedWordsClassificator(const std::string& message): message_(message){
-    
-    const char* server_address = std::getenv("GRPC_SERVER_ADDRESS");
-    if (!server_address) {
-        server_address = "localhost:50051";
-    }
-    ptr_client_ = std::make_unique<ToxicityClassifierClient>(
-        grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials()));
+size_t CursedWordsClassificator::cursedwords = 0.5;
+
+CursedWordsClassificator::CursedWordsClassificator(std::unique_ptr<IClassifierClient> ptr_client, const std::string& message): ptr_client_(std::move(ptr_client)), message_(message){
+    // const char* server_address = std::getenv("GRPC_SERVER_ADDRESS");
+    // if (!server_address) {
+    //     server_address = "localhost:50051";
+    // }
+    // ptr_client_ = std::make_unique<ToxicityClassifierClient>(
+    //     grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials()));
 }
 
 bool CursedWordsClassificator::check() {
     float probability = ptr_client_->ClassifyMessage(message_);
-    if(probability > 0.5) return true; 
+    if(probability > cursedwords) return true; 
     else return false;
 }
 
