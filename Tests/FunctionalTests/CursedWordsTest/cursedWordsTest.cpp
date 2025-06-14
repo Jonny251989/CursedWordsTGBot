@@ -42,7 +42,8 @@ void ReactorResultTest::checker() {
     t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
 
         bool react_m = (message->text == "мат");
-        
+        Logger::getInstance().logInfo(Logger::Levels::Info, "replyToMessage: " + message->replyToMessage->text + "\n");
+        Logger::getInstance().logInfo(Logger::Levels::Info, "recieve_messages: " + std::to_string(react_m) + "\n");
         ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
 
         count_recieve_messages++;
