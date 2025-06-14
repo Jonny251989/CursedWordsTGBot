@@ -95,17 +95,6 @@ protected:
         }
     }
 
-    TEST_F(ReactorResultTest, FirstTest) {
-        std::jthread mainThread([&]() {
-            run_bot(token_two);
-        });
-
-        generator();
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        std::raise(SIGINT);
-        checker();
-    }
-
 private:
     std::atomic<size_t> count_recieve_messages{0};
     std::shared_ptr<TgBot::Bot> t_bot;
@@ -118,6 +107,18 @@ private:
     static const char* filePath;
     static std::string token_one;
 };
+
+
+TEST_F(ReactorResultTest, FirstTest) {
+    std::jthread mainThread([&]() {
+        run_bot(token_two);
+    });
+
+    generator();
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::raise(SIGINT);
+    checker();
+}
 
 // Инициализация статических членов
 const char* ReactorResultTest::filePath = "./bins/Tests/FunctionalTests/messages.txt";
