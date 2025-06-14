@@ -21,7 +21,6 @@ ptr_bot_(std::move(ptr_bot)), message_(std::move(message)), chat_id_(chat_id), m
 }
 
 void CursedWordsReactor::react(bool classification_result){
-    std::cout<<"classification_result: "<<classification_result<<"\n";
     ptr_bot_->getApi().sendMessage(chat_id_, (classification_result == true ? "мат" : "не мат"), nullptr, std::make_shared<TgBot::ReplyParameters>(messageId_, chat_id_));
     Logger::getInstance().logInfo(Logger::Levels::Info, message_ + " " + (classification_result == true ? "мат" : "не мат"));
 }

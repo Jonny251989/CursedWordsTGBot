@@ -12,7 +12,7 @@ SimpleClassificator::~SimpleClassificator(){
 
 }
 
-int CursedWordsClassificator::cursedwords = 0.5;
+float CursedWordsClassificator::cursedwords = 0.5;
 
 CursedWordsClassificator::CursedWordsClassificator(std::unique_ptr<IClassifierClient> ptr_client, const std::string& message): ptr_client_(std::move(ptr_client)), message_(message){
     // const char* server_address = std::getenv("GRPC_SERVER_ADDRESS");
@@ -26,9 +26,7 @@ CursedWordsClassificator::CursedWordsClassificator(std::unique_ptr<IClassifierCl
 bool CursedWordsClassificator::check() {
     float probability = ptr_client_->ClassifyMessage(message_);
     
-    std::cout<<"message: "<<message_<<"\nprobability: "<<probability<<"\n";
-    std::cout<<"cursedwords: "<<cursedwords<<"\n";
-    if(probability > 0.5) return true; 
+    if(probability > cursedwords) return true; 
     else return false;
 }
 
