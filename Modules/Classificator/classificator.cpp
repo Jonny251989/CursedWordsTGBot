@@ -25,6 +25,9 @@ CursedWordsClassificator::CursedWordsClassificator(std::unique_ptr<IClassifierCl
 
 bool CursedWordsClassificator::check() {
     float probability = ptr_client_->ClassifyMessage(message_);
+    
+    std::cout<<"message: "<<message_<<"\nprobability: "<<probability<<"\n";
+    std::cout<<"cursedwords: "<<cursedwords<<"\n";
     if(probability > cursedwords) return true; 
     else return false;
 }
