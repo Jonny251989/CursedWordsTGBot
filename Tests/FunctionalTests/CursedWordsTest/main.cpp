@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include "cursedWordsTest.hpp"
+
 
 int main(int argc, char **argv) {
     std::cout.setf(std::ios::unitbuf);
