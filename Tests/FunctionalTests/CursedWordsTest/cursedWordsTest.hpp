@@ -53,9 +53,10 @@ protected:
             bool flag = (flag_str == "1");
             std::string clean_line = line.substr(0, last_space);
 
-
-            message_container[clean_line] = flag;
-            
+            {
+                std::lock_guard<std::mutex> lock(set_mutex);
+                message_container[clean_line] = flag;
+            }
 
             t_bot->getApi().sendMessage(chat_id_, clean_line);
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -68,9 +69,17 @@ protected:
 
         t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
             bool react_m = (message->text == "мат");
-            ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
+            bool expected = false;
+            
+            {
+                std::lock_guard<std::mutex> lock(set_mutex);
+                if (message->replyToMessage && message_container.count(message->replyToMessage->text)) {
+                    expected = message_container[message->replyToMessage->text];
+                }
+            }
+            
+            ASSERT_EQ(expected, react_m);
             count_recieve_messages++;
-            Logger::getInstance().logInfo(Logger::Levels::Info, "count_recieve_messages: " + std::to_string(count_recieve_messages) + "\n");
             last_change_time = std::chrono::steady_clock::now();
         });
 
@@ -80,7 +89,6 @@ protected:
                    elapsed_seconds.count() < limit_time_in_sec) {
                 longPoll.start();
                 elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
-                Logger::getInstance().logInfo(Logger::Levels::Info, "elapsed: " + std::to_string(elapsed_seconds.count()) + "\n");
             }
         } catch (const TgBot::TgException& e) {
             Logger::getInstance().logInfo(Logger::Levels::Critical, std::string("Error: ") + e.what());
