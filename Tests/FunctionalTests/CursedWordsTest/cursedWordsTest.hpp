@@ -53,10 +53,9 @@ protected:
             bool flag = (flag_str == "1");
             std::string clean_line = line.substr(0, last_space);
 
-            {
-                std::lock_guard<std::mutex> lock(set_mutex);
-                message_container[clean_line] = flag;
-            }
+
+            message_container[clean_line] = flag;
+            
 
             t_bot->getApi().sendMessage(chat_id_, clean_line);
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
