@@ -69,20 +69,10 @@ protected:
 
         t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
             bool react_m = (message->text == "мат");
-            bool expected = false;
-            
-            {
-                std::lock_guard<std::mutex> lock(set_mutex);
-                if (message->replyToMessage && message_container.count(message->replyToMessage->text)) {
-                    expected = message_container[message->replyToMessage->text];
-                }
-            }
-            
-            ASSERT_EQ(expected, react_m);
+            ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
             count_recieve_messages++;
             last_change_time = std::chrono::steady_clock::now();
         });
-
         try {
             TgBot::TgLongPoll longPoll(*t_bot);
             while (count_recieve_messages < limit_sent_messages_ && 
@@ -116,7 +106,6 @@ TEST_F(ReactorResultTest, FirstTest) {
     std::jthread mainThread([&]() {
         run_bot(token_two);
     });
-
     generator();
     std::this_thread::sleep_for(std::chrono::seconds(2));
     std::raise(SIGINT);
