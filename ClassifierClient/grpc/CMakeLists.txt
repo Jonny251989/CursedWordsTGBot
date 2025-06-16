@@ -19,18 +19,18 @@ find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin)
 # Путь к .proto файлу
 set(PROTO_FILE "${CMAKE_CURRENT_SOURCE_DIR}/toxicity_classifier.proto")
 
-# Определить выходные файлы
-set(PROTO_SRCS "${CMAKE_CURRENT_BINARY_DIR}/toxicity_classifier.pb.cc")
-set(PROTO_HDRS "${CMAKE_CURRENT_BINARY_DIR}/toxicity_classifier.pb.h")
-set(GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/toxicity_classifier.grpc.pb.cc")
-set(GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/toxicity_classifier.grpc.pb.h")
+# Определить выходные файлы - ТЕПЕРЬ В ИСХОДНОЙ ДИРЕКТОРИИ
+set(PROTO_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/toxicity_classifier.pb.cc")
+set(PROTO_HDRS "${CMAKE_CURRENT_SOURCE_DIR}/toxicity_classifier.pb.h")
+set(GRPC_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/toxicity_classifier.grpc.pb.cc")
+set(GRPC_HDRS "${CMAKE_CURRENT_SOURCE_DIR}/toxicity_classifier.grpc.pb.h")
 
 # Добавить правило генерации кода
 add_custom_command(
     OUTPUT ${PROTO_SRCS} ${PROTO_HDRS} ${GRPC_SRCS} ${GRPC_HDRS}
     COMMAND ${Protobuf_PROTOC_EXECUTABLE}
-    ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
-         --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
+    ARGS --grpc_out "${CMAKE_CURRENT_SOURCE_DIR}"
+         --cpp_out "${CMAKE_CURRENT_SOURCE_DIR}"
          -I "${CMAKE_CURRENT_SOURCE_DIR}"
          --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN_EXECUTABLE}"
          ${PROTO_FILE}
@@ -46,8 +46,7 @@ add_library(${target} STATIC
 )
 
 target_include_directories(${target} PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}  # Для сгенерированных файлов
-    ${CMAKE_CURRENT_SOURCE_DIR}  # Для client.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}  # Указываем исходную директорию
 )
 
 # Связывание зависимостей

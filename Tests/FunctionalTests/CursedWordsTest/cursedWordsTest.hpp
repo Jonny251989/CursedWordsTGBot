@@ -37,31 +37,6 @@ protected:
 
     void TearDown() override {}
 
-    void generator() {
-        std::ifstream inputFile(filePath);
-        if (!inputFile) {
-            Logger::getInstance().logInfo(Logger::Levels::Critical, "Не удалось открыть файл!\n");
-            return;
-        }
-
-        std::string line;
-        while (std::getline(inputFile, line)) {
-            size_t last_space = line.find_last_of(' ');
-            if (last_space == std::string::npos) continue;
-
-            std::string flag_str = line.substr(last_space + 1);
-            bool flag = (flag_str == "1");
-            std::string clean_line = line.substr(0, last_space);
-
-            {
-                std::lock_guard<std::mutex> lock(set_mutex);
-                message_container[clean_line] = flag;
-            }
-
-            t_bot->getApi().sendMessage(chat_id_, clean_line);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        }
-    }
 
     void checker() {
         auto last_change_time = std::chrono::steady_clock::now();
@@ -108,7 +83,7 @@ TEST_F(ReactorResultTest, FirstTest) {
         run_bot(token_two);
     });
 
-    generator();
+
     std::this_thread::sleep_for(std::chrono::seconds(2));
     std::raise(SIGINT);
     checker();
