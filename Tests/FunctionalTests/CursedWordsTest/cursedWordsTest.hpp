@@ -71,6 +71,7 @@ protected:
             bool react_m = (message->text == "мат");
             ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
             count_recieve_messages++;
+            Logger::getInstance().logInfo(Logger::Levels::Info, "count_recieve_messages: " + std::to_string(count_recieve_messages) + "\n");
             last_change_time = std::chrono::steady_clock::now();
         });
 
@@ -80,6 +81,7 @@ protected:
                    elapsed_seconds.count() < limit_time_in_sec) {
                 longPoll.start();
                 elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
+                Logger::getInstance().logInfo(Logger::Levels::Info, "elapsed: " + std::to_string(elapsed_seconds.count()) + "\n");
             }
         } catch (const TgBot::TgException& e) {
             Logger::getInstance().logInfo(Logger::Levels::Critical, std::string("Error: ") + e.what());

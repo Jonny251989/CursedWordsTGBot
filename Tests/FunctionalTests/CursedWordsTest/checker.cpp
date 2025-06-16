@@ -9,6 +9,7 @@ void Checker::SetUp() {
     t_bot = std::make_shared<TgBot::Bot>(token);
     count_recieve_messages = 0;
     chat_id_ = -1002432345513;
+    fill_map();
 }
 
 void Checker::fill_map(){
