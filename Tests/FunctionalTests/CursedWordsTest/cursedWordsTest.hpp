@@ -107,7 +107,6 @@ TEST_F(ReactorResultTest, FirstTest) {
     std::jthread mainThread([&]() {
         run_bot(token_two);
     });
-
     generator();
     std::this_thread::sleep_for(std::chrono::seconds(2));
     std::raise(SIGINT);
