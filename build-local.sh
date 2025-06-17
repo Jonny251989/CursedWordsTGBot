@@ -25,7 +25,7 @@ cp ./Tests/UnitTests/Queue_Tests/queue_tests* ../bins/Tests/UnitTests/Queue_Test
 cp ./Tests/UnitTests/Parser_Tests/parser_tests* ../bins/Tests/UnitTests/Parser_Tests/
 cp ./Tests/UnitTests/SignalHandler_Tests/signalhandler_tests* ../bins/Tests/UnitTests/SignalHandler_Tests/
 cp ./Tests/FunctionalTests/EchoBotTest/echoBotTest* ../bins/Tests/FunctionalTests/EchoBotTest/
-cp ./Tests/FunctionalTests/CursedWordsTest/cursedWordsTest* ../bins/Tests/FunctionalTests/CursedWordsTest/
+cp ./Tests/FunctionalTests/CursedWordsTest/running_bot* ../bins/Tests/FunctionalTests/CursedWordsTest/
 cp ./Tests/FunctionalTests/CursedWordsTest/generator* ../bins/Tests/FunctionalTests/CursedWordsTest/
-# cp ./Tests/FunctionalTests/CursedWordsTest/checker* ../bins/Tests/FunctionalTests/CursedWordsTest/
+cp ./Tests/FunctionalTests/CursedWordsTest/checker* ../bins/Tests/FunctionalTests/CursedWordsTest/
 cp ./Tests/FunctionalTests/messages.txt ../bins/Tests/FunctionalTests/

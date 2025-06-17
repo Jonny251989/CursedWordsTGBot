@@ -68,12 +68,8 @@ void Checker::checker(){
 }
 
 TEST_F(Checker, FirstTest) {
- 
-
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-
-    std::raise(SIGINT);
     
+    std::this_thread::sleep_for(std::chrono::seconds(3));
     checker();
 
 }

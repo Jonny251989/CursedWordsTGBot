@@ -19,11 +19,11 @@ services:
           cpus: '2.0'
           memory: 2G
 
-  test_runner:
+  running_bot:
     image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
     entrypoint: []  # Явный сброс entrypoint
     environment:
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - MESSAGES_FILE_PATH=./bins/Tests/FunctionalTests/messages.txt
       - SOURCE_DIR=${SOURCE_DIR}
@@ -37,9 +37,45 @@ services:
     - /bin/bash
     - -c
     - |
-      /app/bins/Tests/FunctionalTests/CursedWordsTest/cursedWordsTest
+      /app/bins/Tests/FunctionalTests/CursedWordsTest/running_bot
     networks:
       - app_network
+
+
+
+  generator:
+    image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - GRPC_SERVER_ADDRESS=grpc_server:50051
+      - MESSAGES_FILE_PATH=./bins/Tests/FunctionalTests/messages.txt
+      - SOURCE_DIR=${SOURCE_DIR}
+    networks:
+      - app_network
+    depends_on:
+      - running_bot
+    volumes:
+    - ${SOURCE_DIR}:/app:cached  # Явно указываем режим монтирования
+    working_dir: /app
+    command: /app/bins/Tests/FunctionalTests/CursedWordsTest/generator
+
+
+
+  checker:
+    image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - GRPC_SERVER_ADDRESS=grpc_server:50051
+      - MESSAGES_FILE_PATH=./bins/Tests/FunctionalTests/messages.txt
+      - SOURCE_DIR=${SOURCE_DIR}
+    networks:
+      - app_network
+    depends_on:
+      - generator
+    volumes:
+    - ${SOURCE_DIR}:/app:cached  # Явно указываем режим монтирования
+    working_dir: /app
+    command: /app/bins/Tests/FunctionalTests/CursedWordsTest/checker
 
 networks:
   app_network:

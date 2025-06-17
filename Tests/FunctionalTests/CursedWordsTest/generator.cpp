@@ -23,10 +23,8 @@ void Generator::generator() {
         bool flag = (flag_str == "1");
         std::string clean_line = line.substr(0, last_space);
 
-
         message_container[clean_line] = flag;
         
-
         t_bot->getApi().sendMessage(chat_id_, clean_line);
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }

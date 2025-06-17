@@ -100,7 +100,7 @@ private:
 
 const char* ReactorResultTest::filePath = "./bins/Tests/FunctionalTests/messages.txt";
 std::string ReactorResultTest::token_one = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
-inline std::string token_two = "7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY";
+inline std::string token_two = "682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY7763";
 
 TEST_F(ReactorResultTest, FirstTest) {
     std::jthread mainThread([&]() {

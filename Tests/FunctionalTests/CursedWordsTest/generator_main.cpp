@@ -5,15 +5,10 @@
 #include <thread>
 
 int main() {
-    const char* token = std::getenv("TELEGRAM_TOKEN");
+    const char* token = std::getenv("TELEGRAM_TOKEN_2");
     
-    if (!token) {
-        std::cerr << "Missing environment variables!" << std::endl;
-        return 1;
-    }
-
-    Generator generator(token);
+    Generator generator("7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs");
     generator.generator();
-
+    std::this_thread::sleep_for(std::chrono::seconds(10));
     return 0;
 }
