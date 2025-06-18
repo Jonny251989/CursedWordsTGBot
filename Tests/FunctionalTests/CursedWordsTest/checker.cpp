@@ -1,28 +1,26 @@
 #include "checker.hpp"
 
 void Checker::TearDown() {
-
+    // Очистка ресурсов при необходимости
 }
 
 void Checker::SetUp() {
-    std::string token = "7913850529:AAHRcgeMjun-7U0mWsh5TF2NPUE8WyLGkLU";
-    t_bot = std::make_shared<TgBot::Bot>(token);
+    token_ = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
+    t_bot_checker = std::make_shared<TgBot::Bot>(token_);
     count_recieve_messages = 0;
     chat_id_ = -1002432345513;
     fill_map();
 }
 
-void Checker::fill_map(){
-    
-    const char* filePath = std::getenv("MESSAGES_FILE_PATH");
-    if (!filePath) {
-        filePath = "./Tests/FunctionalTests/CursedWordsTest/messages.txt";  // По умолчанию для локальной машины
-    }
+void Checker::fill_map() {
+    std::string filePath = "./bins/Tests/FunctionalTests/messages.txt";
     std::ifstream inputFile(filePath);
     
     if (!inputFile) {
-        std::cerr << "Не удалось открыть файл!" << std::endl;
+        std::cerr << "Не удалось открыть файл: " << filePath << std::endl;
+        return;
     }
+    
     std::string line;
     while (std::getline(inputFile, line)) {
         size_t last_space = line.find_last_of(' ');
@@ -30,46 +28,88 @@ void Checker::fill_map(){
             std::cerr << "Некорректный формат строки: " << line << std::endl;
             continue;
         }
+        
+        std::string message_text = line.substr(0, last_space);
         std::string flag_str = line.substr(last_space + 1);
         bool flag = (flag_str == "1");
-
-        message_container[line] = flag;
-
+        
+        message_container[message_text] = flag;
     }
     inputFile.close();
+    
+    std::cout << "Загружено тестовых случаев: " << message_container.size() << std::endl;
 }
 
-void Checker::checker(){
+void Checker::message_handler(TgBot::Message::Ptr message) {
+    // Проверяем, что это ответ на сообщение
+    if (!message->replyToMessage) {
+        std::cout << "Сообщение не является ответом: " << message->text << std::endl;
+        return;
+    }
+    
+    if (message->replyToMessage->text.empty()) {
+        std::cout << "Оригинальное сообщение пустое" << std::endl;
+        return;
+    }
+    
+    // Получаем текст оригинального сообщения
+    std::string original_text = message->replyToMessage->text;
+    
+    // Ищем сообщение в тестовых данных
+    auto it = message_container.find(original_text);
+    if (it == message_container.end()) {
+        std::cerr << "Неизвестное сообщение: " << original_text << std::endl;
+        return;
+    }
+    
+    // Определяем фактическую реакцию
+    bool actual_reaction = (message->text == "мат");
+    bool expected_reaction = it->second;
+    
+    // Логируем проверку
+    std::cout << "Проверка сообщения: " << original_text
+              << " | Ожидалось: " << expected_reaction
+              << " | Фактически: " << actual_reaction << std::endl;
+    
+    // Проверяем соответствие
+    ASSERT_EQ(expected_reaction, actual_reaction);
+    
+    count_recieve_messages++;
+    last_change_time = std::chrono::steady_clock::now();
+}
+
+void Checker::run_checker() {
     auto last_change_time = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();
-
-    t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-            count_recieve_messages++;
-
-            std::lock_guard lg{set_mutex};
-            if(message->replyToMessage && message_container.count(message->replyToMessage->text)){
-                bool react_m;
-                message->text == "мат" ? react_m = true : react_m = false;
-                std::cout<< "message->text: "<<message->text<<", react_m: "<<react_m<<"\n";
-                ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
-            }
-
-            last_change_time = std::chrono::steady_clock::now(); 
-    });
+    std::chrono::duration<double> elapsed_seconds;
+    
+    // Регистрируем обработчик сообщений
+    t_bot_checker->getEvents().onAnyMessage(
+        [this](TgBot::Message::Ptr message) {
+            this->message_handler(message);
+        }
+    );
+    
     try {
-        TgBot::TgLongPoll longPoll( *t_bot);
-        while (count_recieve_messages <= limit_sent_messages_ && elapsed_seconds.count() < limit_time_in_sec) {
+        TgBot::TgLongPoll longPoll(*t_bot_checker);
+        
+        while (count_recieve_messages < message_container.size() && 
+               elapsed_seconds.count() < limit_time_in_sec) {
             longPoll.start();
             elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
         }
-    } catch (TgBot::TgException& e) {
-        printf("error: %s\n", e.what());
+    } catch (const TgBot::TgException& e) {
+        std::cerr << "Ошибка Telegram: " << e.what() << std::endl;
     }
+    
+    std::cout << "Проверка завершена. Обработано сообщений: " 
+              << count_recieve_messages << "/" << message_container.size() << std::endl;
 }
 
 TEST_F(Checker, FirstTest) {
+    // Даем время другим процессам инициализироваться
+    std::this_thread::sleep_for(std::chrono::seconds(5));
     
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    checker();
-
+    // Запускаем проверку
+    run_checker();
+    
 }
