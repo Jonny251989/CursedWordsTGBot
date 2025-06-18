@@ -2,4 +2,4 @@
 
 
 # Запускаем тесты
-docker compose run --rm test_runner
+docker compose run --rm running_bot
