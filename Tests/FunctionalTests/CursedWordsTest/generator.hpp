@@ -42,6 +42,6 @@ private:
     std::map<std::string, bool> message_container;
     std::mutex set_mutex;
 
-    const char* filePath;
+    const inline static std::string filePath_ = "./bins/Tests/FunctionalTests/messages.txt";
     std::string token_;
 };

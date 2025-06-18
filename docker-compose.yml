@@ -41,8 +41,6 @@ services:
     networks:
       - app_network
 
-
-
   generator:
     image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
     environment:

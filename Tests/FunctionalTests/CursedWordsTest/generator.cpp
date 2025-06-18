@@ -1,5 +1,6 @@
 #include "generator.hpp"
 
+
 Generator::Generator(std::string token): token_(token){
 
         t_bot = std::make_shared<TgBot::Bot>(token_);
@@ -8,7 +9,8 @@ Generator::Generator(std::string token): token_(token){
 }
 
 void Generator::generator() {
-    std::ifstream inputFile("./bins/Tests/FunctionalTests/messages.txt");
+    
+    std::ifstream inputFile(filePath_);
     if (!inputFile) {
         Logger::getInstance().logInfo(Logger::Levels::Critical, "Не удалось открыть файл!\n");
         return;

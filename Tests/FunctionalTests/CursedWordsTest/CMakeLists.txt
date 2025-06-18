@@ -29,6 +29,4 @@ add_executable(${target_checker}
 target_include_directories(${target_checker} PUBLIC .)
 target_link_libraries(${target_checker} PUBLIC gtest queue logger server_bot task parser worker signalhandler )
 
-
-
 configure_file(${PROJECT_SOURCE_DIR}/Tests/FunctionalTests/messages.txt ${CMAKE_BINARY_DIR}/Tests/FunctionalTests/messages.txt COPYONLY)

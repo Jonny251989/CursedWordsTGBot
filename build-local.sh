@@ -28,4 +28,4 @@ cp ./Tests/FunctionalTests/EchoBotTest/echoBotTest* ../bins/Tests/FunctionalTest
 cp ./Tests/FunctionalTests/CursedWordsTest/running_bot* ../bins/Tests/FunctionalTests/CursedWordsTest/
 cp ./Tests/FunctionalTests/CursedWordsTest/generator* ../bins/Tests/FunctionalTests/CursedWordsTest/
 cp ./Tests/FunctionalTests/CursedWordsTest/checker* ../bins/Tests/FunctionalTests/CursedWordsTest/
-cp ./Tests/FunctionalTests/messages.txt ../bins/Tests/FunctionalTests/
+cp ./Tests/FunctionalTests/messages.txt ../bins/Tests/FunctionalTests/Path_ = "./bins/Tests/FunctionalTests/messages.txt";
