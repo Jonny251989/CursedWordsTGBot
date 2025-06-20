@@ -14,7 +14,8 @@ SimpleClassificator::~SimpleClassificator(){
 
 float CursedWordsClassificator::cursedwords = 0.5;
 
-CursedWordsClassificator::CursedWordsClassificator(std::unique_ptr<IClassifierClient> ptr_client, const std::string& message): ptr_client_(std::move(ptr_client)), message_(message){
+CursedWordsClassificator::CursedWordsClassificator(std::unique_ptr<IClassifierClient> ptr_client, const std::string& message):
+ ptr_client_(std::move(ptr_client)), message_(message){
     // const char* server_address = std::getenv("GRPC_SERVER_ADDRESS");
     // if (!server_address) {
     //     server_address = "localhost:50051";

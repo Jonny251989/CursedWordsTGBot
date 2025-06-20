@@ -12,8 +12,10 @@ int main() {
     std::jthread mainThread([&]() {
         run_bot("7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY");
     });
+    // run_bot("7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY");
 
-    std::this_thread::sleep_for(std::chrono::seconds(30));
-    std::raise(SIGINT);
+
+    // std::this_thread::sleep_for(std::chrono::seconds(30));
+    // std::raise(SIGINT);
     return 0;
 }

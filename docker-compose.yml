@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 
 services:
   grpc_server:
@@ -67,7 +67,7 @@ services:
     networks:
       - app_network
     depends_on:
-      - generator
+      - running_bot
     volumes:
     - ${SOURCE_DIR}:/app:cached  # Явно указываем режим монтирования
     working_dir: /app

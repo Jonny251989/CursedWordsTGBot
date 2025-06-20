@@ -21,13 +21,17 @@
 
 void run_bot(std::string token){
         std::unique_ptr<TgBot   ::Bot> ptr_bot = std::make_unique<TgBot::Bot>(token);
+        
 
         Logger::getInstance().setName(ptr_bot->getApi().getMe()->username);
         Logger::getInstance().setLevel(Logger::Levels::Debug);
-
+        std::cout<<"HERE 1\n";
         std::shared_ptr<Queue<ITask>> ptr_queue = std::make_shared<Queue<ITask>> ();
+        
         std::unique_ptr<ToxicityClassifierClientFactory> ptr_factory = std::make_unique<ToxicityClassifierClientFactory>();
+        std::cout<<"HERE 2\n";
         Server server(std::move(ptr_bot), ptr_queue, std::move(ptr_factory));
+        std::cout<<"HERE WORKER\n";
         Worker worker(ptr_queue);
 
         SignalHandler handler({ SIGINT, SIGTERM }, [&](){

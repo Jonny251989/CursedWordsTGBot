@@ -106,8 +106,7 @@ void Checker::run_checker() {
 }
 
 TEST_F(Checker, FirstTest) {
-    // Даем время другим процессам инициализироваться
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+
     
     // Запускаем проверку
     run_checker();
