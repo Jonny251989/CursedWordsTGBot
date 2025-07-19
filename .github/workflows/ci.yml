@@ -5,6 +5,10 @@ on:
     branches: ["**"]
   pull_request:
     branches: ["**"]
+    types:
+    - opened
+    - synchronize 
+    - reopened 
 
 jobs:
   build-and-test:
@@ -15,13 +19,15 @@ jobs:
     container:
       image: docker.io/jonnyrembo/cwbot_base:${{ matrix.image_version }}
       env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TOKEN_RUNNING_MAIN_BOT: ${{ secrets.TOKEN_RUNNING_MAIN_BOT }}
+        TELEGRAM_TOKEN_GENERATOR: ${{ secrets.TELEGRAM_TOKEN_GENERATOR }}
+        TELEGRAM_TOKEN_CHECKER: ${{ secrets.TELEGRAM_TOKEN_CHECKER }}
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         COMMON_IMAGES_VERSION: "1.0"
         SOURCE_DIR: ${{ github.workspace }}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-        - ${{ github.workspace }}:/github/workspace  # Монтируем в стандартный путь
+        - ${{ github.workspace }}:/github/workspace 
       options: --privileged
 
     steps:

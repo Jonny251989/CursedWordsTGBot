@@ -30,7 +30,7 @@ public:
 private:
     std::shared_ptr<TgBot::Bot> ptr_bot_;
     std::shared_ptr<Queue<ITask>> queue_;
-    //std::unique_ptr<IClassifierClient> toxicity_client_;
+    std::unique_ptr<IClassifierClient> toxicity_client_;
     std::unique_ptr<IClassifierFactory> ptr_factory_;
     std::atomic<bool> shutdown_requested{false};
 };

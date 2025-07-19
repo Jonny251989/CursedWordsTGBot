@@ -14,7 +14,9 @@ ptr_bot_(std::move(ptr_bot)), queue_(queue), ptr_factory_(std::move(ptr_factory)
         if (StringTools::startsWith(message->text, "/start")) {
             return;
         }
-        auto toxicity_client_ = ptr_factory_->Create();
+
+        toxicity_client_ = ptr_factory_->Create();
+
         if (!queue_->push(std::make_unique<CursedWordDetectingTask>(
             
             std::make_shared<CursedWordsClassificator>(std::move(toxicity_client_), message->text),
@@ -34,7 +36,6 @@ void Server::start(){
         TgBot::TgLongPoll longPoll(*ptr_bot_);
 
         while (!shutdown_requested) {
-
             Logger::getInstance().logInfo(Logger::Levels::Info, "Long poll started");
             longPoll.start();
         }

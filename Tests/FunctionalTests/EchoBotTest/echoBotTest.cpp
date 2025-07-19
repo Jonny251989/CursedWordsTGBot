@@ -17,7 +17,6 @@
 #include <tgbot/tgbot.h>
 #include "run_bot.hpp"
 #include <chrono>
-#include <pthread.h>
 #include <csignal>
 
 struct Message {
@@ -30,7 +29,8 @@ struct Message {
 class ReactorResultTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        t_bot = std::make_shared<TgBot::Bot>(token_one);
+        const char* token_one_= std::getenv("TELEGRAM_TOKEN_GENERATOR");
+        t_bot = std::make_shared<TgBot::Bot>(token_one_);
         count_recieve_messages = 0;
         chat_id_ = -1002432345513;
     }
@@ -38,28 +38,24 @@ protected:
     void TearDown() override {}
 
     void generator() {
+        const char* filePath = std::getenv("MESSAGES_FILE_PATH");
+        if (!filePath) {
+            filePath = defaultFilePath_; 
+        }
+        
         std::ifstream inputFile(filePath);
         if (!inputFile) {
             Logger::getInstance().logInfo(Logger::Levels::Critical, "Не удалось открыть файл!\n");
             return;
         }
-
+        
         std::string line;
         while (std::getline(inputFile, line)) {
-            size_t last_space = line.find_last_of(' ');
-            if (last_space == std::string::npos) continue;
-
-            std::string flag_str = line.substr(last_space + 1);
-            bool flag = (flag_str == "1");
-            std::string clean_line = line.substr(0, last_space);
-
             {
-                std::lock_guard<std::mutex> lock(set_mutex);
-                message_container[clean_line] = flag;
+                std::lock_guard lg{set_mutex};
+                message_container.insert(line);
             }
-
-            t_bot->getApi().sendMessage(chat_id_, clean_line);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            t_bot->getApi().sendMessage(chat_id_, line);
         }
     }
 
@@ -68,20 +64,23 @@ protected:
         std::chrono::duration<double> elapsed_seconds;
 
         t_bot->getEvents().onAnyMessage([&](TgBot::Message::Ptr message) {
-            bool react_m = (message->text == "мат");
-            ASSERT_EQ(message_container[message->replyToMessage->text], react_m);
             count_recieve_messages++;
-            last_change_time = std::chrono::steady_clock::now();
+            {
+                std::lock_guard lg{set_mutex};
+                ASSERT_TRUE(message_container.count(message->replyToMessage->text));
+            }
+            last_change_time = std::chrono::steady_clock::now(); 
         });
+        
         try {
             TgBot::TgLongPoll longPoll(*t_bot);
-            while (count_recieve_messages < limit_sent_messages_ && 
+            while (count_recieve_messages <= limit_sent_messages_ && 
                    elapsed_seconds.count() < limit_time_in_sec) {
                 longPoll.start();
                 elapsed_seconds = std::chrono::steady_clock::now() - last_change_time;
             }
         } catch (const TgBot::TgException& e) {
-            Logger::getInstance().logInfo(Logger::Levels::Critical, std::string("Error: ") + e.what());
+            Logger::getInstance().logInfo(Logger::Levels::Critical, e.what());
         }
     }
 
@@ -89,25 +88,23 @@ private:
     std::atomic<size_t> count_recieve_messages{0};
     std::shared_ptr<TgBot::Bot> t_bot;
     std::int64_t chat_id_;
-    const size_t limit_sent_messages_ = 5;
-    const size_t limit_time_in_sec = 8;
-    std::map<std::string, bool> message_container;
+    static inline const size_t limit_sent_messages_ = 5;
+    static inline const size_t limit_time_in_sec = 10;
+    std::set<std::string> message_container;
     std::mutex set_mutex;
 
-    static const char* filePath;
-    static std::string token_one;
+    static inline const char* defaultFilePath_ = "./Tests/FunctionalTests/EchoBotTest/messages.txt";
 };
 
-const char* ReactorResultTest::filePath = "./bins/Tests/FunctionalTests/messages.txt";
-std::string ReactorResultTest::token_one = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
-inline std::string token_two = "682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY7763";
-
 TEST_F(ReactorResultTest, FirstTest) {
+
+    const char* token_running_bot = std::getenv("TOKEN_RUNNING_MAIN_BOT");
     std::jthread mainThread([&]() {
-        run_bot(token_two);
+        run_bot(token_running_bot); 
     });
+
     generator();
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(3));
     std::raise(SIGINT);
     checker();
 }

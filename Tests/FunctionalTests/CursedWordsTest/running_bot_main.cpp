@@ -7,15 +7,9 @@
 
 
 int main() {
-    const char* token = std::getenv("TELEGRAM_TOKEN_2");
+    const char* token_running_bot = std::getenv("TOKEN_RUNNING_MAIN_BOT");
     
-    std::jthread mainThread([&]() {
-        run_bot("7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY");
-    });
-    // run_bot("7763682966:AAEFBGifblSqB5of8cyS5WKjC6kK6pxTIuY");
+    run_bot(token_running_bot);
 
-
-    // std::this_thread::sleep_for(std::chrono::seconds(30));
-    // std::raise(SIGINT);
     return 0;
 }

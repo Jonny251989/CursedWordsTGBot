@@ -5,19 +5,19 @@ void Checker::TearDown() {
 }
 
 void Checker::SetUp() {
-    token_ = "7212434431:AAFLuR1mQTqpageO7x575hkQzW7DzJTXdNs";
-    t_bot_checker = std::make_shared<TgBot::Bot>(token_);
+    const char* token_of_checker = std::getenv("TELEGRAM_TOKEN_CHECKER");
+
+    t_bot_checker = std::make_shared<TgBot::Bot>(token_of_checker);
     count_recieve_messages = 0;
     chat_id_ = -1002432345513;
     fill_map();
 }
 
 void Checker::fill_map() {
-    std::string filePath = "./bins/Tests/FunctionalTests/messages.txt";
-    std::ifstream inputFile(filePath);
+    std::ifstream inputFile(filePath_);
     
     if (!inputFile) {
-        std::cerr << "Не удалось открыть файл: " << filePath << std::endl;
+        Logger::getInstance().logInfo(Logger::Levels::Critical, "Не удалось открыть файл!\n");
         return;
     }
     
@@ -41,7 +41,6 @@ void Checker::fill_map() {
 }
 
 void Checker::message_handler(TgBot::Message::Ptr message) {
-    // Проверяем, что это ответ на сообщение
     if (!message->replyToMessage) {
         std::cout << "Сообщение не является ответом: " << message->text << std::endl;
         return;
@@ -52,26 +51,21 @@ void Checker::message_handler(TgBot::Message::Ptr message) {
         return;
     }
     
-    // Получаем текст оригинального сообщения
     std::string original_text = message->replyToMessage->text;
     
-    // Ищем сообщение в тестовых данных
     auto it = message_container.find(original_text);
     if (it == message_container.end()) {
         std::cerr << "Неизвестное сообщение: " << original_text << std::endl;
         return;
     }
     
-    // Определяем фактическую реакцию
     bool actual_reaction = (message->text == "мат");
     bool expected_reaction = it->second;
     
-    // Логируем проверку
     std::cout << "Проверка сообщения: " << original_text
               << " | Ожидалось: " << expected_reaction
               << " | Фактически: " << actual_reaction << std::endl;
     
-    // Проверяем соответствие
     ASSERT_EQ(expected_reaction, actual_reaction);
     
     count_recieve_messages++;
@@ -79,16 +73,14 @@ void Checker::message_handler(TgBot::Message::Ptr message) {
 }
 
 void Checker::run_checker() {
-    auto last_change_time = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsed_seconds;
+    last_change_time = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsed_seconds = std::chrono::duration<double>::zero();;
     
-    // Регистрируем обработчик сообщений
     t_bot_checker->getEvents().onAnyMessage(
         [this](TgBot::Message::Ptr message) {
             this->message_handler(message);
         }
     );
-    
     try {
         TgBot::TgLongPoll longPoll(*t_bot_checker);
         
@@ -106,9 +98,5 @@ void Checker::run_checker() {
 }
 
 TEST_F(Checker, FirstTest) {
-
-    
-    // Запускаем проверку
     run_checker();
-    
 }

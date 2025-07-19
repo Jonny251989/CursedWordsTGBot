@@ -5,10 +5,9 @@
 #include <thread>
 
 int main() {
-    const char* token = std::getenv("TELEGRAM_TOKEN_2");
     
-    Generator generator("7913850529:AAHRcgeMjun-7U0mWsh5TF2NPUE8WyLGkLU");
-    //"7913850529:AAHRcgeMjun-7U0mWsh5TF2NPUE8WyLGkLU"
+    const char* token_of_generator = std::getenv("TELEGRAM_TOKEN_GENERATOR");
+    Generator generator(token_of_generator);
     generator.generator();
 
     return 0;

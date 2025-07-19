@@ -32,7 +32,6 @@ public:
     Generator(std::string token);
     void generator();
 
-
 private:
     std::atomic<size_t> count_recieve_messages{0};
     std::shared_ptr<TgBot::Bot> t_bot;

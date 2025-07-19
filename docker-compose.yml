@@ -9,7 +9,7 @@ services:
       - app_network
     healthcheck:
       test: ["CMD-SHELL", "grpc_health_probe -addr=:50051 || exit 1"]
-      interval: 5s
+      interval: 10s
       timeout: 10s
       retries: 15
       start_period: 60s
@@ -21,9 +21,9 @@ services:
 
   running_bot:
     image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
-    entrypoint: []  # Явный сброс entrypoint
+    entrypoint: [] 
     environment:
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TOKEN_RUNNING_MAIN_BOT=${TOKEN_RUNNING_MAIN_BOT}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - MESSAGES_FILE_PATH=./bins/Tests/FunctionalTests/messages.txt
       - SOURCE_DIR=${SOURCE_DIR}
@@ -31,7 +31,7 @@ services:
       grpc_server:
         condition: service_healthy
     volumes:
-    - ${SOURCE_DIR}:/app:cached  # Явно указываем режим монтирования
+    - ${SOURCE_DIR}:/app:cached 
     working_dir: /app
     command:
     - /bin/bash
@@ -44,7 +44,7 @@ services:
   generator:
     image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
     environment:
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TELEGRAM_TOKEN_GENERATOR=${TELEGRAM_TOKEN_GENERATOR}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - MESSAGES_FILE_PATH=./bins/Tests/FunctionalTests/messages.txt
       - SOURCE_DIR=${SOURCE_DIR}
@@ -53,14 +53,14 @@ services:
     depends_on:
       - running_bot
     volumes:
-    - ${SOURCE_DIR}:/app:cached  # Явно указываем режим монтирования
+    - ${SOURCE_DIR}:/app:cached 
     working_dir: /app
     command: /app/bins/Tests/FunctionalTests/CursedWordsTest/generator
 
   checker:
     image: ${DOCKER_USERNAME}/cwbot_base:${COMMON_IMAGES_VERSION}
     environment:
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TELEGRAM_TOKEN_CHECKER=${TELEGRAM_TOKEN_CHECKER}
       - GRPC_SERVER_ADDRESS=grpc_server:50051
       - MESSAGES_FILE_PATH=./bins/Tests/FunctionalTests/messages.txt
       - SOURCE_DIR=${SOURCE_DIR}
@@ -69,7 +69,7 @@ services:
     depends_on:
       - running_bot
     volumes:
-    - ${SOURCE_DIR}:/app:cached  # Явно указываем режим монтирования
+    - ${SOURCE_DIR}:/app:cached 
     working_dir: /app
     command: /app/bins/Tests/FunctionalTests/CursedWordsTest/checker
 
