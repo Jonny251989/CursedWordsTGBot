@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <memory>
@@ -14,7 +15,6 @@
 #include "client.hpp"
 
 
-
 class IClassificator{
 public:
     virtual bool check() = 0;
@@ -25,7 +25,7 @@ class SimpleClassificator final: public IClassificator{
 public:
     SimpleClassificator(const std::string& message);
     bool check() final;
-    ~SimpleClassificator();
+    ~SimpleClassificator() = default;
 private:
     std::string message_;
 };
@@ -35,10 +35,9 @@ class CursedWordsClassificator: public IClassificator{
 public:
     CursedWordsClassificator( std::unique_ptr<IClassifierClient> ptr_client, const std::string& message);
     virtual bool check() override;
-    ~CursedWordsClassificator(); 
+    ~CursedWordsClassificator() = default; 
 private:
-    std::string message_;
     std::unique_ptr<IClassifierClient> ptr_client_;
-    static float cursedwords;
+    std::string message_;
+    static inline double cursedwords = 0.5;
 };
-

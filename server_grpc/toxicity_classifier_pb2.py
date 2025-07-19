@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19toxicity_classifier.proto\x12\x13toxicity_classifier\"!\n\x0eMessageRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"/\n\x0fMessageResponse\x12\x1c\n\x14toxicity_probability\x18\x01 \x01(\x02\x32t\n\x12ToxicityClassifier\x12^\n\x0f\x43lassifyMessage\x12#.toxicity_classifier.MessageRequest\x1a$.toxicity_classifier.MessageResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19toxicity_classifier.proto\x12\x13toxicity_classifier\"!\n\x0eMessageRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"/\n\x0fMessageResponse\x12\x1c\n\x14toxicity_probability\x18\x01 \x01(\x01\x32t\n\x12ToxicityClassifier\x12^\n\x0f\x43lassifyMessage\x12#.toxicity_classifier.MessageRequest\x1a$.toxicity_classifier.MessageResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
